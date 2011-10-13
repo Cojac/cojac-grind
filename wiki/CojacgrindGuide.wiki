@@ -19,7 +19,7 @@ Cojac-grind is offered (without warranty of course) in the hope it can be useful
 as well as in the software industry. Any comment/feedback is welcome!
 
 It's a first prototype. No warranty at all. We offer a far better tool 
-for Java (https://code.google.com/p/cojac).
+for Java, named COJAC (https://code.google.com/p/cojac).
 
 --------------------------------------------------
 = 2. Download and build =
@@ -29,49 +29,77 @@ for Java (https://code.google.com/p/cojac).
   * Configure, make, make install
 
   * You may want to integrate Cojac into an existing (newer) Valgrind release: 
-
     * copy the cojac folder into your valgrind source-code folder
-    
     * adapt valgrind/Makefile.am (beginning): TOOLS =	... cojac
-    
     * configure, make, make install
 
 --------------------------------------------------
 = 3. What Cojac-grind considers suspicious= 
 
-Cojac-grind essentially takes the same principles of Cojac, and watches the following symptoms:
+Cojac-grind essentially takes the same principles of COJAC, and watches the following symptoms:
 
  * *Integer overflow*: the result is out-of-bounds for a 16/32/64bits integer arithmetic operation (not bit-shift operations). Examples: `3*INT_MAX, Integer.INT_MIN/-1`
  * *Smearing*:  adding/subtracting a non-zero floating point number has no effect because the two operands have excessively different orders of magnitude. Examples: `(342.0+1.0E-43), (342.0-1.0E+43)`
  * *Cancellation*: two floating point numbers almost cancel each other after an addition or subtraction. Example:  `(3.000001f - 3.0f)`
  * *Underflow*: the result of a division is so small that it gets rounded to zero. Example: `(2.5E-233 / 7.2E+233)`
  * *Questionable comparisons*: two floating point numbers are being compared, but they are very close together. Example: `if (3.000001f == 3.0f)...`
- * *Offending typecasting*: a value loses its essence after a type conversion. Examples: `(int) Long.MAX_VALUE, (int)Float.NaN`
+ * *Offending typecasting*: a value loses its essence after a type conversion. Examples: `(int) DBL_MAX, (int)NaN`
 
 The last two phenomena are not implemented yet. 
 
 --------------------------------------------------
 = 4. Cojac-grind options =
 
-COJAC offers a fine-grained configuration of what must be instrumented in the application; the options let you select which category (or even which bytecode instructions) to watch:
-
-sage: valgrind --tool=cojac [options] program
+Usage: `valgrind --tool=cojac [options] program`
 
 Options: 
 
-   * *`--i16=yes|no`*           Watch 16bits int operations [yes]
-   * *`--i32=yes|no`*           Watch 32bits int operations [yes]
-   * *`--f32=yes|no`*           Watch 32bits float operations [yes]
-   * *`--f64=yes|no`*           Watch 64bits double operations [yes]
-   * *`--castToI16=yes|no`*     Watch int to short typecasting [yes]
-   * *`--stacktrace=<number>`*  Depth of the displayed stacktrace [1] 
+   * *`--i16=yes|no`*           Watch 16bits int operations (default: yes)
+   * *`--i32=yes|no`*           Watch 32bits int operations (default: yes)
+   * *`--f32=yes|no`*           Watch 32bits float operations (default: yes)
+   * *`--f64=yes|no`*           Watch 64bits double operations (default: yes)
+   * *`--castToI16=yes|no`*     Watch int to short typecasting (default: yes)
+   * *`--stacktrace=<number>`*  Depth of the displayed stacktrace (default: 1) 
    * *`--aggr=no|yes`*          Reports problems even where file/line cannot
-                                be determined [no]
+                                be determined (default: no)
 
 --------------------------------------------------
 = 5. Example  =
 
-N/A
+{{{
+
+prompt$ valgrind  --tool=cojac  HelloCojac
+
+==22322== Cojac-0.0.1, the Cojac-grind numerical problem sniffer
+==22322== Cojac: Precision, AddF64     at 0x8048EFB: demoFunc (HelloCojac.c:280)
+==22322== Cojac: Infinity, AddF64      at 0x8048F01: demoFunc (HelloCojac.c:281)
+==22322== Cojac: Precision, SubF64     at 0x8048F0C: demoFunc (HelloCojac.c:282)
+==22322== Cojac: NaN, DivF64           at 0x8048F15: demoFunc (HelloCojac.c:283)
+==22322== Cojac: DivByZero, DivF64     at 0x8048F1E: demoFunc (HelloCojac.c:284)
+==22322== Cojac: DivByZero, DivF64     at 0x8048F27: demoFunc (HelloCojac.c:285)
+==22322== Cojac: DivByZero, DivF64     at 0x8048F30: demoFunc (HelloCojac.c:286)
+==22322== Cojac: Cancellation, AddF64  at 0x8048F44: demoFunc (HelloCojac.c:287)
+==22322== Cojac: Overflow, Add32       at 0x8048FA0: demoFunc (HelloCojac.c:294)
+==22322== Cojac: Overflow, Mul32       at 0x8048FAB: demoFunc (HelloCojac.c:295)
+==22322== Cojac: Overflow, Sub32       at 0x8048FB2: demoFunc (HelloCojac.c:296)
+==22322== Cojac: Overflow, Mul32       at 0x8048FBD: demoFunc (HelloCojac.c:297)
+==22322== Cojac: Overflow, Sub32       at 0x8048FC7: demoFunc (HelloCojac.c:300)
+==22322== 
+==22322== Cojac instrumentation statistics:
+==22322==   Add32  239      
+==22322==   Sub16    2      
+==22322==   Sub32   79      
+==22322==   Mul16    1 
+==22322==   Mul32    6      
+==22322==   32to16   4      
+==22322==   AddF64   7      
+==22322==   SubF64   5 
+==22322==   MulF64   2      
+==22322==   DivF64   6 
+==22322== 
+==22322== ERROR SUMMARY: 13 errors from 13 contexts (suppressed: 0 from 0)
+
+}}}
 
 --------------------------------------------------
 = 6. Known issues =
@@ -88,19 +116,12 @@ There are still important limitations, the following list is certainly incomplet
 
  * docs/tests folder: not implemented yet
  
- * inherent limitations due to the "semantic distance" between source code
-  and binary code: 
-  
+ * inherent limitations due to the "semantic distance" between source code and binary code: 
    * impossibility of distinguishing signed vs unsigned additions
-
    * subtraction of a litteral sometimes translated as adding the complement litteral
-
    * operations on long decomposed in several operations on int
-
    * Compile-time expressions can't be processed: {{{ a=(3*INT_MAX); }}}
-
    * Of course a suspicious operation is not always the manifestation of a software defect. For instance, you can rely on integer overflows to compute a hash function, or maybe cancellation phenomenon is not a problem because the floating point numbers you deal with do not suffer from imprecision.
-
    * ...
   
 Any comment is welcome. Happy numerical problem sniffing!
