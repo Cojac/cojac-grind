@@ -1,13 +1,111 @@
-#summary One-sentence summary of this page.
+#summary Cojac-grind User/Developper Guide
+*Contents*
+<wiki:toc max_depth="1"/>
+--------------------------------------------------
+= 1. Introduction =
 
-= Introduction =
+Cojac-grind is a protoype Valgrind tool to detect integer overflows and floating points numbers anomalies
+in a Linux program. You can apply it on your own code to help uncover vicious bugs involving 
+arithmetic. It is only available for x86 (32 and 64bits) platforms.
 
-Add your content here.
+Cojac-grind needs neither source code modification nor recompilation of your code (although it 
+is boosted if the target program contains debugging symbols).
+With COJAC you don't have to modify your source code or even recompile it. All the work is done at runtime and your application is not altered. 
+
+Cojac-grind is configurable, you can specify which operations are to be watched, and whether you want
+a full stack trace in the warning messages. 
+
+Cojac-grind is offered (without warranty of course) in the hope it can be useful for educational purposes,
+as well as in the software industry. Any comment/feedback is welcome!
+
+It's a first prototype. No warranty at all. We offer a far better tool 
+for Java (https://code.google.com/p/cojac).
+
+--------------------------------------------------
+= 2. Download and build =
+
+  * Download the tarball cojacgrind.tar.gz
+ 
+  * Configure, make, make install
+
+  * You may want to integrate Cojac into an existing (newer) Valgrind release: 
+
+    * copy the cojac folder into your valgrind source-code folder
+    
+    * adapt valgrind/Makefile.am (beginning): TOOLS =	... cojac
+    
+    * configure, make, make install
+
+--------------------------------------------------
+= 3. What Cojac-grind considers suspicious= 
+
+Cojac-grind essentially takes the same principles of Cojac, and watches the following symptoms:
+
+ * *Integer overflow*: the result is out-of-bounds for a 16/32/64bits integer arithmetic operation (not bit-shift operations). Examples: `3*INT_MAX, Integer.INT_MIN/-1`
+ * *Smearing*:  adding/subtracting a non-zero floating point number has no effect because the two operands have excessively different orders of magnitude. Examples: `(342.0+1.0E-43), (342.0-1.0E+43)`
+ * *Cancellation*: two floating point numbers almost cancel each other after an addition or subtraction. Example:  `(3.000001f - 3.0f)`
+ * *Underflow*: the result of a division is so small that it gets rounded to zero. Example: `(2.5E-233 / 7.2E+233)`
+ * *Questionable comparisons*: two floating point numbers are being compared, but they are very close together. Example: `if (3.000001f == 3.0f)...`
+ * *Offending typecasting*: a value loses its essence after a type conversion. Examples: `(int) Long.MAX_VALUE, (int)Float.NaN`
+
+The last two phenomena are not implemented yet. 
+
+--------------------------------------------------
+= 4. Cojac-grind options =
+
+COJAC offers a fine-grained configuration of what must be instrumented in the application; the options let you select which category (or even which bytecode instructions) to watch:
+
+sage: valgrind --tool=cojac [options] program
+
+Options: 
+
+   * *`--i16=yes|no`*           Watch 16bits int operations [yes]
+   * *`--i32=yes|no`*           Watch 32bits int operations [yes]
+   * *`--f32=yes|no`*           Watch 32bits float operations [yes]
+   * *`--f64=yes|no`*           Watch 64bits double operations [yes]
+   * *`--castToI16=yes|no`*     Watch int to short typecasting [yes]
+   * *`--stacktrace=<number>`*  Depth of the displayed stacktrace [1] 
+   * *`--aggr=no|yes`*          Reports problems even where file/line cannot
+                                be determined [no]
+
+--------------------------------------------------
+= 5. Example  =
+
+N/A
+
+--------------------------------------------------
+= 6. Known issues =
+
+There are still important limitations, the following list is certainly incomplete.
+
+ * Possible architectures: only x86 or amd64 (supporting little-endian architectures will need some refactoring)
+
+ * SIMD operations: not fully instrumented yet. You may be interested in disabling the feature at compile-time for the instrumented program with: gcc -mno-mmx -mno-sse -mno-sse2 -mno-sse3   (but remember sse is required for amd64!)    
+
+ * 8bit char: not instrumented (well, it is a decision)
+
+ * Error Suppression mechanism: not supported
+
+ * docs/tests folder: not implemented yet
+ 
+ * inherent limitations due to the "semantic distance" between source code
+  and binary code: 
+  
+   * impossibility of distinguishing signed vs unsigned additions
+
+   * subtraction of a litteral sometimes translated as adding the complement litteral
+
+   * operations on long decomposed in several operations on int
+
+   * Compile-time expressions can't be processed: {{{ a=(3*INT_MAX); }}}
+
+   * Of course a suspicious operation is not always the manifestation of a software defect. For instance, you can rely on integer overflows to compute a hash function, or maybe cancellation phenomenon is not a problem because the floating point numbers you deal with do not suffer from imprecision.
+
+   * ...
+  
+Any comment is welcome. Happy numerical problem sniffing!
+
+frederic.bapst@gmail.com
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+ 
