@@ -126,7 +126,9 @@ There are still important limitations, the following list is certainly incomplet
    * Of course a suspicious operation is not always the manifestation of a software defect. For instance, you can rely on integer overflows to compute a hash function, or maybe cancellation phenomenon is not a problem because the floating point numbers you deal with do not suffer from imprecision.
    * ...
   
-Any comment is welcome (use the discussion group) [http://groups.google.com/group/cojac-grind-discuss]. Happy numerical problem sniffing!
+Any comment is welcome (use [http://groups.google.com/group/cojac-grind-discuss]).
+
+Happy numerical problem sniffing!
 
 Frederic Bapst
 
