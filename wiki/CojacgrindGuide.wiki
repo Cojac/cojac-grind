@@ -2,7 +2,7 @@
 *Contents*
 <wiki:toc max_depth="1"/>
 --------------------------------------------------
-= 1. Introduction =
+= 1. Introduction = 
 
 Cojac-grind is a protoype Valgrind tool to detect integer overflows and floating points numbers anomalies
 in a Linux program. You can apply it on your own code to help uncover vicious bugs involving 
