@@ -60,8 +60,7 @@ Options:
    * *`--f64=yes|no`*           Watch 64bits double operations (default: yes)
    * *`--castToI16=yes|no`*     Watch int to short typecasting (default: yes)
    * *`--stacktrace=<number>`*  Depth of the displayed stacktrace (default: 1) 
-   * *`--aggr=no|yes`*          Reports problems even where file/line cannot
-                                be determined (default: no)
+   * *`--aggr=no|yes`*          Reports problems even where file/line cannot be determined (default: no)
 
 --------------------------------------------------
 = 5. Example  =
@@ -71,6 +70,7 @@ Options:
 prompt$ valgrind  --tool=cojac  HelloCojac
 
 ==22322== Cojac-0.0.1, the Cojac-grind numerical problem sniffer
+==22322== 
 ==22322== Cojac: Precision, AddF64     at 0x8048EFB: demoFunc (HelloCojac.c:280)
 ==22322== Cojac: Infinity, AddF64      at 0x8048F01: demoFunc (HelloCojac.c:281)
 ==22322== Cojac: Precision, SubF64     at 0x8048F0C: demoFunc (HelloCojac.c:282)
@@ -111,6 +111,8 @@ There are still important limitations, the following list is certainly incomplet
  * SIMD operations: not fully instrumented yet. You may be interested in disabling the feature at compile-time for the instrumented program with: gcc -mno-mmx -mno-sse -mno-sse2 -mno-sse3   (but remember sse is required for amd64!)    
 
  * 8bit char: not instrumented (well, it is a decision)
+ 
+ * Multi-threaded applications are not handled correctly
 
  * Error Suppression mechanism: not supported
 
