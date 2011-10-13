@@ -128,7 +128,7 @@ There are still important limitations, the following list is certainly incomplet
   
 Any comment is welcome. Happy numerical problem sniffing!
 
-frederic.bapst@gmail.com
+Frederic Bapst
 
 
  
