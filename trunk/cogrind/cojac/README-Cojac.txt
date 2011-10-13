@@ -15,7 +15,6 @@ suspicious events like:
   different orders of magnitude)
 - Cancellation (subtracting very close numbers, so that the (often noisy) 
   least significant bits are promoted to top significance)
-- Comparing very close floating point numbers
  
 It is intended for education purposes, and maybe as a diagnostic tool (we
 will only know after collecting feedback from users!).
@@ -29,7 +28,7 @@ for Java (https://code.google.com/p/cojac).
 
 - Download the tarball cojacgrind.tar.gz
 - Configure, make, make install
-- You may want to integrate Cojac into a newer Valgrind release : 
+- You may want to integrate Cojac into a newer Valgrind release: 
   - copy the cojac folder
   - adapt valgrind/Makefile.am (beginning): TOOLS =	... cojac
   
@@ -54,16 +53,16 @@ Options:
 4. Limitations
 --------------
 
-There are _many_ limitations, the following list is certainly incomplete.
+There are still important limitations, the following list is certainly incomplete.
 
-- Possible architectures: only x86 or amd64
-- Little-endian architectures: not supported
-- SIMD operations: not instrumented yet. 
+- Possible architectures: only x86 or amd64 (supporting little-endian architectures will need some refactoring)
+- SIMD operations: not fully instrumented yet. 
     You may be interested in disabling the feature at compile-time for the instrumented program
     with: gcc -mno-mmx -mno-sse -mno-sse2 -mno-sse3   (but remember sse is required for amd64!)    
 - 64bit long: only superficially tested...
+- Multi-threaded applications are not handled correctly
 - 8bit char: not instrumented (well, it is a decision)
-- Suppression mechanism: not supported
+- Error Suppression mechanism: not supported
 - docs/tests folder: not implemented yet
 - inherent limitations due to the "semantic distance" between source code
   and binary code: 
@@ -74,4 +73,4 @@ There are _many_ limitations, the following list is certainly incomplete.
   
 Any comment is welcome. Happy numerical problem sniffing!
 
-frederic.bapst@gmail.com
+Frederic Bapst 
