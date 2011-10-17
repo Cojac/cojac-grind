@@ -1,4 +1,4 @@
-#summary Cojac-grind User/Developper Guide
+#summary Cojac-grind User Guide
 *Contents*
 <wiki:toc max_depth="1"/>
 --------------------------------------------------
@@ -10,7 +10,7 @@ arithmetic. It is only available for x86 (32 and 64bits) platforms.
 
 Cojac-grind needs neither source code modification nor recompilation of your code (although it 
 is boosted if the target program contains debugging symbols).
-With COJAC you don't have to modify your source code or even recompile it. All the work is done at runtime and your application is not altered. 
+With Cojac-grind you don't have to modify your source code or even recompile it. All the work is done at runtime and your application is not altered. 
 
 Cojac-grind is configurable, you can specify which operations are to be watched, and whether you want
 a full stack trace in the warning messages. 
@@ -19,7 +19,7 @@ Cojac-grind is offered (without warranty of course) in the hope it can be useful
 as well as in the software industry. Any comment/feedback is welcome!
 
 It's a first prototype. No warranty at all. We offer a far better tool 
-for Java, named COJAC (https://code.google.com/p/cojac).
+for Java, named [https://code.google.com/p/cojac COJAC].
 
 --------------------------------------------------
 = 2. Download and build =
@@ -36,7 +36,7 @@ for Java, named COJAC (https://code.google.com/p/cojac).
 --------------------------------------------------
 = 3. What Cojac-grind considers suspicious= 
 
-Cojac-grind essentially takes the same principles of COJAC, and watches the following symptoms:
+Cojac-grind essentially takes the same principles of [https://code.google.com/p/cojac COJAC], and watches the following symptoms:
 
  * *Integer overflow*: the result is out-of-bounds for a 16/32/64bits integer arithmetic operation (not bit-shift operations). Examples: `3*INT_MAX, Integer.INT_MIN/-1`
  * *Smearing*:  adding/subtracting a non-zero floating point number has no effect because the two operands have excessively different orders of magnitude. Examples: `(342.0+1.0E-43), (342.0-1.0E+43)`
@@ -120,7 +120,7 @@ There are still important limitations, the following list is certainly incomplet
  
  * inherent limitations due to the "semantic distance" between source code and binary code: 
    * impossibility of distinguishing signed vs unsigned additions
-   * subtraction of a litteral sometimes translated as adding the complement litteral
+   * subtraction of a litteral sometimes translated as adding the complement literal
    * operations on long decomposed in several operations on int
    * Compile-time expressions can't be processed: {{{ a=(3*INT_MAX); }}}
    * Of course a suspicious operation is not always the manifestation of a software defect. For instance, you can rely on integer overflows to compute a hash function, or maybe cancellation phenomenon is not a problem because the floating point numbers you deal with do not suffer from imprecision.
