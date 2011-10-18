@@ -45,7 +45,7 @@ Cojac-grind essentially takes the same principles of [https://code.google.com/p/
  * *Questionable comparisons*: two floating point numbers are being compared, but they are very close together. Example: `if (3.000001f == 3.0f)...`
  * *Offending typecasting*: a value loses its essence after a type conversion. Examples: `(int) DBL_MAX, (int)NaN`
 
-The last two phenomena are not implemented yet. 
+The detectors for the last two phenomena are not implemented yet. 
 
 --------------------------------------------------
 = 4. Cojac-grind options =
@@ -120,7 +120,7 @@ There are still important limitations, the following list is certainly incomplet
  
  * inherent limitations due to the "semantic distance" between source code and binary code: 
    * impossibility of distinguishing signed vs unsigned additions
-   * subtraction of a litteral sometimes translated as adding the complement literal
+   * subtraction of a literal sometimes translated as adding the complement literal
    * operations on long decomposed in several operations on int
    * Compile-time expressions can't be processed: {{{ a=(3*INT_MAX); }}}
    * Of course a suspicious operation is not always the manifestation of a software defect. For instance, you can rely on integer overflows to compute a hash function, or maybe cancellation phenomenon is not a problem because the floating point numbers you deal with do not suffer from imprecision.
