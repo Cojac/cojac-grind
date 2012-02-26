@@ -128,6 +128,28 @@ There are still important limitations, the following list is certainly incomplet
   
 Any comment is welcome (use [http://groups.google.com/group/cojac-grind-discuss]).
 
+--------------------------------------------------
+= 6. Related work =
+
+We found that the idea of detecting integer overflows has been mentioned in the 
+Valgrind mailing list some years ago, but it didn't seem to have been 
+implemented. Very recently, we discovered that another research team has 
+explored a similar approach in 2009 (although we didn't find their 
+Valgrind prototype released as an open-source contribution):
+
+ P. Chen et al.: BRICK: A Binary Tool for Run-time Detecting and Locating Integer-based Vulnerability. In International Conference on Availability, Reliability and Security March 2009.
+
+The following 2011 article gives an interesting analysis of the prevalence 
+of the integer overflow problem, and proposes its own detection utility IOP
+(built as an extension of the clang compiler) : 
+
+  W. Dietz et al.: Understanding Integer Overflow in C/C++. October 2011
+
+Other interesting contributions include IntScope and RICH. 
+
+--------------------------------------------------
+
+
 Happy numerical problem sniffing!
 
 Frederic Bapst
