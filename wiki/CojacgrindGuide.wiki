@@ -129,7 +129,7 @@ There are still important limitations, the following list is certainly incomplet
 Any comment is welcome (use [http://groups.google.com/group/cojac-grind-discuss]).
 
 --------------------------------------------------
-= 6. Related work =
+= 7. Related work =
 
 We found that the idea of detecting integer overflows has been mentioned in the 
 Valgrind mailing list some years ago, but it didn't seem to have been 
