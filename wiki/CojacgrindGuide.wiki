@@ -21,6 +21,9 @@ as well as in the software industry. Any comment/feedback is welcome!
 It's a first prototype. No warranty at all. We offer a far better tool 
 for Java, named [https://code.google.com/p/cojac COJAC].
 
+The general concept of "numerical problem sniffer" is presented in our 
+[http://drdobbs.com/testing/232601564# article] published by Dr Dobb's.
+
 --------------------------------------------------
 = 2. Download and build =
 
