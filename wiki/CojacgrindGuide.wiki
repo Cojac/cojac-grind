@@ -4,7 +4,7 @@
 --------------------------------------------------
 = 1. Introduction = 
 
-Cojac-grind is a protoype Valgrind tool to detect integer overflows and floating points numbers anomalies
+Cojac-grind is a prototype Valgrind tool to detect integer overflows and floating points numbers anomalies
 in a Linux program. You can apply it on your own code to help uncover vicious bugs involving 
 arithmetic. It is only available for x86 (32 and 64bits) platforms.
 
@@ -39,7 +39,7 @@ The general concept of "numerical problem sniffer" is presented in our
 --------------------------------------------------
 = 3. What Cojac-grind considers suspicious= 
 
-Cojac-grind essentially takes the same principles of [https://code.google.com/p/cojac COJAC], and watches the following symptoms:
+Cojac-grind essentially takes the same principles as [https://code.google.com/p/cojac COJAC], and watches the following symptoms:
 
  * *Integer overflow*: the result is out-of-bounds for a 16/32/64bits integer arithmetic operation (not bit-shift operations). Examples: `3*INT_MAX, Integer.INT_MIN/-1`
  * *Smearing*:  adding/subtracting a non-zero floating point number has no effect because the two operands have excessively different orders of magnitude. Examples: `(342.0+1.0E-43), (342.0-1.0E+43)`
