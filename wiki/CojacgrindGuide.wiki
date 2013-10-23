@@ -33,7 +33,9 @@ The general concept of "numerical problem sniffer" is presented in our
 
   * You may want to integrate Cojac into an existing (newer) Valgrind release: 
     * copy the cojac folder into your valgrind source-code folder
+    * adapt configure.in (near the end): AC_CONFIG_FILES([ ... cojac/Makefile cojac/tests/Makefile ...
     * adapt valgrind/Makefile.am (beginning): TOOLS =	... cojac
+    * adapt valgrind/Makefile-tools.am: TOOL_LDADD_COMMON = -lgcc -lm 
     * configure, make, make install
 
 --------------------------------------------------
@@ -136,9 +138,9 @@ Any comment is welcome (use [http://groups.google.com/group/cojac-grind-discuss]
 
 We found that the idea of detecting integer overflows has been mentioned in the 
 Valgrind mailing list some years ago, but it didn't seem to have been 
-implemented. Very recently, we discovered that another research team has 
-explored a similar approach in 2009 (although we didn't find their 
-Valgrind prototype released as an open-source contribution):
+implemented. We discovered that other research teams have recently
+explored similar approaches (although we didn't find the corresponding prototypes 
+released as open-source contributions):
 
  P. Chen et al.: BRICK: A Binary Tool for Run-time Detecting and Locating Integer-based Vulnerability. In International Conference on Availability, Reliability and Security March 2009.
 
