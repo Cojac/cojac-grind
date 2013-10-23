@@ -138,9 +138,9 @@ Any comment is welcome (use [http://groups.google.com/group/cojac-grind-discuss]
 
 We found that the idea of detecting integer overflows has been mentioned in the 
 Valgrind mailing list some years ago, but it didn't seem to have been 
-implemented. We discovered that other research teams have recently
+implemented. We discovered later that other research teams have recently
 explored similar approaches (although we didn't find the corresponding prototypes 
-released as open-source contributions):
+released as open-source contributions, except for the last reference):
 
  * P. Chen et al.: BRICK: A Binary Tool for Run-time Detecting and Locating Integer-based Vulnerability. In International Conference on Availability, Reliability and Security March 2009.
 
@@ -153,6 +153,8 @@ released as open-source contributions):
  * M. O. Lam et al.: Dynamic floating-point cancellation detection, Parallel Computing Journal, 2013
  
  * D. An et al.: FPInst: Floating Point Error Analysis Using Dyninst, 2008
+ 
+ * M. Fröhlich: [http://valgrind.10908.n7.nabble.com/A-floating-point-trap-tool-td16681.html], 2009
  
 The following 2011 article gives an interesting analysis of the prevalence 
 of the integer overflow problem, and proposes its own detection utility IOP
