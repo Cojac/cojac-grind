@@ -142,13 +142,23 @@ implemented. We discovered that other research teams have recently
 explored similar approaches (although we didn't find the corresponding prototypes 
 released as open-source contributions):
 
- P. Chen et al.: BRICK: A Binary Tool for Run-time Detecting and Locating Integer-based Vulnerability. In International Conference on Availability, Reliability and Security March 2009.
+ * P. Chen et al.: BRICK: A Binary Tool for Run-time Detecting and Locating Integer-based Vulnerability. In International Conference on Availability, Reliability and Security March 2009.
 
+ * N. J. Meng et al.: Towards the Profiling of Scientific Software for Accuracy, 2011.
+ 
+ * F. Benz et al.: A Dynamic Program Analysis to find Floating-Point Accuracy Problems, PLDI'12, 2012
+ 
+ * A. W. Brown et al.: Profiling floating point value ranges for reconfigurable implementation, 2007
+
+ * M. O. Lam et al.: Dynamic floating-point cancellation detection, Parallel Computing Journal, 2013
+ 
+ * D. An et al.: FPInst: Floating Point Error Analysis Using Dyninst, 2008
+ 
 The following 2011 article gives an interesting analysis of the prevalence 
 of the integer overflow problem, and proposes its own detection utility IOP
 (built as an extension of the clang compiler) : 
 
-  W. Dietz et al.: Understanding Integer Overflow in C/C++. October 2011
+  * W. Dietz et al.: Understanding Integer Overflow in C/C++. October 2011
 
 Other interesting contributions include IntScope and RICH. 
 
