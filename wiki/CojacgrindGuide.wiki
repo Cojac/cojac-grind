@@ -39,7 +39,7 @@ The general concept of "numerical problem sniffer" is presented in our
     * configure, make, make install
 
 --------------------------------------------------
-= 3. What Cojac-grind considers suspicious= 
+= 3. What Cojac-grind considers suspicious = 
 
 Cojac-grind essentially takes the same principles as [https://code.google.com/p/cojac COJAC], and watches the following symptoms:
 
