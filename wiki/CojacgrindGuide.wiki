@@ -142,9 +142,9 @@ implemented. We discovered later that other research teams have recently
 explored similar approaches (although we didn't find the corresponding prototypes 
 released as open-source contributions, except for the last reference):
 
- * P. Chen et al.: BRICK: A Binary Tool for Run-time Detecting and Locating Integer-based Vulnerability. In International Conference on Availability, Reliability and Security March 2009.
+ * P. Chen et al.: BRICK: A Binary Tool for Run-time Detecting and Locating Integer-based Vulnerability. In International Conference on Availability, Reliability and Security, March 2009
 
- * N. J. Meng et al.: Towards the Profiling of Scientific Software for Accuracy, 2011.
+ * N. J. Meng et al.: Towards the Profiling of Scientific Software for Accuracy, 2011
  
  * F. Benz et al.: A Dynamic Program Analysis to find Floating-Point Accuracy Problems, PLDI'12, 2012
  
@@ -154,7 +154,7 @@ released as open-source contributions, except for the last reference):
  
  * D. An et al.: FPInst: Floating Point Error Analysis Using Dyninst, 2008
  
- * M. Fröhlich: [http://valgrind.10908.n7.nabble.com/A-floating-point-trap-tool-td16681.html], 2009
+ * M. Froehlich: [http://valgrind.10908.n7.nabble.com/A-floating-point-trap-tool-td16681.html], 2009
  
 The following 2011 article gives an interesting analysis of the prevalence 
 of the integer overflow problem, and proposes its own detection utility IOP
