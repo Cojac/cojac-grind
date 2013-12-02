@@ -88,12 +88,12 @@ am__append_4 = \
 am__append_5 = \
   annotate_trace_memory
 
-#am__append_6 = \
-#  annotate_smart_pointer \
-#  tsan_unittest
+am__append_6 = \
+  annotate_smart_pointer \
+  tsan_unittest
 
-#am__append_7 = \
-#  std_thread
+am__append_7 = \
+  std_thread
 
 am__append_8 = omp_matinv omp_prime omp_printf
 am__append_9 = matinv pth_barrier pth_barrier_race pth_barrier_reinit \
@@ -117,11 +117,11 @@ am__EXEEXT_2 = annotate_barrier$(EXEEXT) \
 	circular_buffer$(EXEEXT)
 am__EXEEXT_3 =  \
 	annotate_trace_memory$(EXEEXT)
-#am__EXEEXT_4 =  \
-#	annotate_smart_pointer$(EXEEXT) \
-#	tsan_unittest$(EXEEXT)
-#am__EXEEXT_5 =  \
-#	std_thread$(EXEEXT)
+am__EXEEXT_4 =  \
+	annotate_smart_pointer$(EXEEXT) \
+	tsan_unittest$(EXEEXT)
+am__EXEEXT_5 =  \
+	std_thread$(EXEEXT)
 am__EXEEXT_6 = omp_matinv$(EXEEXT) \
 	omp_prime$(EXEEXT) omp_printf$(EXEEXT)
 am__EXEEXT_7 = matinv$(EXEEXT) \
@@ -440,12 +440,12 @@ HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/fred/workspace/cogrind-gitlab/missing --run aclocal-1.11
-AMTAR = ${SHELL} /home/fred/workspace/cogrind-gitlab/missing --run tar
+ACLOCAL = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run aclocal-1.11
+AMTAR = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run tar
 AR = /usr/bin/ar
-AUTOCONF = ${SHELL} /home/fred/workspace/cogrind-gitlab/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/fred/workspace/cogrind-gitlab/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/fred/workspace/cogrind-gitlab/missing --run automake-1.11
+AUTOCONF = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run automake-1.11
 AWK = mawk
 BOOST_CFLAGS = 
 BOOST_LIBS = 
@@ -459,7 +459,7 @@ CFLAGS_MPI = -g -O -fno-omit-frame-pointer -Wall -fpic
 CPP = gcc -E
 CPPFLAGS = 
 CXX = g++
-CXXDEPMODE = depmode=none
+CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -Wno-long-long  -Wno-pointer-sign -fno-stack-protector
 CYGPATH_W = echo
 DEFAULT_SUPP = exp-sgcheck.supp xfree-3.supp xfree-4.supp glibc-2.X-drd.supp glibc-2.34567-NPTL-helgrind.supp glibc-2.X.supp 
@@ -472,7 +472,7 @@ ECHO_T =
 EGREP = /bin/grep -E
 EXEEXT = 
 FLAG_FNO_STACK_PROTECTOR = -fno-stack-protector
-FLAG_M32 = -m32
+FLAG_M32 = 
 FLAG_M64 = -m64
 FLAG_MMMX = -mmmx
 FLAG_MSSE = -msse
@@ -484,8 +484,8 @@ FLAG_W_NO_FORMAT_ZERO_LENGTH = -Wno-format-zero-length
 FLAG_W_NO_NONNULL = -Wno-nonnull
 FLAG_W_NO_OVERFLOW = -Wno-overflow
 FLAG_W_NO_UNINITIALIZED = -Wno-uninitialized
-GDB = /usr/bin/gdb
-GLIBC_VERSION = 2.13
+GDB = /no/gdb/was/found/at/configure/time
+GLIBC_VERSION = 2.17
 GREP = /bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
@@ -499,7 +499,7 @@ LIBS =
 LN_S = ln -s
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} /home/fred/workspace/cogrind-gitlab/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 MPI_CC = mpicc
 OBJEXT = o
@@ -527,12 +527,12 @@ VGCONF_OS = linux
 VGCONF_PLATFORM_PRI_CAPS = AMD64_LINUX
 VGCONF_PLATFORM_SEC_CAPS = 
 VGCONF_PLATVARIANT = vanilla
-abs_builddir = /home/fred/workspace/cogrind-gitlab/drd/tests
-abs_srcdir = /home/fred/workspace/cogrind-gitlab/drd/tests
-abs_top_builddir = /home/fred/workspace/cogrind-gitlab
-abs_top_srcdir = /home/fred/workspace/cogrind-gitlab
+abs_builddir = /home/flub/git/cojac-grind/cogrind-gitlab/drd/tests
+abs_srcdir = /home/flub/git/cojac-grind/cogrind-gitlab/drd/tests
+abs_top_builddir = /home/flub/git/cojac-grind/cogrind-gitlab
+abs_top_srcdir = /home/flub/git/cojac-grind/cogrind-gitlab
 ac_ct_CC = gcc
-ac_ct_CXX = 
+ac_ct_CXX = g++
 am__include = include
 am__leading_dot = .
 am__quote = 
@@ -558,7 +558,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/fred/workspace/cogrind-gitlab/install-sh
+install_sh = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -635,27 +635,27 @@ AM_CPPFLAGS_AMD64_LINUX = \
 #	-DVGP__linux=1 \
 #	-DVGPV__linux_vanilla=1
 
-AM_FLAG_M3264_X86_LINUX = -m32
-AM_CFLAGS_X86_LINUX = -m32   \
+AM_FLAG_M3264_X86_LINUX = 
+AM_CFLAGS_X86_LINUX =    \
 				$(AM_CFLAGS_BASE) -fomit-frame-pointer
 
-AM_CCASFLAGS_X86_LINUX = -m32 -g
+AM_CCASFLAGS_X86_LINUX =  -g
 AM_FLAG_M3264_AMD64_LINUX = -m64
 AM_CFLAGS_AMD64_LINUX = -m64  \
 				$(AM_CFLAGS_BASE) -fomit-frame-pointer
 
 AM_CCASFLAGS_AMD64_LINUX = -m64 -g
-AM_FLAG_M3264_PPC32_LINUX = -m32
-AM_CFLAGS_PPC32_LINUX = -m32 $(AM_CFLAGS_BASE)
-AM_CCASFLAGS_PPC32_LINUX = -m32 -g
+AM_FLAG_M3264_PPC32_LINUX = 
+AM_CFLAGS_PPC32_LINUX =  $(AM_CFLAGS_BASE)
+AM_CCASFLAGS_PPC32_LINUX =  -g
 AM_FLAG_M3264_PPC64_LINUX = -m64
 AM_CFLAGS_PPC64_LINUX = -m64 $(AM_CFLAGS_BASE)
 AM_CCASFLAGS_PPC64_LINUX = -m64 -g
-AM_FLAG_M3264_ARM_LINUX = -m32
-AM_CFLAGS_ARM_LINUX = -m32  \
+AM_FLAG_M3264_ARM_LINUX = 
+AM_CFLAGS_ARM_LINUX =   \
 			 	$(AM_CFLAGS_BASE) -marm -mcpu=cortex-a8
 
-AM_CCASFLAGS_ARM_LINUX = -m32 \
+AM_CCASFLAGS_ARM_LINUX =  \
 				-marm -mcpu=cortex-a8 -g
 
 AM_FLAG_M3264_X86_DARWIN = -arch i386
@@ -672,9 +672,9 @@ AM_CCASFLAGS_AMD64_DARWIN = -arch x86_64 -g
 AM_FLAG_M3264_S390X_LINUX = -m64
 AM_CFLAGS_S390X_LINUX = -m64 $(AM_CFLAGS_BASE) -fomit-frame-pointer
 AM_CCASFLAGS_S390X_LINUX = -m64 -g -mzarch -march=z900
-AM_FLAG_M3264_MIPS32_LINUX = -m32
-AM_CFLAGS_MIPS32_LINUX = -m32 $(AM_CFLAGS_BASE) -mips32
-AM_CCASFLAGS_MIPS32_LINUX = -m32 -mips32 -g
+AM_FLAG_M3264_MIPS32_LINUX = 
+AM_CFLAGS_MIPS32_LINUX =  $(AM_CFLAGS_BASE) -mips32
+AM_CCASFLAGS_MIPS32_LINUX =  -mips32 -g
 
 # Flags for the primary target.  These must be used to build the
 # regtests and performance tests.  In fact, these must be used to
@@ -692,15 +692,15 @@ AM_FLAG_M3264_SEC =
 PRELOAD_LDFLAGS_COMMON_LINUX = -nodefaultlibs -shared \
 	-Wl,-z,interpose,-z,initfirst $(am__append_1)
 PRELOAD_LDFLAGS_COMMON_DARWIN = -dynamic -dynamiclib -all_load
-PRELOAD_LDFLAGS_X86_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m32
+PRELOAD_LDFLAGS_X86_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) 
 PRELOAD_LDFLAGS_AMD64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m64
-PRELOAD_LDFLAGS_PPC32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m32
+PRELOAD_LDFLAGS_PPC32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) 
 PRELOAD_LDFLAGS_PPC64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m64
-PRELOAD_LDFLAGS_ARM_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m32
+PRELOAD_LDFLAGS_ARM_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) 
 PRELOAD_LDFLAGS_X86_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch i386
 PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m64
-PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m32
+PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include \
 	-I$(top_srcdir)/coregrind -I$(top_builddir)/include \
 	-I$(top_srcdir)/VEX/pub -DVGA_amd64=1 \
@@ -1418,60 +1418,60 @@ unit_vc-unit_vc.obj: unit_vc.c
 #	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(unit_vc_CFLAGS) $(CFLAGS) -c -o unit_vc-unit_vc.obj `if test -f 'unit_vc.c'; then $(CYGPATH_W) 'unit_vc.c'; else $(CYGPATH_W) '$(srcdir)/unit_vc.c'; fi`
 
 .cpp.o:
-#	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-#	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-	source='$<' object='$@' libtool=no \
-	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-	$(CXXCOMPILE) -c -o $@ $<
+	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+#	source='$<' object='$@' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
-#	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-#	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-	source='$<' object='$@' libtool=no \
-	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+#	source='$<' object='$@' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 boost_thread-boost_thread.o: boost_thread.cpp
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(boost_thread_CXXFLAGS) $(CXXFLAGS) -MT boost_thread-boost_thread.o -MD -MP -MF $(DEPDIR)/boost_thread-boost_thread.Tpo -c -o boost_thread-boost_thread.o `test -f 'boost_thread.cpp' || echo '$(srcdir)/'`boost_thread.cpp
-#	$(am__mv) $(DEPDIR)/boost_thread-boost_thread.Tpo $(DEPDIR)/boost_thread-boost_thread.Po
-	source='boost_thread.cpp' object='boost_thread-boost_thread.o' libtool=no \
-	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(boost_thread_CXXFLAGS) $(CXXFLAGS) -c -o boost_thread-boost_thread.o `test -f 'boost_thread.cpp' || echo '$(srcdir)/'`boost_thread.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(boost_thread_CXXFLAGS) $(CXXFLAGS) -MT boost_thread-boost_thread.o -MD -MP -MF $(DEPDIR)/boost_thread-boost_thread.Tpo -c -o boost_thread-boost_thread.o `test -f 'boost_thread.cpp' || echo '$(srcdir)/'`boost_thread.cpp
+	$(am__mv) $(DEPDIR)/boost_thread-boost_thread.Tpo $(DEPDIR)/boost_thread-boost_thread.Po
+#	source='boost_thread.cpp' object='boost_thread-boost_thread.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(boost_thread_CXXFLAGS) $(CXXFLAGS) -c -o boost_thread-boost_thread.o `test -f 'boost_thread.cpp' || echo '$(srcdir)/'`boost_thread.cpp
 
 boost_thread-boost_thread.obj: boost_thread.cpp
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(boost_thread_CXXFLAGS) $(CXXFLAGS) -MT boost_thread-boost_thread.obj -MD -MP -MF $(DEPDIR)/boost_thread-boost_thread.Tpo -c -o boost_thread-boost_thread.obj `if test -f 'boost_thread.cpp'; then $(CYGPATH_W) 'boost_thread.cpp'; else $(CYGPATH_W) '$(srcdir)/boost_thread.cpp'; fi`
-#	$(am__mv) $(DEPDIR)/boost_thread-boost_thread.Tpo $(DEPDIR)/boost_thread-boost_thread.Po
-	source='boost_thread.cpp' object='boost_thread-boost_thread.obj' libtool=no \
-	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(boost_thread_CXXFLAGS) $(CXXFLAGS) -c -o boost_thread-boost_thread.obj `if test -f 'boost_thread.cpp'; then $(CYGPATH_W) 'boost_thread.cpp'; else $(CYGPATH_W) '$(srcdir)/boost_thread.cpp'; fi`
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(boost_thread_CXXFLAGS) $(CXXFLAGS) -MT boost_thread-boost_thread.obj -MD -MP -MF $(DEPDIR)/boost_thread-boost_thread.Tpo -c -o boost_thread-boost_thread.obj `if test -f 'boost_thread.cpp'; then $(CYGPATH_W) 'boost_thread.cpp'; else $(CYGPATH_W) '$(srcdir)/boost_thread.cpp'; fi`
+	$(am__mv) $(DEPDIR)/boost_thread-boost_thread.Tpo $(DEPDIR)/boost_thread-boost_thread.Po
+#	source='boost_thread.cpp' object='boost_thread-boost_thread.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(boost_thread_CXXFLAGS) $(CXXFLAGS) -c -o boost_thread-boost_thread.obj `if test -f 'boost_thread.cpp'; then $(CYGPATH_W) 'boost_thread.cpp'; else $(CYGPATH_W) '$(srcdir)/boost_thread.cpp'; fi`
 
 std_thread-std_thread.o: std_thread.cpp
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(std_thread_CXXFLAGS) $(CXXFLAGS) -MT std_thread-std_thread.o -MD -MP -MF $(DEPDIR)/std_thread-std_thread.Tpo -c -o std_thread-std_thread.o `test -f 'std_thread.cpp' || echo '$(srcdir)/'`std_thread.cpp
-#	$(am__mv) $(DEPDIR)/std_thread-std_thread.Tpo $(DEPDIR)/std_thread-std_thread.Po
-	source='std_thread.cpp' object='std_thread-std_thread.o' libtool=no \
-	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(std_thread_CXXFLAGS) $(CXXFLAGS) -c -o std_thread-std_thread.o `test -f 'std_thread.cpp' || echo '$(srcdir)/'`std_thread.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(std_thread_CXXFLAGS) $(CXXFLAGS) -MT std_thread-std_thread.o -MD -MP -MF $(DEPDIR)/std_thread-std_thread.Tpo -c -o std_thread-std_thread.o `test -f 'std_thread.cpp' || echo '$(srcdir)/'`std_thread.cpp
+	$(am__mv) $(DEPDIR)/std_thread-std_thread.Tpo $(DEPDIR)/std_thread-std_thread.Po
+#	source='std_thread.cpp' object='std_thread-std_thread.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(std_thread_CXXFLAGS) $(CXXFLAGS) -c -o std_thread-std_thread.o `test -f 'std_thread.cpp' || echo '$(srcdir)/'`std_thread.cpp
 
 std_thread-std_thread.obj: std_thread.cpp
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(std_thread_CXXFLAGS) $(CXXFLAGS) -MT std_thread-std_thread.obj -MD -MP -MF $(DEPDIR)/std_thread-std_thread.Tpo -c -o std_thread-std_thread.obj `if test -f 'std_thread.cpp'; then $(CYGPATH_W) 'std_thread.cpp'; else $(CYGPATH_W) '$(srcdir)/std_thread.cpp'; fi`
-#	$(am__mv) $(DEPDIR)/std_thread-std_thread.Tpo $(DEPDIR)/std_thread-std_thread.Po
-	source='std_thread.cpp' object='std_thread-std_thread.obj' libtool=no \
-	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(std_thread_CXXFLAGS) $(CXXFLAGS) -c -o std_thread-std_thread.obj `if test -f 'std_thread.cpp'; then $(CYGPATH_W) 'std_thread.cpp'; else $(CYGPATH_W) '$(srcdir)/std_thread.cpp'; fi`
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(std_thread_CXXFLAGS) $(CXXFLAGS) -MT std_thread-std_thread.obj -MD -MP -MF $(DEPDIR)/std_thread-std_thread.Tpo -c -o std_thread-std_thread.obj `if test -f 'std_thread.cpp'; then $(CYGPATH_W) 'std_thread.cpp'; else $(CYGPATH_W) '$(srcdir)/std_thread.cpp'; fi`
+	$(am__mv) $(DEPDIR)/std_thread-std_thread.Tpo $(DEPDIR)/std_thread-std_thread.Po
+#	source='std_thread.cpp' object='std_thread-std_thread.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(std_thread_CXXFLAGS) $(CXXFLAGS) -c -o std_thread-std_thread.obj `if test -f 'std_thread.cpp'; then $(CYGPATH_W) 'std_thread.cpp'; else $(CYGPATH_W) '$(srcdir)/std_thread.cpp'; fi`
 
 tsan_unittest-tsan_unittest.o: tsan_unittest.cpp
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tsan_unittest_CXXFLAGS) $(CXXFLAGS) -MT tsan_unittest-tsan_unittest.o -MD -MP -MF $(DEPDIR)/tsan_unittest-tsan_unittest.Tpo -c -o tsan_unittest-tsan_unittest.o `test -f 'tsan_unittest.cpp' || echo '$(srcdir)/'`tsan_unittest.cpp
-#	$(am__mv) $(DEPDIR)/tsan_unittest-tsan_unittest.Tpo $(DEPDIR)/tsan_unittest-tsan_unittest.Po
-	source='tsan_unittest.cpp' object='tsan_unittest-tsan_unittest.o' libtool=no \
-	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tsan_unittest_CXXFLAGS) $(CXXFLAGS) -c -o tsan_unittest-tsan_unittest.o `test -f 'tsan_unittest.cpp' || echo '$(srcdir)/'`tsan_unittest.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tsan_unittest_CXXFLAGS) $(CXXFLAGS) -MT tsan_unittest-tsan_unittest.o -MD -MP -MF $(DEPDIR)/tsan_unittest-tsan_unittest.Tpo -c -o tsan_unittest-tsan_unittest.o `test -f 'tsan_unittest.cpp' || echo '$(srcdir)/'`tsan_unittest.cpp
+	$(am__mv) $(DEPDIR)/tsan_unittest-tsan_unittest.Tpo $(DEPDIR)/tsan_unittest-tsan_unittest.Po
+#	source='tsan_unittest.cpp' object='tsan_unittest-tsan_unittest.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tsan_unittest_CXXFLAGS) $(CXXFLAGS) -c -o tsan_unittest-tsan_unittest.o `test -f 'tsan_unittest.cpp' || echo '$(srcdir)/'`tsan_unittest.cpp
 
 tsan_unittest-tsan_unittest.obj: tsan_unittest.cpp
-#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tsan_unittest_CXXFLAGS) $(CXXFLAGS) -MT tsan_unittest-tsan_unittest.obj -MD -MP -MF $(DEPDIR)/tsan_unittest-tsan_unittest.Tpo -c -o tsan_unittest-tsan_unittest.obj `if test -f 'tsan_unittest.cpp'; then $(CYGPATH_W) 'tsan_unittest.cpp'; else $(CYGPATH_W) '$(srcdir)/tsan_unittest.cpp'; fi`
-#	$(am__mv) $(DEPDIR)/tsan_unittest-tsan_unittest.Tpo $(DEPDIR)/tsan_unittest-tsan_unittest.Po
-	source='tsan_unittest.cpp' object='tsan_unittest-tsan_unittest.obj' libtool=no \
-	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tsan_unittest_CXXFLAGS) $(CXXFLAGS) -c -o tsan_unittest-tsan_unittest.obj `if test -f 'tsan_unittest.cpp'; then $(CYGPATH_W) 'tsan_unittest.cpp'; else $(CYGPATH_W) '$(srcdir)/tsan_unittest.cpp'; fi`
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tsan_unittest_CXXFLAGS) $(CXXFLAGS) -MT tsan_unittest-tsan_unittest.obj -MD -MP -MF $(DEPDIR)/tsan_unittest-tsan_unittest.Tpo -c -o tsan_unittest-tsan_unittest.obj `if test -f 'tsan_unittest.cpp'; then $(CYGPATH_W) 'tsan_unittest.cpp'; else $(CYGPATH_W) '$(srcdir)/tsan_unittest.cpp'; fi`
+	$(am__mv) $(DEPDIR)/tsan_unittest-tsan_unittest.Tpo $(DEPDIR)/tsan_unittest-tsan_unittest.Po
+#	source='tsan_unittest.cpp' object='tsan_unittest-tsan_unittest.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tsan_unittest_CXXFLAGS) $(CXXFLAGS) -c -o tsan_unittest-tsan_unittest.obj `if test -f 'tsan_unittest.cpp'; then $(CYGPATH_W) 'tsan_unittest.cpp'; else $(CYGPATH_W) '$(srcdir)/tsan_unittest.cpp'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
