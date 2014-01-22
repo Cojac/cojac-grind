@@ -148,9 +148,9 @@ released as open-source contributions, except for the last reference):
  
  * F. Benz et al.: A Dynamic Program Analysis to find Floating-Point Accuracy Problems, PLDI'12, 2012. [https://github.com/fbenz/FpDebug]
  
- * A. W. Brown et al.: Profiling floating point value ranges for reconfigurable implementation, 2007
+ * A. W. Brown et al.: Profiling floating point value ranges for reconfigurable implementation, 2007. [http://www.ashleybrown.co.uk/wordpress/wp-content/uploads/2010/09/THESIS-FINAL.pdf]
 
- * M. O. Lam et al.: Dynamic floating-point cancellation detection, Parallel Computing Journal, 2013
+ * M. O. Lam et al.: Dynamic floating-point cancellation detection, Parallel Computing Journal, 2013. 
  
  * D. An et al.: FPInst: Floating Point Error Analysis Using Dyninst, 2008
  
