@@ -142,11 +142,11 @@ implemented. We discovered later that other research teams have recently
 explored similar approaches (although we didn't find the corresponding prototypes 
 released as open-source contributions, except for the last reference):
 
- * P. Chen et al.: BRICK: A Binary Tool for Run-time Detecting and Locating Integer-based Vulnerability. In International Conference on Availability, Reliability and Security, March 2009
+ * P. Chen et al.: BRICK: A Binary Tool for Run-time Detecting and Locating Integer-based Vulnerability. In International Conference on Availability, Reliability and Security, March 2009.
 
  * N. J. Meng et al.: Towards the Profiling of Scientific Software for Accuracy, 2011
  
- * F. Benz et al.: A Dynamic Program Analysis to find Floating-Point Accuracy Problems, PLDI'12, 2012
+ * F. Benz et al.: A Dynamic Program Analysis to find Floating-Point Accuracy Problems, PLDI'12, 2012. [https://github.com/fbenz/FpDebug]
  
  * A. W. Brown et al.: Profiling floating point value ranges for reconfigurable implementation, 2007
 
