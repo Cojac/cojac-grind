@@ -1,0 +1,2857 @@
+   1              		.file	"HelloCojac.c"
+   9              	.Ltext0:
+  11              	longFromDouble:
+  12              	.LFB0:
+  13              		.file 1 "HelloCojac.c"
+   1:HelloCojac.c  **** /*
+   2:HelloCojac.c  ****  ============================================================================
+   3:HelloCojac.c  ****  Name        : HelloCojac.c
+   4:HelloCojac.c  ****  Author      : 
+   5:HelloCojac.c  ****  Version     :
+   6:HelloCojac.c  ****  Copyright   : Your copyright notice
+   7:HelloCojac.c  ****  Description : Hello World in C, Ansi-style
+   8:HelloCojac.c  ****  ============================================================================
+   9:HelloCojac.c  ****  */
+  10:HelloCojac.c  **** 
+  11:HelloCojac.c  **** #include <limits.h>
+  12:HelloCojac.c  **** 
+  13:HelloCojac.c  **** #include <stdio.h>
+  14:HelloCojac.c  **** #include <string.h>
+  15:HelloCojac.c  **** #include <stdlib.h>
+  16:HelloCojac.c  **** #include <stdint.h>
+  17:HelloCojac.c  **** #include <float.h>
+  18:HelloCojac.c  **** #include <math.h>
+  19:HelloCojac.c  **** #include <inttypes.h>
+  20:HelloCojac.c  **** 
+  21:HelloCojac.c  **** //*--------------------------------------------------------------------*/
+  22:HelloCojac.c  **** typedef double Double;
+  23:HelloCojac.c  **** typedef float  Float;
+  24:HelloCojac.c  **** typedef uint64_t ULong;
+  25:HelloCojac.c  **** typedef  int64_t  Long;
+  26:HelloCojac.c  **** typedef uint32_t UInt;
+  27:HelloCojac.c  **** typedef  int32_t  Int;
+  28:HelloCojac.c  **** typedef uint16_t UShort;
+  29:HelloCojac.c  **** typedef  int16_t  Short;
+  30:HelloCojac.c  **** typedef unsigned char UChar;
+  31:HelloCojac.c  **** typedef   signed char  Char;
+  32:HelloCojac.c  **** 
+  33:HelloCojac.c  **** 
+  34:HelloCojac.c  **** typedef union {
+  35:HelloCojac.c  ****   UChar u;
+  36:HelloCojac.c  ****   Char  s;
+  37:HelloCojac.c  **** } mix8_t;
+  38:HelloCojac.c  **** 
+  39:HelloCojac.c  **** typedef union {
+  40:HelloCojac.c  ****   UShort u;
+  41:HelloCojac.c  ****   Short  s;
+  42:HelloCojac.c  ****   struct {
+  43:HelloCojac.c  ****     mix8_t h2;
+  44:HelloCojac.c  ****     mix8_t h1;
+  45:HelloCojac.c  ****   } halves;
+  46:HelloCojac.c  **** } mix16_t;
+  47:HelloCojac.c  **** 
+  48:HelloCojac.c  **** typedef union {
+  49:HelloCojac.c  ****   UInt  u;
+  50:HelloCojac.c  ****   Int   s;
+  51:HelloCojac.c  ****   Float f;
+  52:HelloCojac.c  ****   struct {
+  53:HelloCojac.c  ****     mix16_t h2;
+  54:HelloCojac.c  ****     mix16_t h1;
+  55:HelloCojac.c  ****   } halves;
+  56:HelloCojac.c  **** } mix32_t;
+  57:HelloCojac.c  **** 
+  58:HelloCojac.c  **** typedef union {
+  59:HelloCojac.c  ****   ULong   u;
+  60:HelloCojac.c  ****   Long    s;
+  61:HelloCojac.c  ****   Double  f;
+  62:HelloCojac.c  ****   struct {
+  63:HelloCojac.c  ****     mix32_t h2;
+  64:HelloCojac.c  ****     mix32_t h1;
+  65:HelloCojac.c  ****   } halves;
+  66:HelloCojac.c  **** } mix64_t;
+  67:HelloCojac.c  **** 
+  68:HelloCojac.c  **** 
+  69:HelloCojac.c  **** 
+  70:HelloCojac.c  **** //------------- 64 <--> 64
+  71:HelloCojac.c  **** static ULong longFromDouble(Double d) {
+  14              		.loc 1 71 0
+  15              		.cfi_startproc
+  16 0000 55       		pushq	%rbp
+  17              	.LCFI0:
+  18              		.cfi_def_cfa_offset 16
+  19 0001 4889E5   		movq	%rsp, %rbp
+  20              		.cfi_offset 6, -16
+  21              	.LCFI1:
+  22              		.cfi_def_cfa_register 6
+  23 0004 0F1345E8 		movlps	%xmm0, -24(%rbp)
+  72:HelloCojac.c  ****   mix64_t m; m.f=d; return m.u;
+  24              		.loc 1 72 0
+  25 0008 488B45E8 		movq	-24(%rbp), %rax
+  26 000c 488945F0 		movq	%rax, -16(%rbp)
+  27 0010 488B45F0 		movq	-16(%rbp), %rax
+  73:HelloCojac.c  **** }
+  28              		.loc 1 73 0
+  29 0014 C9       		leave
+  30              	.LCFI2:
+  31              		.cfi_def_cfa 7, 8
+  32 0015 C3       		ret
+  33              		.cfi_endproc
+  34              	.LFE0:
+  37              	doubleFromLong:
+  38              	.LFB1:
+  74:HelloCojac.c  **** static double doubleFromLong(ULong l) {
+  39              		.loc 1 74 0
+  40              		.cfi_startproc
+  41 0016 55       		pushq	%rbp
+  42              	.LCFI3:
+  43              		.cfi_def_cfa_offset 16
+  44 0017 4889E5   		movq	%rsp, %rbp
+  45              		.cfi_offset 6, -16
+  46              	.LCFI4:
+  47              		.cfi_def_cfa_register 6
+  48 001a 48897DE8 		movq	%rdi, -24(%rbp)
+  75:HelloCojac.c  ****   mix64_t m; m.u=l; return m.f;
+  49              		.loc 1 75 0
+  50 001e 488B45E8 		movq	-24(%rbp), %rax
+  51 0022 488945F0 		movq	%rax, -16(%rbp)
+  52 0026 488B45F0 		movq	-16(%rbp), %rax
+  53 002a 488945D8 		movq	%rax, -40(%rbp)
+  54 002e 0F1245D8 		movlps	-40(%rbp), %xmm0
+  76:HelloCojac.c  **** }
+  55              		.loc 1 76 0
+  56 0032 C9       		leave
+  57              	.LCFI5:
+  58              		.cfi_def_cfa 7, 8
+  59 0033 C3       		ret
+  60              		.cfi_endproc
+  61              	.LFE1:
+  64              	uintFromInt:
+  65              	.LFB2:
+  77:HelloCojac.c  **** //------------- 32 <--> 32
+  78:HelloCojac.c  **** static UInt uintFromInt(Int s) {
+  66              		.loc 1 78 0
+  67              		.cfi_startproc
+  68 0034 55       		pushq	%rbp
+  69              	.LCFI6:
+  70              		.cfi_def_cfa_offset 16
+  71 0035 4889E5   		movq	%rsp, %rbp
+  72              		.cfi_offset 6, -16
+  73              	.LCFI7:
+  74              		.cfi_def_cfa_register 6
+  75 0038 897DEC   		movl	%edi, -20(%rbp)
+  79:HelloCojac.c  ****   mix32_t m; m.s=s; return m.u;
+  76              		.loc 1 79 0
+  77 003b 8B45EC   		movl	-20(%rbp), %eax
+  78 003e 8945F0   		movl	%eax, -16(%rbp)
+  79 0041 8B45F0   		movl	-16(%rbp), %eax
+  80:HelloCojac.c  **** }
+  80              		.loc 1 80 0
+  81 0044 C9       		leave
+  82              	.LCFI8:
+  83              		.cfi_def_cfa 7, 8
+  84 0045 C3       		ret
+  85              		.cfi_endproc
+  86              	.LFE2:
+  89              	intFromUInt:
+  90              	.LFB3:
+  81:HelloCojac.c  **** static Int intFromUInt(UInt u) {
+  91              		.loc 1 81 0
+  92              		.cfi_startproc
+  93 0046 55       		pushq	%rbp
+  94              	.LCFI9:
+  95              		.cfi_def_cfa_offset 16
+  96 0047 4889E5   		movq	%rsp, %rbp
+  97              		.cfi_offset 6, -16
+  98              	.LCFI10:
+  99              		.cfi_def_cfa_register 6
+ 100 004a 897DEC   		movl	%edi, -20(%rbp)
+  82:HelloCojac.c  ****   mix32_t m; m.u=u; return m.s;
+ 101              		.loc 1 82 0
+ 102 004d 8B45EC   		movl	-20(%rbp), %eax
+ 103 0050 8945F0   		movl	%eax, -16(%rbp)
+ 104 0053 8B45F0   		movl	-16(%rbp), %eax
+  83:HelloCojac.c  **** }
+ 105              		.loc 1 83 0
+ 106 0056 C9       		leave
+ 107              	.LCFI11:
+ 108              		.cfi_def_cfa 7, 8
+ 109 0057 C3       		ret
+ 110              		.cfi_endproc
+ 111              	.LFE3:
+ 114              	floatFromInt:
+ 115              	.LFB4:
+  84:HelloCojac.c  **** static Float floatFromInt(Int i) {
+ 116              		.loc 1 84 0
+ 117              		.cfi_startproc
+ 118 0058 55       		pushq	%rbp
+ 119              	.LCFI12:
+ 120              		.cfi_def_cfa_offset 16
+ 121 0059 4889E5   		movq	%rsp, %rbp
+ 122              		.cfi_offset 6, -16
+ 123              	.LCFI13:
+ 124              		.cfi_def_cfa_register 6
+ 125 005c 897DEC   		movl	%edi, -20(%rbp)
+  85:HelloCojac.c  ****   mix32_t m; m.s=i; return m.f;
+ 126              		.loc 1 85 0
+ 127 005f 8B45EC   		movl	-20(%rbp), %eax
+ 128 0062 8945F0   		movl	%eax, -16(%rbp)
+ 129 0065 8B45F0   		movl	-16(%rbp), %eax
+ 130 0068 8945DC   		movl	%eax, -36(%rbp)
+ 131 006b F30F1045 		movss	-36(%rbp), %xmm0
+ 131      DC
+  86:HelloCojac.c  **** }
+ 132              		.loc 1 86 0
+ 133 0070 C9       		leave
+ 134              	.LCFI14:
+ 135              		.cfi_def_cfa 7, 8
+ 136 0071 C3       		ret
+ 137              		.cfi_endproc
+ 138              	.LFE4:
+ 141              	longFromTwoUInts:
+ 142              	.LFB5:
+  87:HelloCojac.c  **** //------------- 32 <--> 64
+  88:HelloCojac.c  **** static ULong longFromTwoUInts(UInt a, UInt b) {
+ 143              		.loc 1 88 0
+ 144              		.cfi_startproc
+ 145 0072 55       		pushq	%rbp
+ 146              	.LCFI15:
+ 147              		.cfi_def_cfa_offset 16
+ 148 0073 4889E5   		movq	%rsp, %rbp
+ 149              		.cfi_offset 6, -16
+ 150              	.LCFI16:
+ 151              		.cfi_def_cfa_register 6
+ 152 0076 897DEC   		movl	%edi, -20(%rbp)
+ 153 0079 8975E8   		movl	%esi, -24(%rbp)
+  89:HelloCojac.c  ****   ULong c= a;
+ 154              		.loc 1 89 0
+ 155 007c 8B45EC   		mov	-20(%rbp), %eax
+ 156 007f 488945F8 		movq	%rax, -8(%rbp)
+  90:HelloCojac.c  ****   c = (c<<32) | b;
+ 157              		.loc 1 90 0
+ 158 0083 488B45F8 		movq	-8(%rbp), %rax
+ 159 0087 4889C2   		movq	%rax, %rdx
+ 160 008a 48C1E220 		salq	$32, %rdx
+ 161 008e 8B45E8   		mov	-24(%rbp), %eax
+ 162 0091 4809D0   		orq	%rdx, %rax
+ 163 0094 488945F8 		movq	%rax, -8(%rbp)
+  91:HelloCojac.c  ****   return c;
+ 164              		.loc 1 91 0
+ 165 0098 488B45F8 		movq	-8(%rbp), %rax
+  92:HelloCojac.c  **** }
+ 166              		.loc 1 92 0
+ 167 009c C9       		leave
+ 168              	.LCFI17:
+ 169              		.cfi_def_cfa 7, 8
+ 170 009d C3       		ret
+ 171              		.cfi_endproc
+ 172              	.LFE5:
+ 175              	longFromTwoUInts_New:
+ 176              	.LFB6:
+  93:HelloCojac.c  **** static ULong longFromTwoUInts_New(UInt a, UInt b) {
+ 177              		.loc 1 93 0
+ 178              		.cfi_startproc
+ 179 009e 55       		pushq	%rbp
+ 180              	.LCFI18:
+ 181              		.cfi_def_cfa_offset 16
+ 182 009f 4889E5   		movq	%rsp, %rbp
+ 183              		.cfi_offset 6, -16
+ 184              	.LCFI19:
+ 185              		.cfi_def_cfa_register 6
+ 186 00a2 897DEC   		movl	%edi, -20(%rbp)
+ 187 00a5 8975E8   		movl	%esi, -24(%rbp)
+  94:HelloCojac.c  ****   mix64_t m; m.halves.h1.u=a; m.halves.h2.u=b;
+ 188              		.loc 1 94 0
+ 189 00a8 8B45EC   		movl	-20(%rbp), %eax
+ 190 00ab 8945F4   		movl	%eax, -12(%rbp)
+ 191 00ae 8B45E8   		movl	-24(%rbp), %eax
+ 192 00b1 8945F0   		movl	%eax, -16(%rbp)
+  95:HelloCojac.c  ****   return m.u;
+ 193              		.loc 1 95 0
+ 194 00b4 488B45F0 		movq	-16(%rbp), %rax
+  96:HelloCojac.c  **** }
+ 195              		.loc 1 96 0
+ 196 00b8 C9       		leave
+ 197              	.LCFI20:
+ 198              		.cfi_def_cfa 7, 8
+ 199 00b9 C3       		ret
+ 200              		.cfi_endproc
+ 201              	.LFE6:
+ 204              	longFromTwoInts:
+ 205              	.LFB7:
+  97:HelloCojac.c  **** 
+  98:HelloCojac.c  **** static ULong longFromTwoInts(Int a, Int b) {
+ 206              		.loc 1 98 0
+ 207              		.cfi_startproc
+ 208 00ba 55       		pushq	%rbp
+ 209              	.LCFI21:
+ 210              		.cfi_def_cfa_offset 16
+ 211 00bb 4889E5   		movq	%rsp, %rbp
+ 212              		.cfi_offset 6, -16
+ 213              	.LCFI22:
+ 214              		.cfi_def_cfa_register 6
+ 215 00be 53       		pushq	%rbx
+ 216 00bf 4883EC18 		subq	$24, %rsp
+ 217 00c3 897DEC   		movl	%edi, -20(%rbp)
+ 218 00c6 8975E8   		movl	%esi, -24(%rbp)
+  99:HelloCojac.c  ****   return longFromTwoUInts(uintFromInt(a), uintFromInt(b));
+ 219              		.loc 1 99 0
+ 220 00c9 8B45E8   		movl	-24(%rbp), %eax
+ 221 00cc 89C7     		movl	%eax, %edi
+ 222              		.cfi_offset 3, -24
+ 223 00ce E861FFFF 		call	uintFromInt
+ 223      FF
+ 224 00d3 89C3     		movl	%eax, %ebx
+ 225 00d5 8B45EC   		movl	-20(%rbp), %eax
+ 226 00d8 89C7     		movl	%eax, %edi
+ 227 00da E855FFFF 		call	uintFromInt
+ 227      FF
+ 228 00df 89DE     		movl	%ebx, %esi
+ 229 00e1 89C7     		movl	%eax, %edi
+ 230 00e3 E88AFFFF 		call	longFromTwoUInts
+ 230      FF
+ 100:HelloCojac.c  **** }
+ 231              		.loc 1 100 0
+ 232 00e8 4883C418 		addq	$24, %rsp
+ 233 00ec 5B       		popq	%rbx
+ 234 00ed C9       		leave
+ 235              	.LCFI23:
+ 236              		.cfi_def_cfa 7, 8
+ 237 00ee C3       		ret
+ 238              		.cfi_endproc
+ 239              	.LFE7:
+ 242              	longToTwoUInts:
+ 243              	.LFB8:
+ 101:HelloCojac.c  **** static void longToTwoUInts(ULong d, UInt *a, UInt *b) {
+ 244              		.loc 1 101 0
+ 245              		.cfi_startproc
+ 246 00ef 55       		pushq	%rbp
+ 247              	.LCFI24:
+ 248              		.cfi_def_cfa_offset 16
+ 249 00f0 4889E5   		movq	%rsp, %rbp
+ 250              		.cfi_offset 6, -16
+ 251              	.LCFI25:
+ 252              		.cfi_def_cfa_register 6
+ 253 00f3 48897DF8 		movq	%rdi, -8(%rbp)
+ 254 00f7 488975F0 		movq	%rsi, -16(%rbp)
+ 255 00fb 488955E8 		movq	%rdx, -24(%rbp)
+ 102:HelloCojac.c  ****   *b = d;
+ 256              		.loc 1 102 0
+ 257 00ff 488B45F8 		movq	-8(%rbp), %rax
+ 258 0103 89C2     		movl	%eax, %edx
+ 259 0105 488B45E8 		movq	-24(%rbp), %rax
+ 260 0109 8910     		movl	%edx, (%rax)
+ 103:HelloCojac.c  ****   *a = d>>32;
+ 261              		.loc 1 103 0
+ 262 010b 488B45F8 		movq	-8(%rbp), %rax
+ 263 010f 48C1E820 		shrq	$32, %rax
+ 264 0113 89C2     		movl	%eax, %edx
+ 265 0115 488B45F0 		movq	-16(%rbp), %rax
+ 266 0119 8910     		movl	%edx, (%rax)
+ 104:HelloCojac.c  **** }
+ 267              		.loc 1 104 0
+ 268 011b C9       		leave
+ 269              	.LCFI26:
+ 270              		.cfi_def_cfa 7, 8
+ 271 011c C3       		ret
+ 272              		.cfi_endproc
+ 273              	.LFE8:
+ 276              	longToTwoUInts_New:
+ 277              	.LFB9:
+ 105:HelloCojac.c  **** static void longToTwoUInts_New(ULong d, UInt *a, UInt *b) {
+ 278              		.loc 1 105 0
+ 279              		.cfi_startproc
+ 280 011d 55       		pushq	%rbp
+ 281              	.LCFI27:
+ 282              		.cfi_def_cfa_offset 16
+ 283 011e 4889E5   		movq	%rsp, %rbp
+ 284              		.cfi_offset 6, -16
+ 285              	.LCFI28:
+ 286              		.cfi_def_cfa_register 6
+ 287 0121 48897DE8 		movq	%rdi, -24(%rbp)
+ 288 0125 488975E0 		movq	%rsi, -32(%rbp)
+ 289 0129 488955D8 		movq	%rdx, -40(%rbp)
+ 106:HelloCojac.c  ****   mix64_t m; m.u=d;
+ 290              		.loc 1 106 0
+ 291 012d 488B45E8 		movq	-24(%rbp), %rax
+ 292 0131 488945F0 		movq	%rax, -16(%rbp)
+ 107:HelloCojac.c  ****   *a = m.halves.h1.u;
+ 293              		.loc 1 107 0
+ 294 0135 8B55F4   		movl	-12(%rbp), %edx
+ 295 0138 488B45E0 		movq	-32(%rbp), %rax
+ 296 013c 8910     		movl	%edx, (%rax)
+ 108:HelloCojac.c  ****   *b = m.halves.h2.u;
+ 297              		.loc 1 108 0
+ 298 013e 8B55F0   		movl	-16(%rbp), %edx
+ 299 0141 488B45D8 		movq	-40(%rbp), %rax
+ 300 0145 8910     		movl	%edx, (%rax)
+ 109:HelloCojac.c  **** }
+ 301              		.loc 1 109 0
+ 302 0147 C9       		leave
+ 303              	.LCFI29:
+ 304              		.cfi_def_cfa 7, 8
+ 305 0148 C3       		ret
+ 306              		.cfi_endproc
+ 307              	.LFE9:
+ 310              	longToTwoInts:
+ 311              	.LFB10:
+ 110:HelloCojac.c  **** 
+ 111:HelloCojac.c  **** static void longToTwoInts(ULong d, Int *a, Int *b) {
+ 312              		.loc 1 111 0
+ 313              		.cfi_startproc
+ 314 0149 55       		pushq	%rbp
+ 315              	.LCFI30:
+ 316              		.cfi_def_cfa_offset 16
+ 317 014a 4889E5   		movq	%rsp, %rbp
+ 318              		.cfi_offset 6, -16
+ 319              	.LCFI31:
+ 320              		.cfi_def_cfa_register 6
+ 321 014d 4883EC30 		subq	$48, %rsp
+ 322 0151 48897DE8 		movq	%rdi, -24(%rbp)
+ 323 0155 488975E0 		movq	%rsi, -32(%rbp)
+ 324 0159 488955D8 		movq	%rdx, -40(%rbp)
+ 112:HelloCojac.c  ****   UInt ua, ub;
+ 113:HelloCojac.c  ****   longToTwoUInts(d, &ua, &ub);
+ 325              		.loc 1 113 0
+ 326 015d 488D55F8 		leaq	-8(%rbp), %rdx
+ 327 0161 488D4DFC 		leaq	-4(%rbp), %rcx
+ 328 0165 488B45E8 		movq	-24(%rbp), %rax
+ 329 0169 4889CE   		movq	%rcx, %rsi
+ 330 016c 4889C7   		movq	%rax, %rdi
+ 331 016f E87BFFFF 		call	longToTwoUInts
+ 331      FF
+ 114:HelloCojac.c  ****   *a=intFromUInt(ua);
+ 332              		.loc 1 114 0
+ 333 0174 8B45FC   		movl	-4(%rbp), %eax
+ 334 0177 89C7     		movl	%eax, %edi
+ 335 0179 E8C8FEFF 		call	intFromUInt
+ 335      FF
+ 336 017e 488B55E0 		movq	-32(%rbp), %rdx
+ 337 0182 8902     		movl	%eax, (%rdx)
+ 115:HelloCojac.c  ****   *b=intFromUInt(ub);
+ 338              		.loc 1 115 0
+ 339 0184 8B45F8   		movl	-8(%rbp), %eax
+ 340 0187 89C7     		movl	%eax, %edi
+ 341 0189 E8B8FEFF 		call	intFromUInt
+ 341      FF
+ 342 018e 488B55D8 		movq	-40(%rbp), %rdx
+ 343 0192 8902     		movl	%eax, (%rdx)
+ 116:HelloCojac.c  **** }
+ 344              		.loc 1 116 0
+ 345 0194 C9       		leave
+ 346              	.LCFI32:
+ 347              		.cfi_def_cfa 7, 8
+ 348 0195 C3       		ret
+ 349              		.cfi_endproc
+ 350              	.LFE10:
+ 353              	doubleFromTwoUInts:
+ 354              	.LFB11:
+ 117:HelloCojac.c  **** static double doubleFromTwoUInts(UInt a, UInt b) {
+ 355              		.loc 1 117 0
+ 356              		.cfi_startproc
+ 357 0196 55       		pushq	%rbp
+ 358              	.LCFI33:
+ 359              		.cfi_def_cfa_offset 16
+ 360 0197 4889E5   		movq	%rsp, %rbp
+ 361              		.cfi_offset 6, -16
+ 362              	.LCFI34:
+ 363              		.cfi_def_cfa_register 6
+ 364 019a 4883EC20 		subq	$32, %rsp
+ 365 019e 897DEC   		movl	%edi, -20(%rbp)
+ 366 01a1 8975E8   		movl	%esi, -24(%rbp)
+ 118:HelloCojac.c  ****   ULong c= longFromTwoUInts(a,b);
+ 367              		.loc 1 118 0
+ 368 01a4 8B55E8   		movl	-24(%rbp), %edx
+ 369 01a7 8B45EC   		movl	-20(%rbp), %eax
+ 370 01aa 89D6     		movl	%edx, %esi
+ 371 01ac 89C7     		movl	%eax, %edi
+ 372 01ae E8BFFEFF 		call	longFromTwoUInts
+ 372      FF
+ 373 01b3 488945F8 		movq	%rax, -8(%rbp)
+ 119:HelloCojac.c  ****   return doubleFromLong(c);
+ 374              		.loc 1 119 0
+ 375 01b7 488B45F8 		movq	-8(%rbp), %rax
+ 376 01bb 4889C7   		movq	%rax, %rdi
+ 377 01be E853FEFF 		call	doubleFromLong
+ 377      FF
+ 120:HelloCojac.c  **** }
+ 378              		.loc 1 120 0
+ 379 01c3 C9       		leave
+ 380              	.LCFI35:
+ 381              		.cfi_def_cfa 7, 8
+ 382 01c4 C3       		ret
+ 383              		.cfi_endproc
+ 384              	.LFE11:
+ 387              	doubleFromTwoInts:
+ 388              	.LFB12:
+ 121:HelloCojac.c  **** static double doubleFromTwoInts(Int a, Int b) {
+ 389              		.loc 1 121 0
+ 390              		.cfi_startproc
+ 391 01c5 55       		pushq	%rbp
+ 392              	.LCFI36:
+ 393              		.cfi_def_cfa_offset 16
+ 394 01c6 4889E5   		movq	%rsp, %rbp
+ 395              		.cfi_offset 6, -16
+ 396              	.LCFI37:
+ 397              		.cfi_def_cfa_register 6
+ 398 01c9 53       		pushq	%rbx
+ 399 01ca 4883EC18 		subq	$24, %rsp
+ 400 01ce 897DEC   		movl	%edi, -20(%rbp)
+ 401 01d1 8975E8   		movl	%esi, -24(%rbp)
+ 122:HelloCojac.c  ****   return doubleFromTwoUInts(uintFromInt(a), uintFromInt(b));
+ 402              		.loc 1 122 0
+ 403 01d4 8B45E8   		movl	-24(%rbp), %eax
+ 404 01d7 89C7     		movl	%eax, %edi
+ 405              		.cfi_offset 3, -24
+ 406 01d9 E856FEFF 		call	uintFromInt
+ 406      FF
+ 407 01de 89C3     		movl	%eax, %ebx
+ 408 01e0 8B45EC   		movl	-20(%rbp), %eax
+ 409 01e3 89C7     		movl	%eax, %edi
+ 410 01e5 E84AFEFF 		call	uintFromInt
+ 410      FF
+ 411 01ea 89DE     		movl	%ebx, %esi
+ 412 01ec 89C7     		movl	%eax, %edi
+ 413 01ee E8A3FFFF 		call	doubleFromTwoUInts
+ 413      FF
+ 123:HelloCojac.c  **** }
+ 414              		.loc 1 123 0
+ 415 01f3 4883C418 		addq	$24, %rsp
+ 416 01f7 5B       		popq	%rbx
+ 417 01f8 C9       		leave
+ 418              	.LCFI38:
+ 419              		.cfi_def_cfa 7, 8
+ 420 01f9 C3       		ret
+ 421              		.cfi_endproc
+ 422              	.LFE12:
+ 425              	doubleToTwoUInts:
+ 426              	.LFB13:
+ 124:HelloCojac.c  **** static void doubleToTwoUInts(double d, UInt *a, UInt *b) {
+ 427              		.loc 1 124 0
+ 428              		.cfi_startproc
+ 429 01fa 55       		pushq	%rbp
+ 430              	.LCFI39:
+ 431              		.cfi_def_cfa_offset 16
+ 432 01fb 4889E5   		movq	%rsp, %rbp
+ 433              		.cfi_offset 6, -16
+ 434              	.LCFI40:
+ 435              		.cfi_def_cfa_register 6
+ 436 01fe 4883EC20 		subq	$32, %rsp
+ 437 0202 0F1345F8 		movlps	%xmm0, -8(%rbp)
+ 438 0206 48897DF0 		movq	%rdi, -16(%rbp)
+ 439 020a 488975E8 		movq	%rsi, -24(%rbp)
+ 125:HelloCojac.c  ****   longToTwoUInts(longFromDouble(d), a, b);
+ 440              		.loc 1 125 0
+ 441 020e 0F1245F8 		movlps	-8(%rbp), %xmm0
+ 442 0212 E8E9FDFF 		call	longFromDouble
+ 442      FF
+ 443 0217 488B55E8 		movq	-24(%rbp), %rdx
+ 444 021b 488B4DF0 		movq	-16(%rbp), %rcx
+ 445 021f 4889CE   		movq	%rcx, %rsi
+ 446 0222 4889C7   		movq	%rax, %rdi
+ 447 0225 E8C5FEFF 		call	longToTwoUInts
+ 447      FF
+ 126:HelloCojac.c  **** }
+ 448              		.loc 1 126 0
+ 449 022a C9       		leave
+ 450              	.LCFI41:
+ 451              		.cfi_def_cfa 7, 8
+ 452 022b C3       		ret
+ 453              		.cfi_endproc
+ 454              	.LFE13:
+ 457              	doubleToTwoInts:
+ 458              	.LFB14:
+ 127:HelloCojac.c  **** static void doubleToTwoInts(double d, Int *a, Int *b) {
+ 459              		.loc 1 127 0
+ 460              		.cfi_startproc
+ 461 022c 55       		pushq	%rbp
+ 462              	.LCFI42:
+ 463              		.cfi_def_cfa_offset 16
+ 464 022d 4889E5   		movq	%rsp, %rbp
+ 465              		.cfi_offset 6, -16
+ 466              	.LCFI43:
+ 467              		.cfi_def_cfa_register 6
+ 468 0230 4883EC30 		subq	$48, %rsp
+ 469 0234 0F1345E8 		movlps	%xmm0, -24(%rbp)
+ 470 0238 48897DE0 		movq	%rdi, -32(%rbp)
+ 471 023c 488975D8 		movq	%rsi, -40(%rbp)
+ 128:HelloCojac.c  ****   UInt ua, ub;
+ 129:HelloCojac.c  ****   doubleToTwoUInts(d, &ua, &ub);
+ 472              		.loc 1 129 0
+ 473 0240 488D55F8 		leaq	-8(%rbp), %rdx
+ 474 0244 488D45FC 		leaq	-4(%rbp), %rax
+ 475 0248 0F1245E8 		movlps	-24(%rbp), %xmm0
+ 476 024c 4889D6   		movq	%rdx, %rsi
+ 477 024f 4889C7   		movq	%rax, %rdi
+ 478 0252 E8A3FFFF 		call	doubleToTwoUInts
+ 478      FF
+ 130:HelloCojac.c  ****   *a=intFromUInt(ua);
+ 479              		.loc 1 130 0
+ 480 0257 8B45FC   		movl	-4(%rbp), %eax
+ 481 025a 89C7     		movl	%eax, %edi
+ 482 025c E8E5FDFF 		call	intFromUInt
+ 482      FF
+ 483 0261 488B55E0 		movq	-32(%rbp), %rdx
+ 484 0265 8902     		movl	%eax, (%rdx)
+ 131:HelloCojac.c  ****   *b=intFromUInt(ub);
+ 485              		.loc 1 131 0
+ 486 0267 8B45F8   		movl	-8(%rbp), %eax
+ 487 026a 89C7     		movl	%eax, %edi
+ 488 026c E8D5FDFF 		call	intFromUInt
+ 488      FF
+ 489 0271 488B55D8 		movq	-40(%rbp), %rdx
+ 490 0275 8902     		movl	%eax, (%rdx)
+ 132:HelloCojac.c  **** }
+ 491              		.loc 1 132 0
+ 492 0277 C9       		leave
+ 493              	.LCFI44:
+ 494              		.cfi_def_cfa 7, 8
+ 495 0278 C3       		ret
+ 496              		.cfi_endproc
+ 497              	.LFE14:
+ 499              	.globl shortFromInt
+ 501              	shortFromInt:
+ 502              	.LFB15:
+ 133:HelloCojac.c  **** 
+ 134:HelloCojac.c  **** //------------- 32 <--> 16
+ 135:HelloCojac.c  **** Short shortFromInt(Int i) {
+ 503              		.loc 1 135 0
+ 504              		.cfi_startproc
+ 505 0279 55       		pushq	%rbp
+ 506              	.LCFI45:
+ 507              		.cfi_def_cfa_offset 16
+ 508 027a 4889E5   		movq	%rsp, %rbp
+ 509              		.cfi_offset 6, -16
+ 510              	.LCFI46:
+ 511              		.cfi_def_cfa_register 6
+ 512 027d 897DEC   		movl	%edi, -20(%rbp)
+ 136:HelloCojac.c  ****   mix32_t m; m.s=i; return m.halves.h1.s;
+ 513              		.loc 1 136 0
+ 514 0280 8B45EC   		movl	-20(%rbp), %eax
+ 515 0283 8945F0   		movl	%eax, -16(%rbp)
+ 516 0286 0FB745F2 		movzwl	-14(%rbp), %eax
+ 137:HelloCojac.c  **** }
+ 517              		.loc 1 137 0
+ 518 028a C9       		leave
+ 519              	.LCFI47:
+ 520              		.cfi_def_cfa 7, 8
+ 521 028b C3       		ret
+ 522              		.cfi_endproc
+ 523              	.LFE15:
+ 525              		.data
+ 526              		.align 4
+ 529              	glob:
+ 530 0000 55000000 		.long	85
+ 531              		.text
+ 533              	add32:
+ 534              	.LFB16:
+ 138:HelloCojac.c  **** 
+ 139:HelloCojac.c  **** 
+ 140:HelloCojac.c  **** 
+ 141:HelloCojac.c  **** 
+ 142:HelloCojac.c  **** 
+ 143:HelloCojac.c  **** 
+ 144:HelloCojac.c  **** 
+ 145:HelloCojac.c  **** //------------------------------------------------
+ 146:HelloCojac.c  **** static int glob=85;
+ 147:HelloCojac.c  **** static signed int   add32(signed int   a, signed int   b) {
+ 535              		.loc 1 147 0
+ 536              		.cfi_startproc
+ 537 028c 55       		pushq	%rbp
+ 538              	.LCFI48:
+ 539              		.cfi_def_cfa_offset 16
+ 540 028d 4889E5   		movq	%rsp, %rbp
+ 541              		.cfi_offset 6, -16
+ 542              	.LCFI49:
+ 543              		.cfi_def_cfa_register 6
+ 544 0290 897DFC   		movl	%edi, -4(%rbp)
+ 545 0293 8975F8   		movl	%esi, -8(%rbp)
+ 148:HelloCojac.c  ****   //printf("add32 %d + %d \n", a, b);
+ 149:HelloCojac.c  ****   return a+b;
+ 546              		.loc 1 149 0
+ 547 0296 8B45F8   		movl	-8(%rbp), %eax
+ 548 0299 8B55FC   		movl	-4(%rbp), %edx
+ 549 029c 8D0402   		leal	(%rdx,%rax), %eax
+ 150:HelloCojac.c  **** }
+ 550              		.loc 1 150 0
+ 551 029f C9       		leave
+ 552              	.LCFI50:
+ 553              		.cfi_def_cfa 7, 8
+ 554 02a0 C3       		ret
+ 555              		.cfi_endproc
+ 556              	.LFE16:
+ 559              	addU32:
+ 560              	.LFB17:
+ 151:HelloCojac.c  **** static unsigned int   addU32(unsigned int   a, unsigned int   b) {
+ 561              		.loc 1 151 0
+ 562              		.cfi_startproc
+ 563 02a1 55       		pushq	%rbp
+ 564              	.LCFI51:
+ 565              		.cfi_def_cfa_offset 16
+ 566 02a2 4889E5   		movq	%rsp, %rbp
+ 567              		.cfi_offset 6, -16
+ 568              	.LCFI52:
+ 569              		.cfi_def_cfa_register 6
+ 570 02a5 897DFC   		movl	%edi, -4(%rbp)
+ 571 02a8 8975F8   		movl	%esi, -8(%rbp)
+ 152:HelloCojac.c  ****   //printf("addU32 %u + %u \n", a, b);
+ 153:HelloCojac.c  ****   return a+b;
+ 572              		.loc 1 153 0
+ 573 02ab 8B45F8   		movl	-8(%rbp), %eax
+ 574 02ae 8B55FC   		movl	-4(%rbp), %edx
+ 575 02b1 8D0402   		leal	(%rdx,%rax), %eax
+ 154:HelloCojac.c  **** }
+ 576              		.loc 1 154 0
+ 577 02b4 C9       		leave
+ 578              	.LCFI53:
+ 579              		.cfi_def_cfa 7, 8
+ 580 02b5 C3       		ret
+ 581              		.cfi_endproc
+ 582              	.LFE17:
+ 585              	add16:
+ 586              	.LFB18:
+ 155:HelloCojac.c  **** static signed short add16(signed short a, signed short b) {return a+b;}
+ 587              		.loc 1 155 0
+ 588              		.cfi_startproc
+ 589 02b6 55       		pushq	%rbp
+ 590              	.LCFI54:
+ 591              		.cfi_def_cfa_offset 16
+ 592 02b7 4889E5   		movq	%rsp, %rbp
+ 593              		.cfi_offset 6, -16
+ 594              	.LCFI55:
+ 595              		.cfi_def_cfa_register 6
+ 596 02ba 89FA     		movl	%edi, %edx
+ 597 02bc 89F0     		movl	%esi, %eax
+ 598 02be 668955FC 		movw	%dx, -4(%rbp)
+ 599 02c2 668945F8 		movw	%ax, -8(%rbp)
+ 600              		.loc 1 155 0
+ 601 02c6 0FB755FC 		movzwl	-4(%rbp), %edx
+ 602 02ca 0FB745F8 		movzwl	-8(%rbp), %eax
+ 603 02ce 8D0402   		leal	(%rdx,%rax), %eax
+ 604 02d1 C9       		leave
+ 605              	.LCFI56:
+ 606              		.cfi_def_cfa 7, 8
+ 607 02d2 C3       		ret
+ 608              		.cfi_endproc
+ 609              	.LFE18:
+ 612              	cast32to16:
+ 613              	.LFB19:
+ 156:HelloCojac.c  **** static signed short cast32to16(signed int a)              {return (signed short)(a); }
+ 614              		.loc 1 156 0
+ 615              		.cfi_startproc
+ 616 02d3 55       		pushq	%rbp
+ 617              	.LCFI57:
+ 618              		.cfi_def_cfa_offset 16
+ 619 02d4 4889E5   		movq	%rsp, %rbp
+ 620              		.cfi_offset 6, -16
+ 621              	.LCFI58:
+ 622              		.cfi_def_cfa_register 6
+ 623 02d7 897DFC   		movl	%edi, -4(%rbp)
+ 624              		.loc 1 156 0
+ 625 02da 8B45FC   		movl	-4(%rbp), %eax
+ 626 02dd C9       		leave
+ 627              	.LCFI59:
+ 628              		.cfi_def_cfa 7, 8
+ 629 02de C3       		ret
+ 630              		.cfi_endproc
+ 631              	.LFE19:
+ 633              		.section	.rodata
+ 634              	.LC0:
+ 635 0000 61646436 		.string	"add64 %ld + %ld \n"
+ 635      3420256C 
+ 635      64202B20 
+ 635      256C6420 
+ 635      0A00
+ 636              		.text
+ 638              	add64:
+ 639              	.LFB20:
+ 157:HelloCojac.c  **** static int64_t add64(int64_t a, int64_t b) {
+ 640              		.loc 1 157 0
+ 641              		.cfi_startproc
+ 642 02df 55       		pushq	%rbp
+ 643              	.LCFI60:
+ 644              		.cfi_def_cfa_offset 16
+ 645 02e0 4889E5   		movq	%rsp, %rbp
+ 646              		.cfi_offset 6, -16
+ 647              	.LCFI61:
+ 648              		.cfi_def_cfa_register 6
+ 649 02e3 4883EC10 		subq	$16, %rsp
+ 650 02e7 48897DF8 		movq	%rdi, -8(%rbp)
+ 651 02eb 488975F0 		movq	%rsi, -16(%rbp)
+ 158:HelloCojac.c  ****   printf("add64 %"PRId64 " + %"PRId64" \n", a, b);
+ 652              		.loc 1 158 0
+ 653 02ef B8000000 		movl	$.LC0, %eax
+ 653      00
+ 654 02f4 488B55F0 		movq	-16(%rbp), %rdx
+ 655 02f8 488B4DF8 		movq	-8(%rbp), %rcx
+ 656 02fc 4889CE   		movq	%rcx, %rsi
+ 657 02ff 4889C7   		movq	%rax, %rdi
+ 658 0302 B8000000 		movl	$0, %eax
+ 658      00
+ 659 0307 E8000000 		call	printf
+ 659      00
+ 159:HelloCojac.c  ****   return a+b;
+ 660              		.loc 1 159 0
+ 661 030c 488B45F0 		movq	-16(%rbp), %rax
+ 662 0310 488B55F8 		movq	-8(%rbp), %rdx
+ 663 0314 488D0402 		leaq	(%rdx,%rax), %rax
+ 160:HelloCojac.c  **** }
+ 664              		.loc 1 160 0
+ 665 0318 C9       		leave
+ 666              	.LCFI62:
+ 667              		.cfi_def_cfa 7, 8
+ 668 0319 C3       		ret
+ 669              		.cfi_endproc
+ 670              	.LFE20:
+ 672              		.section	.rodata
+ 673              	.LC1:
+ 674 0012 61646455 		.string	"addU64 %lu + %lu \n"
+ 674      36342025 
+ 674      6C75202B 
+ 674      20256C75 
+ 674      200A00
+ 675              		.text
+ 677              	addU64:
+ 678              	.LFB21:
+ 161:HelloCojac.c  **** static uint64_t addU64(uint64_t a, uint64_t b) {
+ 679              		.loc 1 161 0
+ 680              		.cfi_startproc
+ 681 031a 55       		pushq	%rbp
+ 682              	.LCFI63:
+ 683              		.cfi_def_cfa_offset 16
+ 684 031b 4889E5   		movq	%rsp, %rbp
+ 685              		.cfi_offset 6, -16
+ 686              	.LCFI64:
+ 687              		.cfi_def_cfa_register 6
+ 688 031e 4883EC10 		subq	$16, %rsp
+ 689 0322 48897DF8 		movq	%rdi, -8(%rbp)
+ 690 0326 488975F0 		movq	%rsi, -16(%rbp)
+ 162:HelloCojac.c  ****   printf("addU64 %"PRIu64 " + %"PRIu64 " \n", a, b);
+ 691              		.loc 1 162 0
+ 692 032a B8000000 		movl	$.LC1, %eax
+ 692      00
+ 693 032f 488B55F0 		movq	-16(%rbp), %rdx
+ 694 0333 488B4DF8 		movq	-8(%rbp), %rcx
+ 695 0337 4889CE   		movq	%rcx, %rsi
+ 696 033a 4889C7   		movq	%rax, %rdi
+ 697 033d B8000000 		movl	$0, %eax
+ 697      00
+ 698 0342 E8000000 		call	printf
+ 698      00
+ 163:HelloCojac.c  ****   return a+b;
+ 699              		.loc 1 163 0
+ 700 0347 488B45F0 		movq	-16(%rbp), %rax
+ 701 034b 488B55F8 		movq	-8(%rbp), %rdx
+ 702 034f 488D0402 		leaq	(%rdx,%rax), %rax
+ 164:HelloCojac.c  **** }
+ 703              		.loc 1 164 0
+ 704 0353 C9       		leave
+ 705              	.LCFI65:
+ 706              		.cfi_def_cfa 7, 8
+ 707 0354 C3       		ret
+ 708              		.cfi_endproc
+ 709              	.LFE21:
+ 712              	addFloat:
+ 713              	.LFB22:
+ 165:HelloCojac.c  **** static float addFloat(float a, float b) {int res=a+b+0x7775; return res;}
+ 714              		.loc 1 165 0
+ 715              		.cfi_startproc
+ 716 0355 55       		pushq	%rbp
+ 717              	.LCFI66:
+ 718              		.cfi_def_cfa_offset 16
+ 719 0356 4889E5   		movq	%rsp, %rbp
+ 720              		.cfi_offset 6, -16
+ 721              	.LCFI67:
+ 722              		.cfi_def_cfa_register 6
+ 723 0359 F30F1145 		movss	%xmm0, -20(%rbp)
+ 723      EC
+ 724 035e F30F114D 		movss	%xmm1, -24(%rbp)
+ 724      E8
+ 725              		.loc 1 165 0
+ 726 0363 F30F1045 		movss	-20(%rbp), %xmm0
+ 726      EC
+ 727 0368 F30F5845 		addss	-24(%rbp), %xmm0
+ 727      E8
+ 728 036d F30F100D 		movss	.LC2(%rip), %xmm1
+ 728      00000000 
+ 729 0375 F30F58C1 		addss	%xmm1, %xmm0
+ 730 0379 F30F2CC0 		cvttss2si	%xmm0, %eax
+ 731 037d 8945FC   		movl	%eax, -4(%rbp)
+ 732 0380 F30F2A45 		cvtsi2ss	-4(%rbp), %xmm0
+ 732      FC
+ 733 0385 C9       		leave
+ 734              	.LCFI68:
+ 735              		.cfi_def_cfa 7, 8
+ 736 0386 C3       		ret
+ 737              		.cfi_endproc
+ 738              	.LFE22:
+ 741              	addDouble:
+ 742              	.LFB23:
+ 166:HelloCojac.c  **** static double addDouble(double a, double b) {
+ 743              		.loc 1 166 0
+ 744              		.cfi_startproc
+ 745 0387 55       		pushq	%rbp
+ 746              	.LCFI69:
+ 747              		.cfi_def_cfa_offset 16
+ 748 0388 4889E5   		movq	%rsp, %rbp
+ 749              		.cfi_offset 6, -16
+ 750              	.LCFI70:
+ 751              		.cfi_def_cfa_register 6
+ 752 038b 0F1345F8 		movlps	%xmm0, -8(%rbp)
+ 753 038f 0F134DF0 		movlps	%xmm1, -16(%rbp)
+ 167:HelloCojac.c  **** //  printf("addDouble %f + %f (%llu + %llu)", a, b, longFromDouble(a), longFromDouble(b));
+ 168:HelloCojac.c  **** //  uint32_t u1, u2;
+ 169:HelloCojac.c  **** //  doubleToTwoUInts(a, &u1, &u2);
+ 170:HelloCojac.c  **** //  printf(" %u/%u ", u1, u2);
+ 171:HelloCojac.c  **** //  doubleToTwoUInts(b, &u1, &u2);
+ 172:HelloCojac.c  **** //  printf("+ %u/%u \n", u1, u2);
+ 173:HelloCojac.c  **** 
+ 174:HelloCojac.c  ****   return a+b;
+ 754              		.loc 1 174 0
+ 755 0393 DD45F8   		fldl	-8(%rbp)
+ 756 0396 DC45F0   		faddl	-16(%rbp)
+ 757 0399 DD5DE8   		fstpl	-24(%rbp)
+ 758 039c 0F1245E8 		movlps	-24(%rbp), %xmm0
+ 175:HelloCojac.c  **** }
+ 759              		.loc 1 175 0
+ 760 03a0 C9       		leave
+ 761              	.LCFI71:
+ 762              		.cfi_def_cfa 7, 8
+ 763 03a1 C3       		ret
+ 764              		.cfi_endproc
+ 765              	.LFE23:
+ 768              	playWithDoubles:
+ 769              	.LFB24:
+ 176:HelloCojac.c  **** 
+ 177:HelloCojac.c  **** static double playWithDoubles(double a) {
+ 770              		.loc 1 177 0
+ 771              		.cfi_startproc
+ 772 03a2 55       		pushq	%rbp
+ 773              	.LCFI72:
+ 774              		.cfi_def_cfa_offset 16
+ 775 03a3 4889E5   		movq	%rsp, %rbp
+ 776              		.cfi_offset 6, -16
+ 777              	.LCFI73:
+ 778              		.cfi_def_cfa_register 6
+ 779 03a6 4883EC20 		subq	$32, %rsp
+ 780 03aa 0F1345E8 		movlps	%xmm0, -24(%rbp)
+ 178:HelloCojac.c  ****   double res=a; //+(glob-0x7774);
+ 781              		.loc 1 178 0
+ 782 03ae 488B45E8 		movq	-24(%rbp), %rax
+ 783 03b2 488945F0 		movq	%rax, -16(%rbp)
+ 179:HelloCojac.c  ****   int i=0;
+ 784              		.loc 1 179 0
+ 785 03b6 C745FC00 		movl	$0, -4(%rbp)
+ 785      000000
+ 180:HelloCojac.c  ****   for (i=0; i<4; i++) {
+ 786              		.loc 1 180 0
+ 787 03bd C745FC00 		movl	$0, -4(%rbp)
+ 787      000000
+ 788 03c4 EB1E     		jmp	.L26
+ 789              	.L27:
+ 181:HelloCojac.c  ****     res = addDouble(res, a*a);
+ 790              		.loc 1 181 0 discriminator 2
+ 791 03c6 DD45E8   		fldl	-24(%rbp)
+ 792 03c9 DC4DE8   		fmull	-24(%rbp)
+ 793 03cc 0F1245F0 		movlps	-16(%rbp), %xmm0
+ 794 03d0 DD5DE0   		fstpl	-32(%rbp)
+ 795 03d3 0F124DE0 		movlps	-32(%rbp), %xmm1
+ 796 03d7 E8ABFFFF 		call	addDouble
+ 796      FF
+ 797 03dc 0F1345F0 		movlps	%xmm0, -16(%rbp)
+ 180:HelloCojac.c  ****   for (i=0; i<4; i++) {
+ 798              		.loc 1 180 0 discriminator 2
+ 799 03e0 8345FC01 		addl	$1, -4(%rbp)
+ 800              	.L26:
+ 180:HelloCojac.c  ****   for (i=0; i<4; i++) {
+ 801              		.loc 1 180 0 is_stmt 0 discriminator 1
+ 802 03e4 837DFC03 		cmpl	$3, -4(%rbp)
+ 803 03e8 7EDC     		jle	.L27
+ 182:HelloCojac.c  ****   }
+ 183:HelloCojac.c  ****   return res;
+ 804              		.loc 1 183 0 is_stmt 1
+ 805 03ea 488B45F0 		movq	-16(%rbp), %rax
+ 806 03ee 488945E0 		movq	%rax, -32(%rbp)
+ 807 03f2 0F1245E0 		movlps	-32(%rbp), %xmm0
+ 184:HelloCojac.c  **** }
+ 808              		.loc 1 184 0
+ 809 03f6 C9       		leave
+ 810              	.LCFI74:
+ 811              		.cfi_def_cfa 7, 8
+ 812 03f7 C3       		ret
+ 813              		.cfi_endproc
+ 814              	.LFE24:
+ 817              	playWithFloats:
+ 818              	.LFB25:
+ 185:HelloCojac.c  **** static double playWithFloats(float a) {
+ 819              		.loc 1 185 0
+ 820              		.cfi_startproc
+ 821 03f8 55       		pushq	%rbp
+ 822              	.LCFI75:
+ 823              		.cfi_def_cfa_offset 16
+ 824 03f9 4889E5   		movq	%rsp, %rbp
+ 825              		.cfi_offset 6, -16
+ 826              	.LCFI76:
+ 827              		.cfi_def_cfa_register 6
+ 828 03fc F30F1145 		movss	%xmm0, -20(%rbp)
+ 828      EC
+ 186:HelloCojac.c  ****   float res=a; //+(glob-0x7773);
+ 829              		.loc 1 186 0
+ 830 0401 8B45EC   		movl	-20(%rbp), %eax
+ 831 0404 8945FC   		movl	%eax, -4(%rbp)
+ 187:HelloCojac.c  ****   int i=0;
+ 832              		.loc 1 187 0
+ 833 0407 C745F800 		movl	$0, -8(%rbp)
+ 833      000000
+ 188:HelloCojac.c  ****   for (i=0; i<4; i++) {
+ 834              		.loc 1 188 0
+ 835 040e C745F800 		movl	$0, -8(%rbp)
+ 835      000000
+ 836 0415 EB1C     		jmp	.L29
+ 837              	.L30:
+ 189:HelloCojac.c  ****     res = res + a*a;
+ 838              		.loc 1 189 0 discriminator 2
+ 839 0417 F30F1045 		movss	-20(%rbp), %xmm0
+ 839      EC
+ 840 041c F30F5945 		mulss	-20(%rbp), %xmm0
+ 840      EC
+ 841 0421 F30F104D 		movss	-4(%rbp), %xmm1
+ 841      FC
+ 842 0426 F30F58C1 		addss	%xmm1, %xmm0
+ 843 042a F30F1145 		movss	%xmm0, -4(%rbp)
+ 843      FC
+ 188:HelloCojac.c  ****   for (i=0; i<4; i++) {
+ 844              		.loc 1 188 0 discriminator 2
+ 845 042f 8345F801 		addl	$1, -8(%rbp)
+ 846              	.L29:
+ 188:HelloCojac.c  ****   for (i=0; i<4; i++) {
+ 847              		.loc 1 188 0 is_stmt 0 discriminator 1
+ 848 0433 837DF803 		cmpl	$3, -8(%rbp)
+ 849 0437 7EDE     		jle	.L30
+ 190:HelloCojac.c  ****   }
+ 191:HelloCojac.c  ****   return res;
+ 850              		.loc 1 191 0 is_stmt 1
+ 851 0439 D945FC   		flds	-4(%rbp)
+ 852 043c DD5DE0   		fstpl	-32(%rbp)
+ 853 043f 0F1245E0 		movlps	-32(%rbp), %xmm0
+ 192:HelloCojac.c  **** }
+ 854              		.loc 1 192 0
+ 855 0443 C9       		leave
+ 856              	.LCFI77:
+ 857              		.cfi_def_cfa 7, 8
+ 858 0444 C3       		ret
+ 859              		.cfi_endproc
+ 860              	.LFE25:
+ 863              	playWithLongs:
+ 864              	.LFB26:
+ 193:HelloCojac.c  **** 
+ 194:HelloCojac.c  **** static int64_t playWithLongs(int64_t a) {
+ 865              		.loc 1 194 0
+ 866              		.cfi_startproc
+ 867 0445 55       		pushq	%rbp
+ 868              	.LCFI78:
+ 869              		.cfi_def_cfa_offset 16
+ 870 0446 4889E5   		movq	%rsp, %rbp
+ 871              		.cfi_offset 6, -16
+ 872              	.LCFI79:
+ 873              		.cfi_def_cfa_register 6
+ 874 0449 48897DE8 		movq	%rdi, -24(%rbp)
+ 195:HelloCojac.c  ****   int64_t res=a+(glob-0x7773);
+ 875              		.loc 1 195 0
+ 876 044d 8B050000 		movl	glob(%rip), %eax
+ 876      0000
+ 877 0453 2D737700 		subl	$30579, %eax
+ 877      00
+ 878 0458 4898     		cltq
+ 879 045a 480345E8 		addq	-24(%rbp), %rax
+ 880 045e 488945F0 		movq	%rax, -16(%rbp)
+ 196:HelloCojac.c  ****   int i=0;
+ 881              		.loc 1 196 0
+ 882 0462 C745FC00 		movl	$0, -4(%rbp)
+ 882      000000
+ 197:HelloCojac.c  ****   for (i=0; i<100; i++) {
+ 883              		.loc 1 197 0
+ 884 0469 C745FC00 		movl	$0, -4(%rbp)
+ 884      000000
+ 885 0470 EB11     		jmp	.L32
+ 886              	.L33:
+ 198:HelloCojac.c  ****     res = res + a*a;
+ 887              		.loc 1 198 0 discriminator 2
+ 888 0472 488B45E8 		movq	-24(%rbp), %rax
+ 889 0476 480FAF45 		imulq	-24(%rbp), %rax
+ 889      E8
+ 890 047b 480145F0 		addq	%rax, -16(%rbp)
+ 197:HelloCojac.c  ****   for (i=0; i<100; i++) {
+ 891              		.loc 1 197 0 discriminator 2
+ 892 047f 8345FC01 		addl	$1, -4(%rbp)
+ 893              	.L32:
+ 197:HelloCojac.c  ****   for (i=0; i<100; i++) {
+ 894              		.loc 1 197 0 is_stmt 0 discriminator 1
+ 895 0483 837DFC63 		cmpl	$99, -4(%rbp)
+ 896 0487 7EE9     		jle	.L33
+ 199:HelloCojac.c  ****   }
+ 200:HelloCojac.c  ****   return res;
+ 897              		.loc 1 200 0 is_stmt 1
+ 898 0489 488B45F0 		movq	-16(%rbp), %rax
+ 201:HelloCojac.c  **** }
+ 899              		.loc 1 201 0
+ 900 048d C9       		leave
+ 901              	.LCFI80:
+ 902              		.cfi_def_cfa 7, 8
+ 903 048e C3       		ret
+ 904              		.cfi_endproc
+ 905              	.LFE26:
+ 907              		.section	.rodata
+ 908 0025 000000   		.align 8
+ 909              	.LC4:
+ 910 0028 4572726F 		.string	"Error: %ld , should be %ld  %d / %d\n"
+ 910      723A2025 
+ 910      6C64202C 
+ 910      2073686F 
+ 910      756C6420 
+ 911              		.text
+ 913              	testLongFromUints:
+ 914              	.LFB27:
+ 202:HelloCojac.c  **** 
+ 203:HelloCojac.c  **** //*--------------------------------------------------------------------*/
+ 204:HelloCojac.c  **** //------------------------------------------------
+ 205:HelloCojac.c  **** static void testLongFromUints() {
+ 915              		.loc 1 205 0
+ 916              		.cfi_startproc
+ 917 048f 55       		pushq	%rbp
+ 918              	.LCFI81:
+ 919              		.cfi_def_cfa_offset 16
+ 920 0490 4889E5   		movq	%rsp, %rbp
+ 921              		.cfi_offset 6, -16
+ 922              	.LCFI82:
+ 923              		.cfi_def_cfa_register 6
+ 924 0493 4883EC20 		subq	$32, %rsp
+ 206:HelloCojac.c  ****   uint64_t l =432412345678L;
+ 925              		.loc 1 206 0
+ 926 0497 C745F04E 		movl	$-1379351218, -16(%rbp)
+ 926      C5C8AD
+ 927 049e C745F464 		movl	$100, -12(%rbp)
+ 927      000000
+ 207:HelloCojac.c  ****   uint32_t ua, ub;
+ 208:HelloCojac.c  ****   longToTwoUInts(l, &ua, &ub);
+ 928              		.loc 1 208 0
+ 929 04a5 488D55F8 		leaq	-8(%rbp), %rdx
+ 930 04a9 488D4DFC 		leaq	-4(%rbp), %rcx
+ 931 04ad 488B45F0 		movq	-16(%rbp), %rax
+ 932 04b1 4889CE   		movq	%rcx, %rsi
+ 933 04b4 4889C7   		movq	%rax, %rdi
+ 934 04b7 E833FCFF 		call	longToTwoUInts
+ 934      FF
+ 209:HelloCojac.c  ****   uint64_t r1=longFromTwoUInts(ua,ub);
+ 935              		.loc 1 209 0
+ 936 04bc 8B55F8   		movl	-8(%rbp), %edx
+ 937 04bf 8B45FC   		movl	-4(%rbp), %eax
+ 938 04c2 89D6     		movl	%edx, %esi
+ 939 04c4 89C7     		movl	%eax, %edi
+ 940 04c6 E8A7FBFF 		call	longFromTwoUInts
+ 940      FF
+ 941 04cb 488945E8 		movq	%rax, -24(%rbp)
+ 210:HelloCojac.c  ****   if (r1!=l)
+ 942              		.loc 1 210 0
+ 943 04cf 488B45E8 		movq	-24(%rbp), %rax
+ 944 04d3 483B45F0 		cmpq	-16(%rbp), %rax
+ 945 04d7 7423     		je	.L34
+ 211:HelloCojac.c  ****     printf("Error: %"PRId64 " , should be %"PRId64 "  %d / %d\n", r1,l, ua, ub);
+ 946              		.loc 1 211 0
+ 947 04d9 8B7DF8   		movl	-8(%rbp), %edi
+ 948 04dc 8B4DFC   		movl	-4(%rbp), %ecx
+ 949 04df B8000000 		movl	$.LC4, %eax
+ 949      00
+ 950 04e4 488B55F0 		movq	-16(%rbp), %rdx
+ 951 04e8 488B75E8 		movq	-24(%rbp), %rsi
+ 952 04ec 4189F8   		movl	%edi, %r8d
+ 953 04ef 4889C7   		movq	%rax, %rdi
+ 954 04f2 B8000000 		movl	$0, %eax
+ 954      00
+ 955 04f7 E8000000 		call	printf
+ 955      00
+ 956              	.L34:
+ 212:HelloCojac.c  **** }
+ 957              		.loc 1 212 0
+ 958 04fc C9       		leave
+ 959              	.LCFI83:
+ 960              		.cfi_def_cfa 7, 8
+ 961 04fd C3       		ret
+ 962              		.cfi_endproc
+ 963              	.LFE27:
+ 965              		.section	.rodata
+ 966 004d 000000   		.align 8
+ 967              	.LC6:
+ 968 0050 4572726F 		.string	"Error1: %f , should be %f  %d / %d\n"
+ 968      72313A20 
+ 968      2566202C 
+ 968      2073686F 
+ 968      756C6420 
+ 969 0074 00000000 		.align 8
+ 970              	.LC7:
+ 971 0078 4572726F 		.string	"Error2: %f , should be %f  %d / %d\n"
+ 971      72323A20 
+ 971      2566202C 
+ 971      2073686F 
+ 971      756C6420 
+ 972              	.LC8:
+ 973 009c 4572726F 		.string	"Error3:"
+ 973      72333A00 
+ 974              	.LC9:
+ 975 00a4 4572726F 		.string	"Error4:"
+ 975      72343A00 
+ 976              		.text
+ 978              	testDoubleFromUint:
+ 979              	.LFB28:
+ 213:HelloCojac.c  **** static void testDoubleFromUint() {
+ 980              		.loc 1 213 0
+ 981              		.cfi_startproc
+ 982 04fe 55       		pushq	%rbp
+ 983              	.LCFI84:
+ 984              		.cfi_def_cfa_offset 16
+ 985 04ff 4889E5   		movq	%rsp, %rbp
+ 986              		.cfi_offset 6, -16
+ 987              	.LCFI85:
+ 988              		.cfi_def_cfa_register 6
+ 989 0502 4883EC40 		subq	$64, %rsp
+ 214:HelloCojac.c  ****   double d = 3.14E51; // d2=-845.009;
+ 990              		.loc 1 214 0
+ 991 0506 48B8EA05 		movabsq	$5377518902347826666, %rax
+ 991      644BF3C8 
+ 991      A04A
+ 992 0510 488945E8 		movq	%rax, -24(%rbp)
+ 215:HelloCojac.c  ****   uint32_t ua, ub;
+ 216:HelloCojac.c  ****   int32_t a, b;
+ 217:HelloCojac.c  ****   doubleToTwoInts(d, &a, &b);
+ 993              		.loc 1 217 0
+ 994 0514 488D55F0 		leaq	-16(%rbp), %rdx
+ 995 0518 488D45F4 		leaq	-12(%rbp), %rax
+ 996 051c 0F1245E8 		movlps	-24(%rbp), %xmm0
+ 997 0520 4889D6   		movq	%rdx, %rsi
+ 998 0523 4889C7   		movq	%rax, %rdi
+ 999 0526 E801FDFF 		call	doubleToTwoInts
+ 999      FF
+ 218:HelloCojac.c  ****   doubleToTwoUInts(d, &ua, &ub);
+ 1000              		.loc 1 218 0
+ 1001 052b 488D55F8 		leaq	-8(%rbp), %rdx
+ 1002 052f 488D45FC 		leaq	-4(%rbp), %rax
+ 1003 0533 0F1245E8 		movlps	-24(%rbp), %xmm0
+ 1004 0537 4889D6   		movq	%rdx, %rsi
+ 1005 053a 4889C7   		movq	%rax, %rdi
+ 1006 053d E8B8FCFF 		call	doubleToTwoUInts
+ 1006      FF
+ 219:HelloCojac.c  ****   double r1=doubleFromTwoInts(a,b);
+ 1007              		.loc 1 219 0
+ 1008 0542 8B55F0   		movl	-16(%rbp), %edx
+ 1009 0545 8B45F4   		movl	-12(%rbp), %eax
+ 1010 0548 89D6     		movl	%edx, %esi
+ 1011 054a 89C7     		movl	%eax, %edi
+ 1012 054c E874FCFF 		call	doubleFromTwoInts
+ 1012      FF
+ 1013 0551 0F1345E0 		movlps	%xmm0, -32(%rbp)
+ 220:HelloCojac.c  ****   double r2=doubleFromTwoUInts(ua, ub);
+ 1014              		.loc 1 220 0
+ 1015 0555 8B55F8   		movl	-8(%rbp), %edx
+ 1016 0558 8B45FC   		movl	-4(%rbp), %eax
+ 1017 055b 89D6     		movl	%edx, %esi
+ 1018 055d 89C7     		movl	%eax, %edi
+ 1019 055f E832FCFF 		call	doubleFromTwoUInts
+ 1019      FF
+ 1020 0564 0F1345D8 		movlps	%xmm0, -40(%rbp)
+ 221:HelloCojac.c  ****   if (r1!=d)
+ 1021              		.loc 1 221 0
+ 1022 0568 DD45E0   		fldl	-32(%rbp)
+ 1023 056b DD45E8   		fldl	-24(%rbp)
+ 1024 056e DFE9     		fucomip	%st(1), %st
+ 1025 0570 DDD8     		fstp	%st(0)
+ 1026 0572 7A0C     		jp	.L43
+ 1027 0574 DD45E0   		fldl	-32(%rbp)
+ 1028 0577 DD45E8   		fldl	-24(%rbp)
+ 1029 057a DFE9     		fucomip	%st(1), %st
+ 1030 057c DDD8     		fstp	%st(0)
+ 1031 057e 742A     		je	.L37
+ 1032              	.L43:
+ 222:HelloCojac.c  ****     printf("Error1: %f , should be %f  %d / %d\n", r1, d, a, b);
+ 1033              		.loc 1 222 0
+ 1034 0580 8B55F0   		movl	-16(%rbp), %edx
+ 1035 0583 8B4DF4   		movl	-12(%rbp), %ecx
+ 1036 0586 B8000000 		movl	$.LC6, %eax
+ 1036      00
+ 1037 058b 488B7DE8 		movq	-24(%rbp), %rdi
+ 1038 058f 0F1245E0 		movlps	-32(%rbp), %xmm0
+ 1039 0593 89CE     		movl	%ecx, %esi
+ 1040 0595 48897DC8 		movq	%rdi, -56(%rbp)
+ 1041 0599 0F124DC8 		movlps	-56(%rbp), %xmm1
+ 1042 059d 4889C7   		movq	%rax, %rdi
+ 1043 05a0 B8020000 		movl	$2, %eax
+ 1043      00
+ 1044 05a5 E8000000 		call	printf
+ 1044      00
+ 1045              	.L37:
+ 223:HelloCojac.c  ****   if (r2!=d)
+ 1046              		.loc 1 223 0
+ 1047 05aa DD45D8   		fldl	-40(%rbp)
+ 1048 05ad DD45E8   		fldl	-24(%rbp)
+ 1049 05b0 DFE9     		fucomip	%st(1), %st
+ 1050 05b2 DDD8     		fstp	%st(0)
+ 1051 05b4 7A0C     		jp	.L44
+ 1052 05b6 DD45D8   		fldl	-40(%rbp)
+ 1053 05b9 DD45E8   		fldl	-24(%rbp)
+ 1054 05bc DFE9     		fucomip	%st(1), %st
+ 1055 05be DDD8     		fstp	%st(0)
+ 1056 05c0 742A     		je	.L39
+ 1057              	.L44:
+ 224:HelloCojac.c  ****     printf("Error2: %f , should be %f  %d / %d\n", r2, d, ua, ub);
+ 1058              		.loc 1 224 0
+ 1059 05c2 8B55F8   		movl	-8(%rbp), %edx
+ 1060 05c5 8B4DFC   		movl	-4(%rbp), %ecx
+ 1061 05c8 B8000000 		movl	$.LC7, %eax
+ 1061      00
+ 1062 05cd 488B7DE8 		movq	-24(%rbp), %rdi
+ 1063 05d1 0F1245D8 		movlps	-40(%rbp), %xmm0
+ 1064 05d5 89CE     		movl	%ecx, %esi
+ 1065 05d7 48897DC8 		movq	%rdi, -56(%rbp)
+ 1066 05db 0F124DC8 		movlps	-56(%rbp), %xmm1
+ 1067 05df 4889C7   		movq	%rax, %rdi
+ 1068 05e2 B8020000 		movl	$2, %eax
+ 1068      00
+ 1069 05e7 E8000000 		call	printf
+ 1069      00
+ 1070              	.L39:
+ 225:HelloCojac.c  **** 
+ 226:HelloCojac.c  ****   a=-8730;
+ 1071              		.loc 1 226 0
+ 1072 05ec C745F4E6 		movl	$-8730, -12(%rbp)
+ 1072      DDFFFF
+ 227:HelloCojac.c  ****   ub = a;
+ 1073              		.loc 1 227 0
+ 1074 05f3 8B45F4   		movl	-12(%rbp), %eax
+ 1075 05f6 8945F8   		movl	%eax, -8(%rbp)
+ 228:HelloCojac.c  ****   if (intFromUInt(uintFromInt(a) != a))
+ 1076              		.loc 1 228 0
+ 1077 05f9 8B45F4   		movl	-12(%rbp), %eax
+ 1078 05fc 89C7     		movl	%eax, %edi
+ 1079 05fe E831FAFF 		call	uintFromInt
+ 1079      FF
+ 1080 0603 8B55F4   		movl	-12(%rbp), %edx
+ 1081 0606 39D0     		cmpl	%edx, %eax
+ 1082 0608 0F95C0   		setne	%al
+ 1083 060b 0FB6C0   		movzbl	%al, %eax
+ 1084 060e 89C7     		movl	%eax, %edi
+ 1085 0610 E831FAFF 		call	intFromUInt
+ 1085      FF
+ 1086 0615 85C0     		testl	%eax, %eax
+ 1087 0617 740A     		je	.L41
+ 229:HelloCojac.c  ****     printf("Error3:\n");
+ 1088              		.loc 1 229 0
+ 1089 0619 BF000000 		movl	$.LC8, %edi
+ 1089      00
+ 1090 061e E8000000 		call	puts
+ 1090      00
+ 1091              	.L41:
+ 230:HelloCojac.c  ****   if (uintFromInt(intFromUInt(ub) != ub))
+ 1092              		.loc 1 230 0
+ 1093 0623 8B45F8   		movl	-8(%rbp), %eax
+ 1094 0626 89C7     		movl	%eax, %edi
+ 1095 0628 E819FAFF 		call	intFromUInt
+ 1095      FF
+ 1096 062d 89C2     		movl	%eax, %edx
+ 1097 062f 8B45F8   		movl	-8(%rbp), %eax
+ 1098 0632 39C2     		cmpl	%eax, %edx
+ 1099 0634 0F95C0   		setne	%al
+ 1100 0637 0FB6C0   		movzbl	%al, %eax
+ 1101 063a 89C7     		movl	%eax, %edi
+ 1102 063c E8F3F9FF 		call	uintFromInt
+ 1102      FF
+ 1103 0641 85C0     		testl	%eax, %eax
+ 1104 0643 740A     		je	.L36
+ 231:HelloCojac.c  ****     printf("Error4:\n");
+ 1105              		.loc 1 231 0
+ 1106 0645 BF000000 		movl	$.LC9, %edi
+ 1106      00
+ 1107 064a E8000000 		call	puts
+ 1107      00
+ 1108              	.L36:
+ 232:HelloCojac.c  **** 
+ 233:HelloCojac.c  **** }
+ 1109              		.loc 1 233 0
+ 1110 064f C9       		leave
+ 1111              	.LCFI86:
+ 1112              		.cfi_def_cfa 7, 8
+ 1113 0650 C3       		ret
+ 1114              		.cfi_endproc
+ 1115              	.LFE28:
+ 1117              		.section	.rodata
+ 1118              	.LC10:
+ 1119 00ac 72657332 		.string	"res2= %d"
+ 1119      3D202564 
+ 1119      00
+ 1120              	.LC14:
+ 1121 00b5 666C6F61 		.string	"float: %f \n"
+ 1121      743A2025 
+ 1121      66200A00 
+ 1122              	.LC16:
+ 1123 00c1 646F7562 		.string	"double: %f \n"
+ 1123      6C653A20 
+ 1123      2566200A 
+ 1123      00
+ 1124              	.LC18:
+ 1125 00ce 6C6F6E67 		.string	"long: %ld \n"
+ 1125      3A20256C 
+ 1125      64200A00 
+ 1126              		.text
+ 1127              	.globl main1
+ 1129              	main1:
+ 1130              	.LFB29:
+ 234:HelloCojac.c  **** //------------------------------------------------
+ 235:HelloCojac.c  **** int main1(void) {
+ 1131              		.loc 1 235 0
+ 1132              		.cfi_startproc
+ 1133 0651 55       		pushq	%rbp
+ 1134              	.LCFI87:
+ 1135              		.cfi_def_cfa_offset 16
+ 1136 0652 4889E5   		movq	%rsp, %rbp
+ 1137              		.cfi_offset 6, -16
+ 1138              	.LCFI88:
+ 1139              		.cfi_def_cfa_register 6
+ 1140 0655 4883EC30 		subq	$48, %rsp
+ 236:HelloCojac.c  ****   //fprintf(stderr, "achachachach\n");
+ 237:HelloCojac.c  ****   signed int res=119*119*119;
+ 1141              		.loc 1 237 0
+ 1142 0659 C745F8A7 		movl	$1685159, -8(%rbp)
+ 1142      B61900
+ 238:HelloCojac.c  ****   int i=0;
+ 1143              		.loc 1 238 0
+ 1144 0660 C745F400 		movl	$0, -12(%rbp)
+ 1144      000000
+ 239:HelloCojac.c  ****   char b=5;
+ 1145              		.loc 1 239 0
+ 1146 0667 C645FF05 		movb	$5, -1(%rbp)
+ 240:HelloCojac.c  **** 
+ 241:HelloCojac.c  ****   for(i=0; i<5; i++) {
+ 1147              		.loc 1 241 0
+ 1148 066b C745F400 		movl	$0, -12(%rbp)
+ 1148      000000
+ 1149 0672 EB15     		jmp	.L46
+ 1150              	.L47:
+ 242:HelloCojac.c  ****     res = res*119;
+ 1151              		.loc 1 242 0 discriminator 2
+ 1152 0674 8B45F8   		movl	-8(%rbp), %eax
+ 1153 0677 6BC077   		imull	$119, %eax, %eax
+ 1154 067a 8945F8   		movl	%eax, -8(%rbp)
+ 243:HelloCojac.c  ****     res = res + res +res;
+ 1155              		.loc 1 243 0 discriminator 2
+ 1156 067d 8B45F8   		movl	-8(%rbp), %eax
+ 1157 0680 01C0     		addl	%eax, %eax
+ 1158 0682 0145F8   		addl	%eax, -8(%rbp)
+ 241:HelloCojac.c  ****   for(i=0; i<5; i++) {
+ 1159              		.loc 1 241 0 discriminator 2
+ 1160 0685 8345F401 		addl	$1, -12(%rbp)
+ 1161              	.L46:
+ 241:HelloCojac.c  ****   for(i=0; i<5; i++) {
+ 1162              		.loc 1 241 0 is_stmt 0 discriminator 1
+ 1163 0689 837DF404 		cmpl	$4, -12(%rbp)
+ 1164 068d 7EE5     		jle	.L47
+ 244:HelloCojac.c  ****     //fprintf(stderr, "res=%d\n", res);
+ 245:HelloCojac.c  ****     //fflush(stderr);
+ 246:HelloCojac.c  ****   }
+ 247:HelloCojac.c  ****   res = b*res;
+ 1165              		.loc 1 247 0 is_stmt 1
+ 1166 068f 0FBE45FF 		movsbl	-1(%rbp), %eax
+ 1167 0693 8B55F8   		movl	-8(%rbp), %edx
+ 1168 0696 0FAFC2   		imull	%edx, %eax
+ 1169 0699 8945F8   		movl	%eax, -8(%rbp)
+ 248:HelloCojac.c  ****   signed int inc = INT_MAX/3;
+ 1170              		.loc 1 248 0
+ 1171 069c C745F0AA 		movl	$715827882, -16(%rbp)
+ 1171      AAAA2A
+ 249:HelloCojac.c  ****   for(i=0; i<20; i++)
+ 1172              		.loc 1 249 0
+ 1173 06a3 C745F400 		movl	$0, -12(%rbp)
+ 1173      000000
+ 1174 06aa EB0A     		jmp	.L48
+ 1175              	.L49:
+ 250:HelloCojac.c  ****     res = res + inc;
+ 1176              		.loc 1 250 0 discriminator 2
+ 1177 06ac 8B45F0   		movl	-16(%rbp), %eax
+ 1178 06af 0145F8   		addl	%eax, -8(%rbp)
+ 249:HelloCojac.c  ****   for(i=0; i<20; i++)
+ 1179              		.loc 1 249 0 discriminator 2
+ 1180 06b2 8345F401 		addl	$1, -12(%rbp)
+ 1181              	.L48:
+ 249:HelloCojac.c  ****   for(i=0; i<20; i++)
+ 1182              		.loc 1 249 0 is_stmt 0 discriminator 1
+ 1183 06b6 837DF413 		cmpl	$19, -12(%rbp)
+ 1184 06ba 7EF0     		jle	.L49
+ 251:HelloCojac.c  **** 
+ 252:HelloCojac.c  ****   res = add16(SHRT_MAX-8, 145);
+ 1185              		.loc 1 252 0 is_stmt 1
+ 1186 06bc BE910000 		movl	$145, %esi
+ 1186      00
+ 1187 06c1 BFF77F00 		movl	$32759, %edi
+ 1187      00
+ 1188 06c6 E8EBFBFF 		call	add16
+ 1188      FF
+ 1189 06cb 98       		cwtl
+ 1190 06cc 8945F8   		movl	%eax, -8(%rbp)
+ 253:HelloCojac.c  ****   signed short res2 = cast32to16(0x78787);
+ 1191              		.loc 1 253 0
+ 1192 06cf BF878707 		movl	$493447, %edi
+ 1192      00
+ 1193 06d4 E8FAFBFF 		call	cast32to16
+ 1193      FF
+ 1194 06d9 668945FC 		movw	%ax, -4(%rbp)
+ 254:HelloCojac.c  ****   printf("res2= %d", res2);
+ 1195              		.loc 1 254 0
+ 1196 06dd 0FBF55FC 		movswl	-4(%rbp), %edx
+ 1197 06e1 B8000000 		movl	$.LC10, %eax
+ 1197      00
+ 1198 06e6 89D6     		movl	%edx, %esi
+ 1199 06e8 4889C7   		movq	%rax, %rdi
+ 1200 06eb B8000000 		movl	$0, %eax
+ 1200      00
+ 1201 06f0 E8000000 		call	printf
+ 1201      00
+ 255:HelloCojac.c  **** 
+ 256:HelloCojac.c  ****   int32_t ia=INT_MAX-4; int32_t ib=8; ib = add32(ia, ib);
+ 1202              		.loc 1 256 0
+ 1203 06f5 C745ECFB 		movl	$2147483643, -20(%rbp)
+ 1203      FFFF7F
+ 1204 06fc C745E808 		movl	$8, -24(%rbp)
+ 1204      000000
+ 1205 0703 8B55E8   		movl	-24(%rbp), %edx
+ 1206 0706 8B45EC   		movl	-20(%rbp), %eax
+ 1207 0709 89D6     		movl	%edx, %esi
+ 1208 070b 89C7     		movl	%eax, %edi
+ 1209 070d E87AFBFF 		call	add32
+ 1209      FF
+ 1210 0712 8945E8   		movl	%eax, -24(%rbp)
+ 257:HelloCojac.c  ****   int64_t lla=LLONG_MAX-4; int64_t llb=8; llb = add64(lla, llb);
+ 1211              		.loc 1 257 0
+ 1212 0715 C745D8FB 		movl	$-5, -40(%rbp)
+ 1212      FFFFFF
+ 1213 071c C745DCFF 		movl	$2147483647, -36(%rbp)
+ 1213      FFFF7F
+ 1214 0723 48C745D0 		movq	$8, -48(%rbp)
+ 1214      08000000 
+ 1215 072b 488B55D0 		movq	-48(%rbp), %rdx
+ 1216 072f 488B45D8 		movq	-40(%rbp), %rax
+ 1217 0733 4889D6   		movq	%rdx, %rsi
+ 1218 0736 4889C7   		movq	%rax, %rdi
+ 1219 0739 E8A1FBFF 		call	add64
+ 1219      FF
+ 1220 073e 488945D0 		movq	%rax, -48(%rbp)
+ 258:HelloCojac.c  ****   float fla=FLT_MAX; float flb=FLT_MAX; flb = addFloat(fla, flb);
+ 1221              		.loc 1 258 0
+ 1222 0742 B8FFFF7F 		movl	$0x7f7fffff, %eax
+ 1222      7F
+ 1223 0747 8945E4   		movl	%eax, -28(%rbp)
+ 1224 074a B8FFFF7F 		movl	$0x7f7fffff, %eax
+ 1224      7F
+ 1225 074f 8945E0   		movl	%eax, -32(%rbp)
+ 1226 0752 F30F104D 		movss	-32(%rbp), %xmm1
+ 1226      E0
+ 1227 0757 F30F1045 		movss	-28(%rbp), %xmm0
+ 1227      E4
+ 1228 075c E8F4FBFF 		call	addFloat
+ 1228      FF
+ 1229 0761 F30F1145 		movss	%xmm0, -32(%rbp)
+ 1229      E0
+ 259:HelloCojac.c  **** 
+ 260:HelloCojac.c  ****   if(isnan(fla)) fla=0;
+ 1230              		.loc 1 260 0
+ 1231 0766 F30F1045 		movss	-28(%rbp), %xmm0
+ 1231      E4
+ 1232 076b E8000000 		call	__isnanf
+ 1232      00
+ 1233 0770 85C0     		testl	%eax, %eax
+ 1234 0772 7408     		je	.L50
+ 1235              		.loc 1 260 0 is_stmt 0 discriminator 1
+ 1236 0774 B8000000 		movl	$0x00000000, %eax
+ 1236      00
+ 1237 0779 8945E4   		movl	%eax, -28(%rbp)
+ 1238              	.L50:
+ 261:HelloCojac.c  **** 
+ 262:HelloCojac.c  ****   printf("float: %f \n", playWithFloats(2.0f));
+ 1239              		.loc 1 262 0 is_stmt 1
+ 1240 077c F30F1005 		movss	.LC13(%rip), %xmm0
+ 1240      00000000 
+ 1241 0784 E86FFCFF 		call	playWithFloats
+ 1241      FF
+ 1242 0789 B8000000 		movl	$.LC14, %eax
+ 1242      00
+ 1243 078e 4889C7   		movq	%rax, %rdi
+ 1244 0791 B8010000 		movl	$1, %eax
+ 1244      00
+ 1245 0796 E8000000 		call	printf
+ 1245      00
+ 263:HelloCojac.c  ****   printf("double: %f \n", playWithDoubles(2.0));
+ 1246              		.loc 1 263 0
+ 1247 079b 0F120500 		movlps	.LC15(%rip), %xmm0
+ 1247      000000
+ 1248 07a2 E8FBFBFF 		call	playWithDoubles
+ 1248      FF
+ 1249 07a7 B8000000 		movl	$.LC16, %eax
+ 1249      00
+ 1250 07ac 4889C7   		movq	%rax, %rdi
+ 1251 07af B8010000 		movl	$1, %eax
+ 1251      00
+ 1252 07b4 E8000000 		call	printf
+ 1252      00
+ 264:HelloCojac.c  ****   printf("double: %f \n", playWithDoubles(3.16));
+ 1253              		.loc 1 264 0
+ 1254 07b9 0F120500 		movlps	.LC17(%rip), %xmm0
+ 1254      000000
+ 1255 07c0 E8DDFBFF 		call	playWithDoubles
+ 1255      FF
+ 1256 07c5 B8000000 		movl	$.LC16, %eax
+ 1256      00
+ 1257 07ca 4889C7   		movq	%rax, %rdi
+ 1258 07cd B8010000 		movl	$1, %eax
+ 1258      00
+ 1259 07d2 E8000000 		call	printf
+ 1259      00
+ 265:HelloCojac.c  ****   printf("long: %"PRId64 " \n", playWithLongs(2));
+ 1260              		.loc 1 265 0
+ 1261 07d7 BF020000 		movl	$2, %edi
+ 1261      00
+ 1262 07dc E864FCFF 		call	playWithLongs
+ 1262      FF
+ 1263 07e1 4889C2   		movq	%rax, %rdx
+ 1264 07e4 B8000000 		movl	$.LC18, %eax
+ 1264      00
+ 1265 07e9 4889D6   		movq	%rdx, %rsi
+ 1266 07ec 4889C7   		movq	%rax, %rdi
+ 1267 07ef B8000000 		movl	$0, %eax
+ 1267      00
+ 1268 07f4 E8000000 		call	printf
+ 1268      00
+ 266:HelloCojac.c  **** 
+ 267:HelloCojac.c  ****   return EXIT_SUCCESS;
+ 1269              		.loc 1 267 0
+ 1270 07f9 B8000000 		movl	$0, %eax
+ 1270      00
+ 268:HelloCojac.c  **** }
+ 1271              		.loc 1 268 0
+ 1272 07fe C9       		leave
+ 1273              	.LCFI89:
+ 1274              		.cfi_def_cfa 7, 8
+ 1275 07ff C3       		ret
+ 1276              		.cfi_endproc
+ 1277              	.LFE29:
+ 1280              	ulp:
+ 1281              	.LFB30:
+ 269:HelloCojac.c  **** 
+ 270:HelloCojac.c  **** //------------------------------------------------
+ 271:HelloCojac.c  **** static double ulp(double a) { //PRE: a is neither INF nor NaN
+ 1282              		.loc 1 271 0
+ 1283              		.cfi_startproc
+ 1284 0800 55       		pushq	%rbp
+ 1285              	.LCFI90:
+ 1286              		.cfi_def_cfa_offset 16
+ 1287 0801 4889E5   		movq	%rsp, %rbp
+ 1288              		.cfi_offset 6, -16
+ 1289              	.LCFI91:
+ 1290              		.cfi_def_cfa_register 6
+ 1291 0804 4883EC20 		subq	$32, %rsp
+ 1292 0808 0F1345F8 		movlps	%xmm0, -8(%rbp)
+ 272:HelloCojac.c  ****   return fabs(nextafter(a,INFINITY)-a);
+ 1293              		.loc 1 272 0
+ 1294 080c 48B80000 		movabsq	$9218868437227405312, %rax
+ 1294      00000000 
+ 1294      F07F
+ 1295 0816 0F1245F8 		movlps	-8(%rbp), %xmm0
+ 1296 081a 488945E8 		movq	%rax, -24(%rbp)
+ 1297 081e 0F124DE8 		movlps	-24(%rbp), %xmm1
+ 1298 0822 E8000000 		call	nextafter
+ 1298      00
+ 1299 0827 0F1345E8 		movlps	%xmm0, -24(%rbp)
+ 1300 082b DD45E8   		fldl	-24(%rbp)
+ 1301 082e DC65F8   		fsubl	-8(%rbp)
+ 1302 0831 D9E1     		fabs
+ 1303 0833 DD5DE8   		fstpl	-24(%rbp)
+ 1304 0836 0F1245E8 		movlps	-24(%rbp), %xmm0
+ 273:HelloCojac.c  **** }
+ 1305              		.loc 1 273 0
+ 1306 083a C9       		leave
+ 1307              	.LCFI92:
+ 1308              		.cfi_def_cfa 7, 8
+ 1309 083b C3       		ret
+ 1310              		.cfi_endproc
+ 1311              	.LFE30:
+ 1314              	ulpf:
+ 1315              	.LFB31:
+ 274:HelloCojac.c  **** static double ulpf(float a) { //PRE: a is neither INF nor NaN
+ 1316              		.loc 1 274 0
+ 1317              		.cfi_startproc
+ 1318 083c 55       		pushq	%rbp
+ 1319              	.LCFI93:
+ 1320              		.cfi_def_cfa_offset 16
+ 1321 083d 4889E5   		movq	%rsp, %rbp
+ 1322              		.cfi_offset 6, -16
+ 1323              	.LCFI94:
+ 1324              		.cfi_def_cfa_register 6
+ 1325 0840 4883EC20 		subq	$32, %rsp
+ 1326 0844 F30F1145 		movss	%xmm0, -4(%rbp)
+ 1326      FC
+ 275:HelloCojac.c  ****   return fabsf(nextafterf(a,INFINITY)-a);
+ 1327              		.loc 1 275 0
+ 1328 0849 F30F1045 		movss	-4(%rbp), %xmm0
+ 1328      FC
+ 1329 084e F30F100D 		movss	.LC20(%rip), %xmm1
+ 1329      00000000 
+ 1330 0856 E8000000 		call	nextafterf
+ 1330      00
+ 1331 085b F30F5C45 		subss	-4(%rbp), %xmm0
+ 1331      FC
+ 1332 0860 F30F100D 		movss	.LC21(%rip), %xmm1
+ 1332      00000000 
+ 1333 0868 0F28D0   		movaps	%xmm0, %xmm2
+ 1334 086b 0F54D1   		andps	%xmm1, %xmm2
+ 1335 086e F30F1155 		movss	%xmm2, -8(%rbp)
+ 1335      F8
+ 1336 0873 D945F8   		flds	-8(%rbp)
+ 1337 0876 DD5DE8   		fstpl	-24(%rbp)
+ 1338 0879 0F1245E8 		movlps	-24(%rbp), %xmm0
+ 276:HelloCojac.c  **** }
+ 1339              		.loc 1 276 0
+ 1340 087d C9       		leave
+ 1341              	.LCFI95:
+ 1342              		.cfi_def_cfa 7, 8
+ 1343 087e C3       		ret
+ 1344              		.cfi_endproc
+ 1345              	.LFE31:
+ 1348              	susp_comp_double:
+ 1349              	.LFB32:
+ 277:HelloCojac.c  **** //------------------------------------------------
+ 278:HelloCojac.c  **** 
+ 279:HelloCojac.c  **** static void susp_comp_double() {
+ 1350              		.loc 1 279 0
+ 1351              		.cfi_startproc
+ 1352 087f 55       		pushq	%rbp
+ 1353              	.LCFI96:
+ 1354              		.cfi_def_cfa_offset 16
+ 1355 0880 4889E5   		movq	%rsp, %rbp
+ 1356              		.cfi_offset 6, -16
+ 1357              	.LCFI97:
+ 1358              		.cfi_def_cfa_register 6
+ 1359 0883 4883EC50 		subq	$80, %rsp
+ 280:HelloCojac.c  ****   double large=1.2E45, small=2.3E-44, max=DBL_MAX, inf=INFINITY, nan=NAN, zero=0.0;
+ 1360              		.loc 1 280 0
+ 1361 0887 48B8F13B 		movabsq	$5281288228340972529, %rax
+ 1361      B786A9E7 
+ 1361      4A49
+ 1362 0891 488945F8 		movq	%rax, -8(%rbp)
+ 1363 0895 48B8B5D4 		movabsq	$3954276820081169589, %rax
+ 1363      7F34D169 
+ 1363      E036
+ 1364 089f 488945F0 		movq	%rax, -16(%rbp)
+ 1365 08a3 48B8FFFF 		movabsq	$9218868437227405311, %rax
+ 1365      FFFFFFFF 
+ 1365      EF7F
+ 1366 08ad 488945E8 		movq	%rax, -24(%rbp)
+ 1367 08b1 48B80000 		movabsq	$9218868437227405312, %rax
+ 1367      00000000 
+ 1367      F07F
+ 1368 08bb 488945E0 		movq	%rax, -32(%rbp)
+ 1369 08bf 48B80000 		movabsq	$9221120237041090560, %rax
+ 1369      00000000 
+ 1369      F87F
+ 1370 08c9 488945D8 		movq	%rax, -40(%rbp)
+ 1371 08cd B8000000 		movl	$0, %eax
+ 1371      00
+ 1372 08d2 488945D0 		movq	%rax, -48(%rbp)
+ 281:HelloCojac.c  ****   double d= 0.0;
+ 1373              		.loc 1 281 0
+ 1374 08d6 B8000000 		movl	$0, %eax
+ 1374      00
+ 1375 08db 488945C8 		movq	%rax, -56(%rbp)
+ 282:HelloCojac.c  ****   d=large+small;
+ 1376              		.loc 1 282 0
+ 1377 08df DD45F8   		fldl	-8(%rbp)
+ 1378 08e2 DC45F0   		faddl	-16(%rbp)
+ 1379 08e5 DD5DC8   		fstpl	-56(%rbp)
+ 283:HelloCojac.c  ****   d=max+max;
+ 1380              		.loc 1 283 0
+ 1381 08e8 DD45E8   		fldl	-24(%rbp)
+ 1382 08eb D8C0     		fadd	%st(0), %st
+ 1383 08ed DD5DC8   		fstpl	-56(%rbp)
+ 284:HelloCojac.c  ****   d=large-small;
+ 1384              		.loc 1 284 0
+ 1385 08f0 DD45F8   		fldl	-8(%rbp)
+ 1386 08f3 DC65F0   		fsubl	-16(%rbp)
+ 1387 08f6 DD5DC8   		fstpl	-56(%rbp)
+ 285:HelloCojac.c  ****   d=inf/inf;
+ 1388              		.loc 1 285 0
+ 1389 08f9 DD45E0   		fldl	-32(%rbp)
+ 1390 08fc DC75E0   		fdivl	-32(%rbp)
+ 1391 08ff DD5DC8   		fstpl	-56(%rbp)
+ 286:HelloCojac.c  ****   d=large/zero;
+ 1392              		.loc 1 286 0
+ 1393 0902 DD45F8   		fldl	-8(%rbp)
+ 1394 0905 DC75D0   		fdivl	-48(%rbp)
+ 1395 0908 DD5DC8   		fstpl	-56(%rbp)
+ 287:HelloCojac.c  ****   d=small/zero;
+ 1396              		.loc 1 287 0
+ 1397 090b DD45F0   		fldl	-16(%rbp)
+ 1398 090e DC75D0   		fdivl	-48(%rbp)
+ 1399 0911 DD5DC8   		fstpl	-56(%rbp)
+ 288:HelloCojac.c  ****   d=zero/zero;
+ 1400              		.loc 1 288 0
+ 1401 0914 DD45D0   		fldl	-48(%rbp)
+ 1402 0917 DC75D0   		fdivl	-48(%rbp)
+ 1403 091a DD5DC8   		fstpl	-56(%rbp)
+ 289:HelloCojac.c  ****   d=large + (-large+ulp(large));
+ 1404              		.loc 1 289 0
+ 1405 091d 0F1245F8 		movlps	-8(%rbp), %xmm0
+ 1406 0921 E8DAFEFF 		call	ulp
+ 1406      FF
+ 1407 0926 0F1345B8 		movlps	%xmm0, -72(%rbp)
+ 1408 092a DD45B8   		fldl	-72(%rbp)
+ 1409 092d DC65F8   		fsubl	-8(%rbp)
+ 1410 0930 DC45F8   		faddl	-8(%rbp)
+ 1411 0933 DD5DC8   		fstpl	-56(%rbp)
+ 290:HelloCojac.c  ****   d=large;
+ 1412              		.loc 1 290 0
+ 1413 0936 488B45F8 		movq	-8(%rbp), %rax
+ 1414 093a 488945C8 		movq	%rax, -56(%rbp)
+ 291:HelloCojac.c  ****   d=3.25; //printf("line %d: ulp(%f)=%f\n", __LINE__, d, ulp(d));
+ 1415              		.loc 1 291 0
+ 1416 093e 48B80000 		movabsq	$4614500768194494464, %rax
+ 1416      00000000 
+ 1416      0A40
+ 1417 0948 488945C8 		movq	%rax, -56(%rbp)
+ 292:HelloCojac.c  **** }
+ 1418              		.loc 1 292 0
+ 1419 094c C9       		leave
+ 1420              	.LCFI98:
+ 1421              		.cfi_def_cfa 7, 8
+ 1422 094d C3       		ret
+ 1423              		.cfi_endproc
+ 1424              	.LFE32:
+ 1427              	susp_comp_float:
+ 1428              	.LFB33:
+ 293:HelloCojac.c  **** 
+ 294:HelloCojac.c  **** static void susp_comp_float() {
+ 1429              		.loc 1 294 0
+ 1430              		.cfi_startproc
+ 1431 094e 55       		pushq	%rbp
+ 1432              	.LCFI99:
+ 1433              		.cfi_def_cfa_offset 16
+ 1434 094f 4889E5   		movq	%rsp, %rbp
+ 1435              		.cfi_offset 6, -16
+ 1436              	.LCFI100:
+ 1437              		.cfi_def_cfa_register 6
+ 1438 0952 4883EC50 		subq	$80, %rsp
+ 295:HelloCojac.c  ****   Float large=1.2E45, small=2.3E-44, max=FLT_MAX, inf=INFINITY, nan=NAN, zero=0.0;
+ 1439              		.loc 1 295 0
+ 1440 0956 B8000080 		movl	$0x7f800000, %eax
+ 1440      7F
+ 1441 095b 8945FC   		movl	%eax, -4(%rbp)
+ 1442 095e B8100000 		movl	$0x00000010, %eax
+ 1442      00
+ 1443 0963 8945F8   		movl	%eax, -8(%rbp)
+ 1444 0966 B8FFFF7F 		movl	$0x7f7fffff, %eax
+ 1444      7F
+ 1445 096b 8945F4   		movl	%eax, -12(%rbp)
+ 1446 096e B8000080 		movl	$0x7f800000, %eax
+ 1446      7F
+ 1447 0973 8945F0   		movl	%eax, -16(%rbp)
+ 1448 0976 B80000C0 		movl	$0x7fc00000, %eax
+ 1448      7F
+ 1449 097b 8945EC   		movl	%eax, -20(%rbp)
+ 1450 097e B8000000 		movl	$0x00000000, %eax
+ 1450      00
+ 1451 0983 8945E8   		movl	%eax, -24(%rbp)
+ 296:HelloCojac.c  ****   Float d= 0.0;
+ 1452              		.loc 1 296 0
+ 1453 0986 B8000000 		movl	$0x00000000, %eax
+ 1453      00
+ 1454 098b 8945E4   		movl	%eax, -28(%rbp)
+ 297:HelloCojac.c  ****   d=large+small;
+ 1455              		.loc 1 297 0
+ 1456 098e F30F1045 		movss	-4(%rbp), %xmm0
+ 1456      FC
+ 1457 0993 F30F5845 		addss	-8(%rbp), %xmm0
+ 1457      F8
+ 1458 0998 F30F1145 		movss	%xmm0, -28(%rbp)
+ 1458      E4
+ 298:HelloCojac.c  ****   d=max+max;
+ 1459              		.loc 1 298 0
+ 1460 099d F30F1045 		movss	-12(%rbp), %xmm0
+ 1460      F4
+ 1461 09a2 F30F58C0 		addss	%xmm0, %xmm0
+ 1462 09a6 F30F1145 		movss	%xmm0, -28(%rbp)
+ 1462      E4
+ 299:HelloCojac.c  ****   d=large-small;
+ 1463              		.loc 1 299 0
+ 1464 09ab F30F1045 		movss	-4(%rbp), %xmm0
+ 1464      FC
+ 1465 09b0 F30F5C45 		subss	-8(%rbp), %xmm0
+ 1465      F8
+ 1466 09b5 F30F1145 		movss	%xmm0, -28(%rbp)
+ 1466      E4
+ 300:HelloCojac.c  ****   d=inf/inf;
+ 1467              		.loc 1 300 0
+ 1468 09ba F30F1045 		movss	-16(%rbp), %xmm0
+ 1468      F0
+ 1469 09bf F30F5E45 		divss	-16(%rbp), %xmm0
+ 1469      F0
+ 1470 09c4 F30F1145 		movss	%xmm0, -28(%rbp)
+ 1470      E4
+ 301:HelloCojac.c  ****   d=large/zero;
+ 1471              		.loc 1 301 0
+ 1472 09c9 F30F1045 		movss	-4(%rbp), %xmm0
+ 1472      FC
+ 1473 09ce F30F5E45 		divss	-24(%rbp), %xmm0
+ 1473      E8
+ 1474 09d3 F30F1145 		movss	%xmm0, -28(%rbp)
+ 1474      E4
+ 302:HelloCojac.c  ****   d=small/zero;
+ 1475              		.loc 1 302 0
+ 1476 09d8 F30F1045 		movss	-8(%rbp), %xmm0
+ 1476      F8
+ 1477 09dd F30F5E45 		divss	-24(%rbp), %xmm0
+ 1477      E8
+ 1478 09e2 F30F1145 		movss	%xmm0, -28(%rbp)
+ 1478      E4
+ 303:HelloCojac.c  ****   d=zero/zero;
+ 1479              		.loc 1 303 0
+ 1480 09e7 F30F1045 		movss	-24(%rbp), %xmm0
+ 1480      E8
+ 1481 09ec F30F5E45 		divss	-24(%rbp), %xmm0
+ 1481      E8
+ 1482 09f1 F30F1145 		movss	%xmm0, -28(%rbp)
+ 1482      E4
+ 304:HelloCojac.c  ****   d=large + (-large+ulpf(large));
+ 1483              		.loc 1 304 0
+ 1484 09f6 D945FC   		flds	-4(%rbp)
+ 1485 09f9 DD5DD0   		fstpl	-48(%rbp)
+ 1486 09fc F30F104D 		movss	-4(%rbp), %xmm1
+ 1486      FC
+ 1487 0a01 F30F1005 		movss	.LC29(%rip), %xmm0
+ 1487      00000000 
+ 1488 0a09 0F28D1   		movaps	%xmm1, %xmm2
+ 1489 0a0c 0F57D0   		xorps	%xmm0, %xmm2
+ 1490 0a0f F30F1155 		movss	%xmm2, -52(%rbp)
+ 1490      CC
+ 1491 0a14 D945CC   		flds	-52(%rbp)
+ 1492 0a17 DD5DC0   		fstpl	-64(%rbp)
+ 1493 0a1a F30F1045 		movss	-4(%rbp), %xmm0
+ 1493      FC
+ 1494 0a1f E818FEFF 		call	ulpf
+ 1494      FF
+ 1495 0a24 0F1345B8 		movlps	%xmm0, -72(%rbp)
+ 1496 0a28 DD45B8   		fldl	-72(%rbp)
+ 1497 0a2b DC45C0   		faddl	-64(%rbp)
+ 1498 0a2e DC45D0   		faddl	-48(%rbp)
+ 1499 0a31 D95DE4   		fstps	-28(%rbp)
+ 305:HelloCojac.c  ****   d=large;
+ 1500              		.loc 1 305 0
+ 1501 0a34 8B45FC   		movl	-4(%rbp), %eax
+ 1502 0a37 8945E4   		movl	%eax, -28(%rbp)
+ 306:HelloCojac.c  ****   d=3.25;
+ 1503              		.loc 1 306 0
+ 1504 0a3a B8000050 		movl	$0x40500000, %eax
+ 1504      40
+ 1505 0a3f 8945E4   		movl	%eax, -28(%rbp)
+ 307:HelloCojac.c  **** }
+ 1506              		.loc 1 307 0
+ 1507 0a42 C9       		leave
+ 1508              	.LCFI101:
+ 1509              		.cfi_def_cfa 7, 8
+ 1510 0a43 C3       		ret
+ 1511              		.cfi_endproc
+ 1512              	.LFE33:
+ 1515              	susp_comp_int:
+ 1516              	.LFB34:
+ 308:HelloCojac.c  **** 
+ 309:HelloCojac.c  **** static void susp_comp_int() {
+ 1517              		.loc 1 309 0
+ 1518              		.cfi_startproc
+ 1519 0a44 55       		pushq	%rbp
+ 1520              	.LCFI102:
+ 1521              		.cfi_def_cfa_offset 16
+ 1522 0a45 4889E5   		movq	%rsp, %rbp
+ 1523              		.cfi_offset 6, -16
+ 1524              	.LCFI103:
+ 1525              		.cfi_def_cfa_register 6
+ 310:HelloCojac.c  ****   int32_t imax=INT_MAX, imin=INT_MIN, minusOne=-1;
+ 1526              		.loc 1 310 0
+ 1527 0a48 C745FCFF 		movl	$2147483647, -4(%rbp)
+ 1527      FFFF7F
+ 1528 0a4f C745F800 		movl	$-2147483648, -8(%rbp)
+ 1528      000080
+ 1529 0a56 C745F4FF 		movl	$-1, -12(%rbp)
+ 1529      FFFFFF
+ 311:HelloCojac.c  ****   int i=0;
+ 1530              		.loc 1 311 0
+ 1531 0a5d C745F000 		movl	$0, -16(%rbp)
+ 1531      000000
+ 312:HelloCojac.c  ****   i=imax+imax; //i=add32(imax,imax);
+ 1532              		.loc 1 312 0
+ 1533 0a64 8B45FC   		movl	-4(%rbp), %eax
+ 1534 0a67 01C0     		addl	%eax, %eax
+ 1535 0a69 8945F0   		movl	%eax, -16(%rbp)
+ 313:HelloCojac.c  ****   i=imax*imax;
+ 1536              		.loc 1 313 0
+ 1537 0a6c 8B45FC   		movl	-4(%rbp), %eax
+ 1538 0a6f 0FAF45FC 		imull	-4(%rbp), %eax
+ 1539 0a73 8945F0   		movl	%eax, -16(%rbp)
+ 314:HelloCojac.c  ****   i=-imin;
+ 1540              		.loc 1 314 0
+ 1541 0a76 8B45F8   		movl	-8(%rbp), %eax
+ 1542 0a79 F7D8     		negl	%eax
+ 1543 0a7b 8945F0   		movl	%eax, -16(%rbp)
+ 315:HelloCojac.c  ****   i=imin*minusOne;
+ 1544              		.loc 1 315 0
+ 1545 0a7e 8B45F8   		movl	-8(%rbp), %eax
+ 1546 0a81 0FAF45F4 		imull	-12(%rbp), %eax
+ 1547 0a85 8945F0   		movl	%eax, -16(%rbp)
+ 316:HelloCojac.c  ****   // printf("ah %d / %d = %d \n", imin, minusOne, imin/minusOne);
+ 317:HelloCojac.c  ****   //i=imin / minusOne;
+ 318:HelloCojac.c  ****   i=imax-imin;
+ 1548              		.loc 1 318 0
+ 1549 0a88 8B45F8   		movl	-8(%rbp), %eax
+ 1550 0a8b 8B55FC   		movl	-4(%rbp), %edx
+ 1551 0a8e 89D1     		movl	%edx, %ecx
+ 1552 0a90 29C1     		subl	%eax, %ecx
+ 1553 0a92 89C8     		movl	%ecx, %eax
+ 1554 0a94 8945F0   		movl	%eax, -16(%rbp)
+ 319:HelloCojac.c  **** }
+ 1555              		.loc 1 319 0
+ 1556 0a97 C9       		leave
+ 1557              	.LCFI104:
+ 1558              		.cfi_def_cfa 7, 8
+ 1559 0a98 C3       		ret
+ 1560              		.cfi_endproc
+ 1561              	.LFE34:
+ 1564              	susp_comp_Long:
+ 1565              	.LFB35:
+ 320:HelloCojac.c  **** 
+ 321:HelloCojac.c  **** static void susp_comp_Long() {
+ 1566              		.loc 1 321 0
+ 1567              		.cfi_startproc
+ 1568 0a99 55       		pushq	%rbp
+ 1569              	.LCFI105:
+ 1570              		.cfi_def_cfa_offset 16
+ 1571 0a9a 4889E5   		movq	%rsp, %rbp
+ 1572              		.cfi_offset 6, -16
+ 1573              	.LCFI106:
+ 1574              		.cfi_def_cfa_register 6
+ 322:HelloCojac.c  ****   Long imax=LONG_MAX, imin=LONG_MIN, minusOne=-1L;
+ 1575              		.loc 1 322 0
+ 1576 0a9d C745F8FF 		movl	$-1, -8(%rbp)
+ 1576      FFFFFF
+ 1577 0aa4 C745FCFF 		movl	$2147483647, -4(%rbp)
+ 1577      FFFF7F
+ 1578 0aab C745F000 		movl	$0, -16(%rbp)
+ 1578      000000
+ 1579 0ab2 C745F400 		movl	$-2147483648, -12(%rbp)
+ 1579      000080
+ 1580 0ab9 48C745E8 		movq	$-1, -24(%rbp)
+ 1580      FFFFFFFF 
+ 323:HelloCojac.c  ****   Long i=0;
+ 1581              		.loc 1 323 0
+ 1582 0ac1 48C745E0 		movq	$0, -32(%rbp)
+ 1582      00000000 
+ 324:HelloCojac.c  ****   i=imax+imax;
+ 1583              		.loc 1 324 0
+ 1584 0ac9 488B45F8 		movq	-8(%rbp), %rax
+ 1585 0acd 4801C0   		addq	%rax, %rax
+ 1586 0ad0 488945E0 		movq	%rax, -32(%rbp)
+ 325:HelloCojac.c  ****   i=imax*imax;
+ 1587              		.loc 1 325 0
+ 1588 0ad4 488B45F8 		movq	-8(%rbp), %rax
+ 1589 0ad8 480FAF45 		imulq	-8(%rbp), %rax
+ 1589      F8
+ 1590 0add 488945E0 		movq	%rax, -32(%rbp)
+ 326:HelloCojac.c  ****   i=-imin;
+ 1591              		.loc 1 326 0
+ 1592 0ae1 488B45F0 		movq	-16(%rbp), %rax
+ 1593 0ae5 48F7D8   		negq	%rax
+ 1594 0ae8 488945E0 		movq	%rax, -32(%rbp)
+ 327:HelloCojac.c  ****   i=imin*minusOne;
+ 1595              		.loc 1 327 0
+ 1596 0aec 488B45F0 		movq	-16(%rbp), %rax
+ 1597 0af0 480FAF45 		imulq	-24(%rbp), %rax
+ 1597      E8
+ 1598 0af5 488945E0 		movq	%rax, -32(%rbp)
+ 328:HelloCojac.c  ****   i=imax-imin;
+ 1599              		.loc 1 328 0
+ 1600 0af9 488B45F0 		movq	-16(%rbp), %rax
+ 1601 0afd 488B55F8 		movq	-8(%rbp), %rdx
+ 1602 0b01 4889D1   		movq	%rdx, %rcx
+ 1603 0b04 4829C1   		subq	%rax, %rcx
+ 1604 0b07 4889C8   		movq	%rcx, %rax
+ 1605 0b0a 488945E0 		movq	%rax, -32(%rbp)
+ 329:HelloCojac.c  **** }
+ 1606              		.loc 1 329 0
+ 1607 0b0e C9       		leave
+ 1608              	.LCFI107:
+ 1609              		.cfi_def_cfa 7, 8
+ 1610 0b0f C3       		ret
+ 1611              		.cfi_endproc
+ 1612              	.LFE35:
+ 1615              	susp_comp_short:
+ 1616              	.LFB36:
+ 330:HelloCojac.c  **** 
+ 331:HelloCojac.c  **** static void susp_comp_short() {
+ 1617              		.loc 1 331 0
+ 1618              		.cfi_startproc
+ 1619 0b10 55       		pushq	%rbp
+ 1620              	.LCFI108:
+ 1621              		.cfi_def_cfa_offset 16
+ 1622 0b11 4889E5   		movq	%rsp, %rbp
+ 1623              		.cfi_offset 6, -16
+ 1624              	.LCFI109:
+ 1625              		.cfi_def_cfa_register 6
+ 1626 0b14 4883EC10 		subq	$16, %rsp
+ 332:HelloCojac.c  ****   // short
+ 333:HelloCojac.c  ****   int16_t smax=SHRT_MAX, smin=SHRT_MIN;
+ 1627              		.loc 1 333 0
+ 1628 0b18 66C745FE 		movw	$32767, -2(%rbp)
+ 1628      FF7F
+ 1629 0b1e 66C745FC 		movw	$-32768, -4(%rbp)
+ 1629      0080
+ 334:HelloCojac.c  ****   int s=0;
+ 1630              		.loc 1 334 0
+ 1631 0b24 C745F800 		movl	$0, -8(%rbp)
+ 1631      000000
+ 335:HelloCojac.c  ****   s=add16(smax, smax); //smax+smax; //i=add32(imax,imax);
+ 1632              		.loc 1 335 0
+ 1633 0b2b 0FBF55FE 		movswl	-2(%rbp), %edx
+ 1634 0b2f 0FBF45FE 		movswl	-2(%rbp), %eax
+ 1635 0b33 89D6     		movl	%edx, %esi
+ 1636 0b35 89C7     		movl	%eax, %edi
+ 1637 0b37 E87AF7FF 		call	add16
+ 1637      FF
+ 1638 0b3c 98       		cwtl
+ 1639 0b3d 8945F8   		movl	%eax, -8(%rbp)
+ 336:HelloCojac.c  ****   s=smax*smax;
+ 1640              		.loc 1 336 0
+ 1641 0b40 0FBF55FE 		movswl	-2(%rbp), %edx
+ 1642 0b44 0FBF45FE 		movswl	-2(%rbp), %eax
+ 1643 0b48 0FAFC2   		imull	%edx, %eax
+ 1644 0b4b 8945F8   		movl	%eax, -8(%rbp)
+ 337:HelloCojac.c  ****   s=smin / -1;
+ 1645              		.loc 1 337 0
+ 1646 0b4e 0FBF45FC 		movswl	-4(%rbp), %eax
+ 1647 0b52 F7D8     		negl	%eax
+ 1648 0b54 8945F8   		movl	%eax, -8(%rbp)
+ 338:HelloCojac.c  ****   s=smax-smin;
+ 1649              		.loc 1 338 0
+ 1650 0b57 0FBF55FE 		movswl	-2(%rbp), %edx
+ 1651 0b5b 0FBF45FC 		movswl	-4(%rbp), %eax
+ 1652 0b5f 89D1     		movl	%edx, %ecx
+ 1653 0b61 29C1     		subl	%eax, %ecx
+ 1654 0b63 89C8     		movl	%ecx, %eax
+ 1655 0b65 8945F8   		movl	%eax, -8(%rbp)
+ 339:HelloCojac.c  **** }
+ 1656              		.loc 1 339 0
+ 1657 0b68 C9       		leave
+ 1658              	.LCFI110:
+ 1659              		.cfi_def_cfa 7, 8
+ 1660 0b69 C3       		ret
+ 1661              		.cfi_endproc
+ 1662              	.LFE36:
+ 1665              	suspecious_computations:
+ 1666              	.LFB37:
+ 340:HelloCojac.c  **** 
+ 341:HelloCojac.c  **** static void suspecious_computations() {
+ 1667              		.loc 1 341 0
+ 1668              		.cfi_startproc
+ 1669 0b6a 55       		pushq	%rbp
+ 1670              	.LCFI111:
+ 1671              		.cfi_def_cfa_offset 16
+ 1672 0b6b 4889E5   		movq	%rsp, %rbp
+ 1673              		.cfi_offset 6, -16
+ 1674              	.LCFI112:
+ 1675              		.cfi_def_cfa_register 6
+ 342:HelloCojac.c  **** 	susp_comp_double();
+ 1676              		.loc 1 342 0
+ 1677 0b6e B8000000 		movl	$0, %eax
+ 1677      00
+ 1678 0b73 E807FDFF 		call	susp_comp_double
+ 1678      FF
+ 343:HelloCojac.c  **** 	susp_comp_float();
+ 1679              		.loc 1 343 0
+ 1680 0b78 B8000000 		movl	$0, %eax
+ 1680      00
+ 1681 0b7d E8CCFDFF 		call	susp_comp_float
+ 1681      FF
+ 344:HelloCojac.c  **** 	susp_comp_int();
+ 1682              		.loc 1 344 0
+ 1683 0b82 B8000000 		movl	$0, %eax
+ 1683      00
+ 1684 0b87 E8B8FEFF 		call	susp_comp_int
+ 1684      FF
+ 345:HelloCojac.c  **** 	susp_comp_Long();
+ 1685              		.loc 1 345 0
+ 1686 0b8c B8000000 		movl	$0, %eax
+ 1686      00
+ 1687 0b91 E803FFFF 		call	susp_comp_Long
+ 1687      FF
+ 346:HelloCojac.c  **** 	susp_comp_short();
+ 1688              		.loc 1 346 0
+ 1689 0b96 B8000000 		movl	$0, %eax
+ 1689      00
+ 1690 0b9b E870FFFF 		call	susp_comp_short
+ 1690      FF
+ 347:HelloCojac.c  **** }
+ 1691              		.loc 1 347 0
+ 1692 0ba0 C9       		leave
+ 1693              	.LCFI113:
+ 1694              		.cfi_def_cfa 7, 8
+ 1695 0ba1 C3       		ret
+ 1696              		.cfi_endproc
+ 1697              	.LFE37:
+ 1700              	norm_comp_double:
+ 1701              	.LFB38:
+ 348:HelloCojac.c  **** //------------------------------------------------
+ 349:HelloCojac.c  **** 
+ 350:HelloCojac.c  **** static void norm_comp_double() {
+ 1702              		.loc 1 350 0
+ 1703              		.cfi_startproc
+ 1704 0ba2 55       		pushq	%rbp
+ 1705              	.LCFI114:
+ 1706              		.cfi_def_cfa_offset 16
+ 1707 0ba3 4889E5   		movq	%rsp, %rbp
+ 1708              		.cfi_offset 6, -16
+ 1709              	.LCFI115:
+ 1710              		.cfi_def_cfa_register 6
+ 351:HelloCojac.c  ****   double large=1.2E45, small=2.3E-44, max=DBL_MAX, inf=INFINITY, nan=NAN, zero=0.0, pi=3.14;
+ 1711              		.loc 1 351 0
+ 1712 0ba6 48B8F13B 		movabsq	$5281288228340972529, %rax
+ 1712      B786A9E7 
+ 1712      4A49
+ 1713 0bb0 488945F8 		movq	%rax, -8(%rbp)
+ 1714 0bb4 48B8B5D4 		movabsq	$3954276820081169589, %rax
+ 1714      7F34D169 
+ 1714      E036
+ 1715 0bbe 488945F0 		movq	%rax, -16(%rbp)
+ 1716 0bc2 48B8FFFF 		movabsq	$9218868437227405311, %rax
+ 1716      FFFFFFFF 
+ 1716      EF7F
+ 1717 0bcc 488945E8 		movq	%rax, -24(%rbp)
+ 1718 0bd0 48B80000 		movabsq	$9218868437227405312, %rax
+ 1718      00000000 
+ 1718      F07F
+ 1719 0bda 488945E0 		movq	%rax, -32(%rbp)
+ 1720 0bde 48B80000 		movabsq	$9221120237041090560, %rax
+ 1720      00000000 
+ 1720      F87F
+ 1721 0be8 488945D8 		movq	%rax, -40(%rbp)
+ 1722 0bec B8000000 		movl	$0, %eax
+ 1722      00
+ 1723 0bf1 488945D0 		movq	%rax, -48(%rbp)
+ 1724 0bf5 48B81F85 		movabsq	$4614253070214989087, %rax
+ 1724      EB51B81E 
+ 1724      0940
+ 1725 0bff 488945C8 		movq	%rax, -56(%rbp)
+ 352:HelloCojac.c  ****   double d= 0.0;
+ 1726              		.loc 1 352 0
+ 1727 0c03 B8000000 		movl	$0, %eax
+ 1727      00
+ 1728 0c08 488945C0 		movq	%rax, -64(%rbp)
+ 353:HelloCojac.c  **** 
+ 354:HelloCojac.c  ****   double thirtyeight=38.0, seventythree=73.0;
+ 1729              		.loc 1 354 0
+ 1730 0c0c 48B80000 		movabsq	$4630544841867001856, %rax
+ 1730      00000000 
+ 1730      4340
+ 1731 0c16 488945B8 		movq	%rax, -72(%rbp)
+ 1732 0c1a 48B80000 		movabsq	$4634837335261839360, %rax
+ 1732      00000040 
+ 1732      5240
+ 1733 0c24 488945B0 		movq	%rax, -80(%rbp)
+ 355:HelloCojac.c  ****   d=thirtyeight * seventythree;
+ 1734              		.loc 1 355 0
+ 1735 0c28 DD45B8   		fldl	-72(%rbp)
+ 1736 0c2b DC4DB0   		fmull	-80(%rbp)
+ 1737 0c2e DD5DC0   		fstpl	-64(%rbp)
+ 356:HelloCojac.c  ****   d=thirtyeight - seventythree;
+ 1738              		.loc 1 356 0
+ 1739 0c31 DD45B8   		fldl	-72(%rbp)
+ 1740 0c34 DC65B0   		fsubl	-80(%rbp)
+ 1741 0c37 DD5DC0   		fstpl	-64(%rbp)
+ 357:HelloCojac.c  ****   d=thirtyeight + seventythree;
+ 1742              		.loc 1 357 0
+ 1743 0c3a DD45B8   		fldl	-72(%rbp)
+ 1744 0c3d DC45B0   		faddl	-80(%rbp)
+ 1745 0c40 DD5DC0   		fstpl	-64(%rbp)
+ 358:HelloCojac.c  ****   d=thirtyeight / seventythree;
+ 1746              		.loc 1 358 0
+ 1747 0c43 DD45B8   		fldl	-72(%rbp)
+ 1748 0c46 DC75B0   		fdivl	-80(%rbp)
+ 1749 0c49 DD5DC0   		fstpl	-64(%rbp)
+ 359:HelloCojac.c  **** 
+ 360:HelloCojac.c  ****   d= large+large;
+ 1750              		.loc 1 360 0
+ 1751 0c4c DD45F8   		fldl	-8(%rbp)
+ 1752 0c4f D8C0     		fadd	%st(0), %st
+ 1753 0c51 DD5DC0   		fstpl	-64(%rbp)
+ 361:HelloCojac.c  ****   d= small+small;
+ 1754              		.loc 1 361 0
+ 1755 0c54 DD45F0   		fldl	-16(%rbp)
+ 1756 0c57 D8C0     		fadd	%st(0), %st
+ 1757 0c59 DD5DC0   		fstpl	-64(%rbp)
+ 362:HelloCojac.c  ****   d= max-max;
+ 1758              		.loc 1 362 0
+ 1759 0c5c DD45E8   		fldl	-24(%rbp)
+ 1760 0c5f DC65E8   		fsubl	-24(%rbp)
+ 1761 0c62 DD5DC0   		fstpl	-64(%rbp)
+ 363:HelloCojac.c  ****   d= max/max;
+ 1762              		.loc 1 363 0
+ 1763 0c65 DD45E8   		fldl	-24(%rbp)
+ 1764 0c68 DC75E8   		fdivl	-24(%rbp)
+ 1765 0c6b DD5DC0   		fstpl	-64(%rbp)
+ 364:HelloCojac.c  ****   d= pi*pi;
+ 1766              		.loc 1 364 0
+ 1767 0c6e DD45C8   		fldl	-56(%rbp)
+ 1768 0c71 DC4DC8   		fmull	-56(%rbp)
+ 1769 0c74 DD5DC0   		fstpl	-64(%rbp)
+ 365:HelloCojac.c  **** }
+ 1770              		.loc 1 365 0
+ 1771 0c77 C9       		leave
+ 1772              	.LCFI116:
+ 1773              		.cfi_def_cfa 7, 8
+ 1774 0c78 C3       		ret
+ 1775              		.cfi_endproc
+ 1776              	.LFE38:
+ 1779              	norm_comp_float:
+ 1780              	.LFB39:
+ 366:HelloCojac.c  **** 
+ 367:HelloCojac.c  **** static void norm_comp_float() {
+ 1781              		.loc 1 367 0
+ 1782              		.cfi_startproc
+ 1783 0c79 55       		pushq	%rbp
+ 1784              	.LCFI117:
+ 1785              		.cfi_def_cfa_offset 16
+ 1786 0c7a 4889E5   		movq	%rsp, %rbp
+ 1787              		.cfi_offset 6, -16
+ 1788              	.LCFI118:
+ 1789              		.cfi_def_cfa_register 6
+ 368:HelloCojac.c  ****   float largef=1.2E15, smallf=2.3E-14, maxf=FLT_MAX, inff=INFINITY, nanf=NAN, zerof=0.0, pif=3.14;
+ 1790              		.loc 1 368 0
+ 1791 0c7d B8996C88 		movl	$0x58886c99, %eax
+ 1791      58
+ 1792 0c82 8945FC   		movl	%eax, -4(%rbp)
+ 1793 0c85 B8642ACF 		movl	$0x28cf2a64, %eax
+ 1793      28
+ 1794 0c8a 8945F8   		movl	%eax, -8(%rbp)
+ 1795 0c8d B8FFFF7F 		movl	$0x7f7fffff, %eax
+ 1795      7F
+ 1796 0c92 8945F4   		movl	%eax, -12(%rbp)
+ 1797 0c95 B8000080 		movl	$0x7f800000, %eax
+ 1797      7F
+ 1798 0c9a 8945F0   		movl	%eax, -16(%rbp)
+ 1799 0c9d B80000C0 		movl	$0x7fc00000, %eax
+ 1799      7F
+ 1800 0ca2 8945EC   		movl	%eax, -20(%rbp)
+ 1801 0ca5 B8000000 		movl	$0x00000000, %eax
+ 1801      00
+ 1802 0caa 8945E8   		movl	%eax, -24(%rbp)
+ 1803 0cad B8C3F548 		movl	$0x4048f5c3, %eax
+ 1803      40
+ 1804 0cb2 8945E4   		movl	%eax, -28(%rbp)
+ 369:HelloCojac.c  ****   float f= 0.0;
+ 1805              		.loc 1 369 0
+ 1806 0cb5 B8000000 		movl	$0x00000000, %eax
+ 1806      00
+ 1807 0cba 8945E0   		movl	%eax, -32(%rbp)
+ 370:HelloCojac.c  ****   f= largef+largef;//printf("line %d: %f\n", __LINE__, f);
+ 1808              		.loc 1 370 0
+ 1809 0cbd F30F1045 		movss	-4(%rbp), %xmm0
+ 1809      FC
+ 1810 0cc2 F30F58C0 		addss	%xmm0, %xmm0
+ 1811 0cc6 F30F1145 		movss	%xmm0, -32(%rbp)
+ 1811      E0
+ 371:HelloCojac.c  ****   f= smallf+smallf;
+ 1812              		.loc 1 371 0
+ 1813 0ccb F30F1045 		movss	-8(%rbp), %xmm0
+ 1813      F8
+ 1814 0cd0 F30F58C0 		addss	%xmm0, %xmm0
+ 1815 0cd4 F30F1145 		movss	%xmm0, -32(%rbp)
+ 1815      E0
+ 372:HelloCojac.c  ****   f= maxf-maxf;
+ 1816              		.loc 1 372 0
+ 1817 0cd9 F30F1045 		movss	-12(%rbp), %xmm0
+ 1817      F4
+ 1818 0cde F30F5C45 		subss	-12(%rbp), %xmm0
+ 1818      F4
+ 1819 0ce3 F30F1145 		movss	%xmm0, -32(%rbp)
+ 1819      E0
+ 373:HelloCojac.c  ****   f= maxf/maxf;
+ 1820              		.loc 1 373 0
+ 1821 0ce8 F30F1045 		movss	-12(%rbp), %xmm0
+ 1821      F4
+ 1822 0ced F30F5E45 		divss	-12(%rbp), %xmm0
+ 1822      F4
+ 1823 0cf2 F30F1145 		movss	%xmm0, -32(%rbp)
+ 1823      E0
+ 374:HelloCojac.c  ****   f= pif*pif;
+ 1824              		.loc 1 374 0
+ 1825 0cf7 F30F1045 		movss	-28(%rbp), %xmm0
+ 1825      E4
+ 1826 0cfc F30F5945 		mulss	-28(%rbp), %xmm0
+ 1826      E4
+ 1827 0d01 F30F1145 		movss	%xmm0, -32(%rbp)
+ 1827      E0
+ 375:HelloCojac.c  **** }
+ 1828              		.loc 1 375 0
+ 1829 0d06 C9       		leave
+ 1830              	.LCFI119:
+ 1831              		.cfi_def_cfa 7, 8
+ 1832 0d07 C3       		ret
+ 1833              		.cfi_endproc
+ 1834              	.LFE39:
+ 1837              	norm_comp_int:
+ 1838              	.LFB40:
+ 376:HelloCojac.c  **** 
+ 377:HelloCojac.c  **** static void norm_comp_int() {
+ 1839              		.loc 1 377 0
+ 1840              		.cfi_startproc
+ 1841 0d08 55       		pushq	%rbp
+ 1842              	.LCFI120:
+ 1843              		.cfi_def_cfa_offset 16
+ 1844 0d09 4889E5   		movq	%rsp, %rbp
+ 1845              		.cfi_offset 6, -16
+ 1846              	.LCFI121:
+ 1847              		.cfi_def_cfa_register 6
+ 378:HelloCojac.c  ****   // signed
+ 379:HelloCojac.c  ****   int32_t si=3, sj=5, sr=0;
+ 1848              		.loc 1 379 0
+ 1849 0d0c C745FC03 		movl	$3, -4(%rbp)
+ 1849      000000
+ 1850 0d13 C745F805 		movl	$5, -8(%rbp)
+ 1850      000000
+ 1851 0d1a C745F400 		movl	$0, -12(%rbp)
+ 1851      000000
+ 380:HelloCojac.c  ****   sr=si*sj;
+ 1852              		.loc 1 380 0
+ 1853 0d21 8B45FC   		movl	-4(%rbp), %eax
+ 1854 0d24 0FAF45F8 		imull	-8(%rbp), %eax
+ 1855 0d28 8945F4   		movl	%eax, -12(%rbp)
+ 381:HelloCojac.c  ****   sr=si+sj;
+ 1856              		.loc 1 381 0
+ 1857 0d2b 8B45F8   		movl	-8(%rbp), %eax
+ 1858 0d2e 8B55FC   		movl	-4(%rbp), %edx
+ 1859 0d31 8D0402   		leal	(%rdx,%rax), %eax
+ 1860 0d34 8945F4   		movl	%eax, -12(%rbp)
+ 382:HelloCojac.c  ****   sr=si-sj;
+ 1861              		.loc 1 382 0
+ 1862 0d37 8B45F8   		movl	-8(%rbp), %eax
+ 1863 0d3a 8B55FC   		movl	-4(%rbp), %edx
+ 1864 0d3d 89D1     		movl	%edx, %ecx
+ 1865 0d3f 29C1     		subl	%eax, %ecx
+ 1866 0d41 89C8     		movl	%ecx, %eax
+ 1867 0d43 8945F4   		movl	%eax, -12(%rbp)
+ 383:HelloCojac.c  ****   sr=si/sj;
+ 1868              		.loc 1 383 0
+ 1869 0d46 8B45FC   		movl	-4(%rbp), %eax
+ 1870 0d49 89C2     		movl	%eax, %edx
+ 1871 0d4b C1FA1F   		sarl	$31, %edx
+ 1872 0d4e F77DF8   		idivl	-8(%rbp)
+ 1873 0d51 8945F4   		movl	%eax, -12(%rbp)
+ 384:HelloCojac.c  ****   sr=si%sj;
+ 1874              		.loc 1 384 0
+ 1875 0d54 8B45FC   		movl	-4(%rbp), %eax
+ 1876 0d57 89C2     		movl	%eax, %edx
+ 1877 0d59 C1FA1F   		sarl	$31, %edx
+ 1878 0d5c F77DF8   		idivl	-8(%rbp)
+ 1879 0d5f 8955F4   		movl	%edx, -12(%rbp)
+ 385:HelloCojac.c  **** 
+ 386:HelloCojac.c  ****   // unsigned
+ 387:HelloCojac.c  ****   uint32_t ui=3, uj=5, ur=0;
+ 1880              		.loc 1 387 0
+ 1881 0d62 C745F003 		movl	$3, -16(%rbp)
+ 1881      000000
+ 1882 0d69 C745EC05 		movl	$5, -20(%rbp)
+ 1882      000000
+ 1883 0d70 C745E800 		movl	$0, -24(%rbp)
+ 1883      000000
+ 388:HelloCojac.c  ****   ur=ui*uj;
+ 1884              		.loc 1 388 0
+ 1885 0d77 8B45F0   		movl	-16(%rbp), %eax
+ 1886 0d7a 0FAF45EC 		imull	-20(%rbp), %eax
+ 1887 0d7e 8945E8   		movl	%eax, -24(%rbp)
+ 389:HelloCojac.c  ****   ur=ui+uj;
+ 1888              		.loc 1 389 0
+ 1889 0d81 8B45EC   		movl	-20(%rbp), %eax
+ 1890 0d84 8B55F0   		movl	-16(%rbp), %edx
+ 1891 0d87 8D0402   		leal	(%rdx,%rax), %eax
+ 1892 0d8a 8945E8   		movl	%eax, -24(%rbp)
+ 390:HelloCojac.c  ****   ur=ui-uj;
+ 1893              		.loc 1 390 0
+ 1894 0d8d 8B45EC   		movl	-20(%rbp), %eax
+ 1895 0d90 8B55F0   		movl	-16(%rbp), %edx
+ 1896 0d93 89D1     		movl	%edx, %ecx
+ 1897 0d95 29C1     		subl	%eax, %ecx
+ 1898 0d97 89C8     		movl	%ecx, %eax
+ 1899 0d99 8945E8   		movl	%eax, -24(%rbp)
+ 391:HelloCojac.c  ****   ur=ui/uj;
+ 1900              		.loc 1 391 0
+ 1901 0d9c 8B45F0   		movl	-16(%rbp), %eax
+ 1902 0d9f BA000000 		movl	$0, %edx
+ 1902      00
+ 1903 0da4 F775EC   		divl	-20(%rbp)
+ 1904 0da7 8945E8   		movl	%eax, -24(%rbp)
+ 392:HelloCojac.c  ****   ur=ui%uj;
+ 1905              		.loc 1 392 0
+ 1906 0daa 8B45F0   		movl	-16(%rbp), %eax
+ 1907 0dad BA000000 		movl	$0, %edx
+ 1907      00
+ 1908 0db2 F775EC   		divl	-20(%rbp)
+ 1909 0db5 8955E8   		movl	%edx, -24(%rbp)
+ 393:HelloCojac.c  **** }
+ 1910              		.loc 1 393 0
+ 1911 0db8 C9       		leave
+ 1912              	.LCFI122:
+ 1913              		.cfi_def_cfa 7, 8
+ 1914 0db9 C3       		ret
+ 1915              		.cfi_endproc
+ 1916              	.LFE40:
+ 1919              	norm_comp_long:
+ 1920              	.LFB41:
+ 394:HelloCojac.c  **** 
+ 395:HelloCojac.c  **** static void norm_comp_long() {
+ 1921              		.loc 1 395 0
+ 1922              		.cfi_startproc
+ 1923 0dba 55       		pushq	%rbp
+ 1924              	.LCFI123:
+ 1925              		.cfi_def_cfa_offset 16
+ 1926 0dbb 4889E5   		movq	%rsp, %rbp
+ 1927              		.cfi_offset 6, -16
+ 1928              	.LCFI124:
+ 1929              		.cfi_def_cfa_register 6
+ 396:HelloCojac.c  ****   // signed
+ 397:HelloCojac.c  ****   int64_t si=3L, sj=5L, sr=0L;
+ 1930              		.loc 1 397 0
+ 1931 0dbe 48C745F8 		movq	$3, -8(%rbp)
+ 1931      03000000 
+ 1932 0dc6 48C745F0 		movq	$5, -16(%rbp)
+ 1932      05000000 
+ 1933 0dce 48C745E8 		movq	$0, -24(%rbp)
+ 1933      00000000 
+ 398:HelloCojac.c  ****   sr=si*sj;
+ 1934              		.loc 1 398 0
+ 1935 0dd6 488B45F8 		movq	-8(%rbp), %rax
+ 1936 0dda 480FAF45 		imulq	-16(%rbp), %rax
+ 1936      F0
+ 1937 0ddf 488945E8 		movq	%rax, -24(%rbp)
+ 399:HelloCojac.c  ****   sr=si+sj;
+ 1938              		.loc 1 399 0
+ 1939 0de3 488B45F0 		movq	-16(%rbp), %rax
+ 1940 0de7 488B55F8 		movq	-8(%rbp), %rdx
+ 1941 0deb 488D0402 		leaq	(%rdx,%rax), %rax
+ 1942 0def 488945E8 		movq	%rax, -24(%rbp)
+ 400:HelloCojac.c  ****   sr=si-sj;
+ 1943              		.loc 1 400 0
+ 1944 0df3 488B45F0 		movq	-16(%rbp), %rax
+ 1945 0df7 488B55F8 		movq	-8(%rbp), %rdx
+ 1946 0dfb 4889D1   		movq	%rdx, %rcx
+ 1947 0dfe 4829C1   		subq	%rax, %rcx
+ 1948 0e01 4889C8   		movq	%rcx, %rax
+ 1949 0e04 488945E8 		movq	%rax, -24(%rbp)
+ 401:HelloCojac.c  ****   sr=si/sj;
+ 1950              		.loc 1 401 0
+ 1951 0e08 488B45F8 		movq	-8(%rbp), %rax
+ 1952 0e0c 4889C2   		movq	%rax, %rdx
+ 1953 0e0f 48C1FA3F 		sarq	$63, %rdx
+ 1954 0e13 48F77DF0 		idivq	-16(%rbp)
+ 1955 0e17 488945E8 		movq	%rax, -24(%rbp)
+ 402:HelloCojac.c  ****   sr=si%sj;
+ 1956              		.loc 1 402 0
+ 1957 0e1b 488B45F8 		movq	-8(%rbp), %rax
+ 1958 0e1f 4889C2   		movq	%rax, %rdx
+ 1959 0e22 48C1FA3F 		sarq	$63, %rdx
+ 1960 0e26 48F77DF0 		idivq	-16(%rbp)
+ 1961 0e2a 488955E8 		movq	%rdx, -24(%rbp)
+ 403:HelloCojac.c  **** 
+ 404:HelloCojac.c  ****   // unsigned
+ 405:HelloCojac.c  ****   uint64_t ui=3L, uj=5L, ur=0L;
+ 1962              		.loc 1 405 0
+ 1963 0e2e 48C745E0 		movq	$3, -32(%rbp)
+ 1963      03000000 
+ 1964 0e36 48C745D8 		movq	$5, -40(%rbp)
+ 1964      05000000 
+ 1965 0e3e 48C745D0 		movq	$0, -48(%rbp)
+ 1965      00000000 
+ 406:HelloCojac.c  ****   ur=ui*uj;
+ 1966              		.loc 1 406 0
+ 1967 0e46 488B45E0 		movq	-32(%rbp), %rax
+ 1968 0e4a 480FAF45 		imulq	-40(%rbp), %rax
+ 1968      D8
+ 1969 0e4f 488945D0 		movq	%rax, -48(%rbp)
+ 407:HelloCojac.c  ****   ur=ui+uj;
+ 1970              		.loc 1 407 0
+ 1971 0e53 488B45D8 		movq	-40(%rbp), %rax
+ 1972 0e57 488B55E0 		movq	-32(%rbp), %rdx
+ 1973 0e5b 488D0402 		leaq	(%rdx,%rax), %rax
+ 1974 0e5f 488945D0 		movq	%rax, -48(%rbp)
+ 408:HelloCojac.c  ****   ur=ui-uj;
+ 1975              		.loc 1 408 0
+ 1976 0e63 488B45D8 		movq	-40(%rbp), %rax
+ 1977 0e67 488B55E0 		movq	-32(%rbp), %rdx
+ 1978 0e6b 4889D1   		movq	%rdx, %rcx
+ 1979 0e6e 4829C1   		subq	%rax, %rcx
+ 1980 0e71 4889C8   		movq	%rcx, %rax
+ 1981 0e74 488945D0 		movq	%rax, -48(%rbp)
+ 409:HelloCojac.c  ****   ur=ui/uj;
+ 1982              		.loc 1 409 0
+ 1983 0e78 488B45E0 		movq	-32(%rbp), %rax
+ 1984 0e7c BA000000 		movl	$0, %edx
+ 1984      00
+ 1985 0e81 48F775D8 		divq	-40(%rbp)
+ 1986 0e85 488945D0 		movq	%rax, -48(%rbp)
+ 410:HelloCojac.c  ****   ur=ui%uj;
+ 1987              		.loc 1 410 0
+ 1988 0e89 488B45E0 		movq	-32(%rbp), %rax
+ 1989 0e8d BA000000 		movl	$0, %edx
+ 1989      00
+ 1990 0e92 48F775D8 		divq	-40(%rbp)
+ 1991 0e96 488955D0 		movq	%rdx, -48(%rbp)
+ 411:HelloCojac.c  **** 
+ 412:HelloCojac.c  **** }
+ 1992              		.loc 1 412 0
+ 1993 0e9a C9       		leave
+ 1994              	.LCFI125:
+ 1995              		.cfi_def_cfa 7, 8
+ 1996 0e9b C3       		ret
+ 1997              		.cfi_endproc
+ 1998              	.LFE41:
+ 2001              	norm_comp_short:
+ 2002              	.LFB42:
+ 413:HelloCojac.c  **** static void norm_comp_short() {
+ 2003              		.loc 1 413 0
+ 2004              		.cfi_startproc
+ 2005 0e9c 55       		pushq	%rbp
+ 2006              	.LCFI126:
+ 2007              		.cfi_def_cfa_offset 16
+ 2008 0e9d 4889E5   		movq	%rsp, %rbp
+ 2009              		.cfi_offset 6, -16
+ 2010              	.LCFI127:
+ 2011              		.cfi_def_cfa_register 6
+ 414:HelloCojac.c  ****   // signed
+ 415:HelloCojac.c  ****   int16_t sis=3, sjs=5, srs=0;
+ 2012              		.loc 1 415 0
+ 2013 0ea0 66C745FE 		movw	$3, -2(%rbp)
+ 2013      0300
+ 2014 0ea6 66C745FC 		movw	$5, -4(%rbp)
+ 2014      0500
+ 2015 0eac 66C745FA 		movw	$0, -6(%rbp)
+ 2015      0000
+ 416:HelloCojac.c  ****   srs=sis*sjs;
+ 2016              		.loc 1 416 0
+ 2017 0eb2 0FB755FE 		movzwl	-2(%rbp), %edx
+ 2018 0eb6 0FB745FC 		movzwl	-4(%rbp), %eax
+ 2019 0eba 0FAFC2   		imull	%edx, %eax
+ 2020 0ebd 668945FA 		movw	%ax, -6(%rbp)
+ 417:HelloCojac.c  ****   srs=sis+sjs;
+ 2021              		.loc 1 417 0
+ 2022 0ec1 0FB755FE 		movzwl	-2(%rbp), %edx
+ 2023 0ec5 0FB745FC 		movzwl	-4(%rbp), %eax
+ 2024 0ec9 8D0402   		leal	(%rdx,%rax), %eax
+ 2025 0ecc 668945FA 		movw	%ax, -6(%rbp)
+ 418:HelloCojac.c  ****   srs=sis-sjs;
+ 2026              		.loc 1 418 0
+ 2027 0ed0 0FB755FE 		movzwl	-2(%rbp), %edx
+ 2028 0ed4 0FB745FC 		movzwl	-4(%rbp), %eax
+ 2029 0ed8 89D1     		movl	%edx, %ecx
+ 2030 0eda 6629C1   		subw	%ax, %cx
+ 2031 0edd 89C8     		movl	%ecx, %eax
+ 2032 0edf 668945FA 		movw	%ax, -6(%rbp)
+ 419:HelloCojac.c  ****   srs=sis/sjs;
+ 2033              		.loc 1 419 0
+ 2034 0ee3 0FBF45FE 		movswl	-2(%rbp), %eax
+ 2035 0ee7 0FBF55FC 		movswl	-4(%rbp), %edx
+ 2036 0eeb 8955EC   		movl	%edx, -20(%rbp)
+ 2037 0eee 89C2     		movl	%eax, %edx
+ 2038 0ef0 C1FA1F   		sarl	$31, %edx
+ 2039 0ef3 F77DEC   		idivl	-20(%rbp)
+ 2040 0ef6 668945FA 		movw	%ax, -6(%rbp)
+ 420:HelloCojac.c  ****   srs=sis%sjs;
+ 2041              		.loc 1 420 0
+ 2042 0efa 0FBF45FE 		movswl	-2(%rbp), %eax
+ 2043 0efe 0FBF4DFC 		movswl	-4(%rbp), %ecx
+ 2044 0f02 89C2     		movl	%eax, %edx
+ 2045 0f04 C1FA1F   		sarl	$31, %edx
+ 2046 0f07 F7F9     		idivl	%ecx
+ 2047 0f09 89D0     		movl	%edx, %eax
+ 2048 0f0b 668945FA 		movw	%ax, -6(%rbp)
+ 421:HelloCojac.c  **** 
+ 422:HelloCojac.c  ****   // unsigned
+ 423:HelloCojac.c  ****   uint16_t uis=3, ujs=5, urs=0;
+ 2049              		.loc 1 423 0
+ 2050 0f0f 66C745F8 		movw	$3, -8(%rbp)
+ 2050      0300
+ 2051 0f15 66C745F6 		movw	$5, -10(%rbp)
+ 2051      0500
+ 2052 0f1b 66C745F4 		movw	$0, -12(%rbp)
+ 2052      0000
+ 424:HelloCojac.c  ****   urs=uis*ujs;
+ 2053              		.loc 1 424 0
+ 2054 0f21 0FB745F8 		movzwl	-8(%rbp), %eax
+ 2055 0f25 660FAF45 		imulw	-10(%rbp), %ax
+ 2055      F6
+ 2056 0f2a 668945F4 		movw	%ax, -12(%rbp)
+ 425:HelloCojac.c  ****   urs=uis+ujs;
+ 2057              		.loc 1 425 0
+ 2058 0f2e 0FB745F6 		movzwl	-10(%rbp), %eax
+ 2059 0f32 0FB755F8 		movzwl	-8(%rbp), %edx
+ 2060 0f36 8D0402   		leal	(%rdx,%rax), %eax
+ 2061 0f39 668945F4 		movw	%ax, -12(%rbp)
+ 426:HelloCojac.c  ****   urs=uis-ujs;
+ 2062              		.loc 1 426 0
+ 2063 0f3d 0FB745F6 		movzwl	-10(%rbp), %eax
+ 2064 0f41 0FB755F8 		movzwl	-8(%rbp), %edx
+ 2065 0f45 89D1     		movl	%edx, %ecx
+ 2066 0f47 6629C1   		subw	%ax, %cx
+ 2067 0f4a 89C8     		movl	%ecx, %eax
+ 2068 0f4c 668945F4 		movw	%ax, -12(%rbp)
+ 427:HelloCojac.c  ****   urs=uis/ujs;
+ 2069              		.loc 1 427 0
+ 2070 0f50 0FB745F8 		movzwl	-8(%rbp), %eax
+ 2071 0f54 BA000000 		movl	$0, %edx
+ 2071      00
+ 2072 0f59 66F775F6 		divw	-10(%rbp)
+ 2073 0f5d 668945F4 		movw	%ax, -12(%rbp)
+ 428:HelloCojac.c  ****   urs=uis%ujs;
+ 2074              		.loc 1 428 0
+ 2075 0f61 0FB745F8 		movzwl	-8(%rbp), %eax
+ 2076 0f65 BA000000 		movl	$0, %edx
+ 2076      00
+ 2077 0f6a 66F775F6 		divw	-10(%rbp)
+ 2078 0f6e 668955F4 		movw	%dx, -12(%rbp)
+ 429:HelloCojac.c  **** }
+ 2079              		.loc 1 429 0
+ 2080 0f72 C9       		leave
+ 2081              	.LCFI128:
+ 2082              		.cfi_def_cfa 7, 8
+ 2083 0f73 C3       		ret
+ 2084              		.cfi_endproc
+ 2085              	.LFE42:
+ 2088              	normal_computations:
+ 2089              	.LFB43:
+ 430:HelloCojac.c  **** 
+ 431:HelloCojac.c  **** 
+ 432:HelloCojac.c  **** static void normal_computations() {
+ 2090              		.loc 1 432 0
+ 2091              		.cfi_startproc
+ 2092 0f74 55       		pushq	%rbp
+ 2093              	.LCFI129:
+ 2094              		.cfi_def_cfa_offset 16
+ 2095 0f75 4889E5   		movq	%rsp, %rbp
+ 2096              		.cfi_offset 6, -16
+ 2097              	.LCFI130:
+ 2098              		.cfi_def_cfa_register 6
+ 433:HelloCojac.c  ****   norm_comp_double();
+ 2099              		.loc 1 433 0
+ 2100 0f78 B8000000 		movl	$0, %eax
+ 2100      00
+ 2101 0f7d E820FCFF 		call	norm_comp_double
+ 2101      FF
+ 434:HelloCojac.c  ****   norm_comp_float();
+ 2102              		.loc 1 434 0
+ 2103 0f82 B8000000 		movl	$0, %eax
+ 2103      00
+ 2104 0f87 E8EDFCFF 		call	norm_comp_float
+ 2104      FF
+ 435:HelloCojac.c  ****   norm_comp_int();
+ 2105              		.loc 1 435 0
+ 2106 0f8c B8000000 		movl	$0, %eax
+ 2106      00
+ 2107 0f91 E872FDFF 		call	norm_comp_int
+ 2107      FF
+ 436:HelloCojac.c  ****   norm_comp_long();
+ 2108              		.loc 1 436 0
+ 2109 0f96 B8000000 		movl	$0, %eax
+ 2109      00
+ 2110 0f9b E81AFEFF 		call	norm_comp_long
+ 2110      FF
+ 437:HelloCojac.c  ****   norm_comp_short();
+ 2111              		.loc 1 437 0
+ 2112 0fa0 B8000000 		movl	$0, %eax
+ 2112      00
+ 2113 0fa5 E8F2FEFF 		call	norm_comp_short
+ 2113      FF
+ 438:HelloCojac.c  **** }
+ 2114              		.loc 1 438 0
+ 2115 0faa C9       		leave
+ 2116              	.LCFI131:
+ 2117              		.cfi_def_cfa 7, 8
+ 2118 0fab C3       		ret
+ 2119              		.cfi_endproc
+ 2120              	.LFE43:
+ 2122              	.globl main
+ 2124              	main:
+ 2125              	.LFB44:
+ 439:HelloCojac.c  **** 
+ 440:HelloCojac.c  **** //------------------------------------------------
+ 441:HelloCojac.c  **** 
+ 442:HelloCojac.c  **** int main() {
+ 2126              		.loc 1 442 0
+ 2127              		.cfi_startproc
+ 2128 0fac 55       		pushq	%rbp
+ 2129              	.LCFI132:
+ 2130              		.cfi_def_cfa_offset 16
+ 2131 0fad 4889E5   		movq	%rsp, %rbp
+ 2132              		.cfi_offset 6, -16
+ 2133              	.LCFI133:
+ 2134              		.cfi_def_cfa_register 6
+ 443:HelloCojac.c  ****   suspecious_computations();
+ 2135              		.loc 1 443 0
+ 2136 0fb0 B8000000 		movl	$0, %eax
+ 2136      00
+ 2137 0fb5 E8B0FBFF 		call	suspecious_computations
+ 2137      FF
+ 444:HelloCojac.c  ****   normal_computations();
+ 2138              		.loc 1 444 0
+ 2139 0fba B8000000 		movl	$0, %eax
+ 2139      00
+ 2140 0fbf E8B0FFFF 		call	normal_computations
+ 2140      FF
+ 445:HelloCojac.c  ****   return 0;
+ 2141              		.loc 1 445 0
+ 2142 0fc4 B8000000 		movl	$0, %eax
+ 2142      00
+ 446:HelloCojac.c  **** }
+ 2143              		.loc 1 446 0
+ 2144 0fc9 C9       		leave
+ 2145              	.LCFI134:
+ 2146              		.cfi_def_cfa 7, 8
+ 2147 0fca C3       		ret
+ 2148              		.cfi_endproc
+ 2149              	.LFE44:
+ 2151              		.section	.rodata
+ 2152 00da 0000     		.align 4
+ 2153              	.LC2:
+ 2154 00dc 00EAEE46 		.long	1190062592
+ 2155              		.align 4
+ 2156              	.LC13:
+ 2157 00e0 00000040 		.long	1073741824
+ 2158 00e4 00000000 		.align 8
+ 2159              	.LC15:
+ 2160 00e8 00000000 		.long	0
+ 2161 00ec 00000040 		.long	1073741824
+ 2162              		.align 8
+ 2163              	.LC17:
+ 2164 00f0 48E17A14 		.long	343597384
+ 2165 00f4 AE470940 		.long	1074349998
+ 2166              		.align 4
+ 2167              	.LC20:
+ 2168 00f8 0000807F 		.long	2139095040
+ 2169 00fc 00000000 		.align 16
+ 2170              	.LC21:
+ 2171 0100 FFFFFF7F 		.long	2147483647
+ 2172 0104 00000000 		.long	0
+ 2173 0108 00000000 		.long	0
+ 2174 010c 00000000 		.long	0
+ 2175              		.align 16
+ 2176              	.LC29:
+ 2177 0110 00000080 		.long	2147483648
+ 2178 0114 00000000 		.long	0
+ 2179 0118 00000000 		.long	0
+ 2180 011c 00000000 		.long	0
+ 2181              		.text
+ 2182              	.Letext0:
