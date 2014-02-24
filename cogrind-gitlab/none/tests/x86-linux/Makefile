@@ -84,12 +84,12 @@ DIST_SOURCES = seg_override.c sigcontext.c
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run aclocal-1.11
-AMTAR = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run tar
+ACLOCAL = ${SHELL} /home/luis/git/cojac-grind/cogrind-gitlab/missing --run aclocal-1.11
+AMTAR = ${SHELL} /home/luis/git/cojac-grind/cogrind-gitlab/missing --run tar
 AR = /usr/bin/ar
-AUTOCONF = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run automake-1.11
+AUTOCONF = ${SHELL} /home/luis/git/cojac-grind/cogrind-gitlab/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/luis/git/cojac-grind/cogrind-gitlab/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/luis/git/cojac-grind/cogrind-gitlab/missing --run automake-1.11
 AWK = mawk
 BOOST_CFLAGS = 
 BOOST_LIBS = 
@@ -116,7 +116,7 @@ ECHO_T =
 EGREP = /bin/grep -E
 EXEEXT = 
 FLAG_FNO_STACK_PROTECTOR = -fno-stack-protector
-FLAG_M32 = 
+FLAG_M32 = -m32
 FLAG_M64 = -m64
 FLAG_MMMX = -mmmx
 FLAG_MSSE = -msse
@@ -128,8 +128,8 @@ FLAG_W_NO_FORMAT_ZERO_LENGTH = -Wno-format-zero-length
 FLAG_W_NO_NONNULL = -Wno-nonnull
 FLAG_W_NO_OVERFLOW = -Wno-overflow
 FLAG_W_NO_UNINITIALIZED = -Wno-uninitialized
-GDB = /no/gdb/was/found/at/configure/time
-GLIBC_VERSION = 2.17
+GDB = /usr/bin/gdb
+GLIBC_VERSION = 2.13
 GREP = /bin/grep
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 644
@@ -143,7 +143,7 @@ LIBS =
 LN_S = ln -s
 LTLIBOBJS = 
 MAINT = #
-MAKEINFO = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/luis/git/cojac-grind/cogrind-gitlab/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 MPI_CC = mpicc
 OBJEXT = o
@@ -171,10 +171,10 @@ VGCONF_OS = linux
 VGCONF_PLATFORM_PRI_CAPS = AMD64_LINUX
 VGCONF_PLATFORM_SEC_CAPS = 
 VGCONF_PLATVARIANT = vanilla
-abs_builddir = /home/flub/git/cojac-grind/cogrind-gitlab/none/tests/x86-linux
-abs_srcdir = /home/flub/git/cojac-grind/cogrind-gitlab/none/tests/x86-linux
-abs_top_builddir = /home/flub/git/cojac-grind/cogrind-gitlab
-abs_top_srcdir = /home/flub/git/cojac-grind/cogrind-gitlab
+abs_builddir = /home/luis/git/cojac-grind/cogrind-gitlab/none/tests/x86-linux
+abs_srcdir = /home/luis/git/cojac-grind/cogrind-gitlab/none/tests/x86-linux
+abs_top_builddir = /home/luis/git/cojac-grind/cogrind-gitlab
+abs_top_srcdir = /home/luis/git/cojac-grind/cogrind-gitlab
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
@@ -202,7 +202,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/flub/git/cojac-grind/cogrind-gitlab/install-sh
+install_sh = ${SHELL} /home/luis/git/cojac-grind/cogrind-gitlab/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -279,27 +279,27 @@ AM_CPPFLAGS_AMD64_LINUX = \
 #	-DVGP__linux=1 \
 #	-DVGPV__linux_vanilla=1
 
-AM_FLAG_M3264_X86_LINUX = 
-AM_CFLAGS_X86_LINUX =    \
+AM_FLAG_M3264_X86_LINUX = -m32
+AM_CFLAGS_X86_LINUX = -m32   \
 				$(AM_CFLAGS_BASE) -fomit-frame-pointer
 
-AM_CCASFLAGS_X86_LINUX =  -g
+AM_CCASFLAGS_X86_LINUX = -m32 -g
 AM_FLAG_M3264_AMD64_LINUX = -m64
 AM_CFLAGS_AMD64_LINUX = -m64  \
 				$(AM_CFLAGS_BASE) -fomit-frame-pointer
 
 AM_CCASFLAGS_AMD64_LINUX = -m64 -g
-AM_FLAG_M3264_PPC32_LINUX = 
-AM_CFLAGS_PPC32_LINUX =  $(AM_CFLAGS_BASE)
-AM_CCASFLAGS_PPC32_LINUX =  -g
+AM_FLAG_M3264_PPC32_LINUX = -m32
+AM_CFLAGS_PPC32_LINUX = -m32 $(AM_CFLAGS_BASE)
+AM_CCASFLAGS_PPC32_LINUX = -m32 -g
 AM_FLAG_M3264_PPC64_LINUX = -m64
 AM_CFLAGS_PPC64_LINUX = -m64 $(AM_CFLAGS_BASE)
 AM_CCASFLAGS_PPC64_LINUX = -m64 -g
-AM_FLAG_M3264_ARM_LINUX = 
-AM_CFLAGS_ARM_LINUX =   \
+AM_FLAG_M3264_ARM_LINUX = -m32
+AM_CFLAGS_ARM_LINUX = -m32  \
 			 	$(AM_CFLAGS_BASE) -marm -mcpu=cortex-a8
 
-AM_CCASFLAGS_ARM_LINUX =  \
+AM_CCASFLAGS_ARM_LINUX = -m32 \
 				-marm -mcpu=cortex-a8 -g
 
 AM_FLAG_M3264_X86_DARWIN = -arch i386
@@ -316,9 +316,9 @@ AM_CCASFLAGS_AMD64_DARWIN = -arch x86_64 -g
 AM_FLAG_M3264_S390X_LINUX = -m64
 AM_CFLAGS_S390X_LINUX = -m64 $(AM_CFLAGS_BASE) -fomit-frame-pointer
 AM_CCASFLAGS_S390X_LINUX = -m64 -g -mzarch -march=z900
-AM_FLAG_M3264_MIPS32_LINUX = 
-AM_CFLAGS_MIPS32_LINUX =  $(AM_CFLAGS_BASE) -mips32
-AM_CCASFLAGS_MIPS32_LINUX =  -mips32 -g
+AM_FLAG_M3264_MIPS32_LINUX = -m32
+AM_CFLAGS_MIPS32_LINUX = -m32 $(AM_CFLAGS_BASE) -mips32
+AM_CCASFLAGS_MIPS32_LINUX = -m32 -mips32 -g
 
 # Flags for the primary target.  These must be used to build the
 # regtests and performance tests.  In fact, these must be used to
@@ -336,15 +336,15 @@ AM_FLAG_M3264_SEC =
 PRELOAD_LDFLAGS_COMMON_LINUX = -nodefaultlibs -shared \
 	-Wl,-z,interpose,-z,initfirst $(am__append_1)
 PRELOAD_LDFLAGS_COMMON_DARWIN = -dynamic -dynamiclib -all_load
-PRELOAD_LDFLAGS_X86_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) 
+PRELOAD_LDFLAGS_X86_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m32
 PRELOAD_LDFLAGS_AMD64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m64
-PRELOAD_LDFLAGS_PPC32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) 
+PRELOAD_LDFLAGS_PPC32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m32
 PRELOAD_LDFLAGS_PPC64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m64
-PRELOAD_LDFLAGS_ARM_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) 
+PRELOAD_LDFLAGS_ARM_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m32
 PRELOAD_LDFLAGS_X86_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch i386
 PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m64
-PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) 
+PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) -m32
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include \
 	-I$(top_srcdir)/coregrind -I$(top_builddir)/include \
 	-I$(top_srcdir)/VEX/pub -DVGA_amd64=1 \
@@ -354,13 +354,13 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include \
 
 # Nb: Tools need to augment these flags with an arch-selection option, such
 # as $(AM_FLAG_M3264_PRI).
-AM_CFLAGS = -Winline -Wall -Wshadow -g  $(FLAG_MMMX) \
+AM_CFLAGS = -Winline -Wall -Wshadow -g -m32 $(FLAG_MMMX) \
 	$(FLAG_MSSE)
-AM_CXXFLAGS = -Winline -Wall -Wshadow -g  $(FLAG_MMMX) \
+AM_CXXFLAGS = -Winline -Wall -Wshadow -g -m32 $(FLAG_MMMX) \
 	$(FLAG_MSSE)
 # Include AM_CPPFLAGS in AM_CCASFLAGS to allow for older versions of
 # automake;  see comments in Makefile.all.am for more detail.
-AM_CCASFLAGS = $(AM_CPPFLAGS) 
+AM_CCASFLAGS = $(AM_CPPFLAGS) -m32
 #noinst_DSYMS = $(check_PROGRAMS)
 dist_noinst_SCRIPTS = \
 	filter_stderr
