@@ -3,7 +3,8 @@ AUTOMAKE_OPTIONS = foreign 1.10 dist-bzip2
 
 include $(top_srcdir)/Makefile.all.am 
 
-TOOLS =	cojac
+TOOLS =	memcheck \
+		cojac
 
 EXP_TOOLS = 	exp-sgcheck \
 		exp-bbv \

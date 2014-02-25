@@ -1,3 +1,7 @@
 dist_noinst_SCRIPTS = filter_stderr
 
-EXTRA_DIST = true.stderr.exp true.vgtest
+SUBDIRS = .
+
+EXTRA_DIST = intAdd.stderr.exp intAdd.vgtest
+
+check_PROGRAMS = intAdd
