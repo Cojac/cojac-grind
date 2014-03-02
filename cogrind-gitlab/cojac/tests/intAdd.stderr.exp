@@ -1,1 +1,33 @@
-Cojac: Overflow, Add32   at 0x......: main (intAdd.c:..)
+Cojac-........... the Cojac-grind numerical problem sniffer
+Copyright (C) ...-... and GNU GPL'd... by Fred Bapst.
+
+Cojac: Overflow... Add...   at ...x...B...B: _dl_lookup_symbol_x (dl-lookup.c:...)
+
+Cojac: Overflow... Add...   at ...x...AF...: _dl_lookup_symbol_x (dl-lookup.c:...)
+
+Cojac: Overflow... Add...   at ...x...B...B: _dl_lookup_symbol_x (dl-lookup.c:...)
+
+Cojac: Overflow... Add...   at ...x...AF...: _dl_lookup_symbol_x (dl-lookup.c:...)
+
+Cojac: Overflow... Add...   at ...x...B...B: _dl_lookup_symbol_x (dl-lookup.c:...)
+
+Cojac: Overflow... Add...   at ...x...AF...: _dl_lookup_symbol_x (dl-lookup.c:...)
+
+Cojac: Overflow... Add...   at ...x...B...B: _dl_lookup_symbol_x (dl-lookup.c:...)
+
+Cojac: Overflow... Add...   at ...x...AF...: _dl_lookup_symbol_x (dl-lookup.c:...)
+
+Cojac: Overflow... Add...   at ...x...C...: main (intAdd.c:...)
+
+Cojac: Overflow... Add...   at ...x...B...B: _dl_lookup_symbol_x (dl-lookup.c:...)
+
+Cojac: Overflow... Add...   at ...x...AF...: _dl_lookup_symbol_x (dl-lookup.c:...)
+
+
+Cojac instrumentation statistics:
+Add... 	 ... 
+Add... 	 ... 
+Sub... 	 ... 
+Sub... 	 ... 
+Mul... 	 ... 
+ERROR SUMMARY: ... errors from ... contexts (suppressed: ... from ...)

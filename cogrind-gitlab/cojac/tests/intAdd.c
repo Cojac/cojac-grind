@@ -10,6 +10,5 @@ int main (void){
 	a = INT_MAX;
 	b = 1;
 	c = a + b;
-	printf("int: %d\n", c);
 	return 0;
 }
