@@ -447,12 +447,8 @@ PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M32@
 PRELOAD_LDFLAGS_MIPS64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 TOOLS = memcheck \
-		cachegrind \
-		callgrind \
-		massif \
-		lackey \
 		none \
-		helgrind \
+		cojac \
 		drd
 
 EXP_TOOLS = exp-sgcheck \

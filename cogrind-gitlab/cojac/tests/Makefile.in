@@ -15,6 +15,8 @@
 
 @SET_MAKE@
 
+# This file is used for tool tests, and also in perf/Makefile.am.
+
 # This file should be included (directly or indirectly) by every
 # Makefile.am that builds programs.  And also the top-level Makefile.am.
 
@@ -58,21 +60,25 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(top_srcdir)/Makefile.all.am $(top_srcdir)/Makefile.tool.am
+DIST_COMMON = $(dist_noinst_SCRIPTS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in $(top_srcdir)/Makefile.all.am \
+	$(top_srcdir)/Makefile.tool-tests.am
 
 # The Android toolchain includes all kinds of stdlib helpers present in
 # bionic which is bad because we are not linking with it and the Android
 # linker will panic.
 @VGCONF_PLATVARIANT_IS_ANDROID_TRUE@am__append_1 = -nostdlib
+@VGCONF_HAVE_PLATFORM_SEC_TRUE@am__append_2 = -DVGA_SEC_@VGCONF_ARCH_SEC@=1  \
+@VGCONF_HAVE_PLATFORM_SEC_TRUE@		-DVGP_SEC_@VGCONF_ARCH_PRI@_@VGCONF_OS@=1
 
-# On Android we must ask for non-executable stack, not sure why.
-@VGCONF_PLATFORMS_INCLUDE_ARM_LINUX_TRUE@@VGCONF_PLATVARIANT_IS_ANDROID_TRUE@am__append_2 = -Wl,-z,noexecstack
-noinst_PROGRAMS = exp-bbv-@VGCONF_ARCH_PRI@-@VGCONF_OS@$(EXEEXT) \
-	$(am__EXEEXT_1)
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@am__append_3 = exp-bbv-@VGCONF_ARCH_SEC@-@VGCONF_OS@
-@VGCONF_HAVE_PLATFORM_SEC_FALSE@exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_DEPENDENCIES =
-subdir = exp-bbv
+@HAS_WRITE_STRINGS_WARNING_TRUE@am__append_3 = -Wno-write-strings
+@COMPILER_IS_CLANG_TRUE@am__append_4 = -Wno-format-extra-args \
+@COMPILER_IS_CLANG_TRUE@	-Wno-literal-range \
+@COMPILER_IS_CLANG_TRUE@	-Wno-string-plus-int # \
+@COMPILER_IS_CLANG_TRUE@	drd/tests/annotate_ignore_rw.c
+@COMPILER_IS_CLANG_TRUE@am__append_5 = -Wno-unused-private-field    # drd/tests/tsan_unittest.cpp
+check_PROGRAMS = intAdd$(EXEEXT)
+subdir = cojac/tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -81,20 +87,10 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@am__EXEEXT_1 = exp-bbv-@VGCONF_ARCH_SEC@-@VGCONF_OS@$(EXEEXT)
-PROGRAMS = $(noinst_PROGRAMS)
-am__objects_1 =  \
-	exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.$(OBJEXT)
-am_exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_OBJECTS = $(am__objects_1)
-exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_OBJECTS =  \
-	$(am_exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_OBJECTS)
-am__exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_SOURCES_DIST = bbv_main.c
-am__objects_2 =  \
-	exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.$(OBJEXT)
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@am_exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_OBJECTS =  \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(am__objects_2)
-exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_OBJECTS =  \
-	$(am_exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_OBJECTS)
+intAdd_SOURCES = intAdd.c
+intAdd_OBJECTS = intAdd.$(OBJEXT)
+intAdd_LDADD = $(LDADD)
+SCRIPTS = $(dist_noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -103,10 +99,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_SOURCES) \
-	$(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_SOURCES)
-DIST_SOURCES = $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_SOURCES) \
-	$(am__exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_SOURCES_DIST)
+SOURCES = intAdd.c
+DIST_SOURCES = intAdd.c
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -167,13 +161,13 @@ CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = @CFLAGS@
+CFLAGS = @CFLAGS@ $(am__append_3) $(am__append_4)
 CFLAGS_MPI = @CFLAGS_MPI@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
+CXXFLAGS = @CXXFLAGS@ $(am__append_5)
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_SUPP = @DEFAULT_SUPP@
 DEFS = @DEFS@
@@ -292,7 +286,6 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = . tests
 inplacedir = $(top_builddir)/.in_place
 
 #----------------------------------------------------------------------------
@@ -420,216 +413,29 @@ PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M32@
 PRELOAD_LDFLAGS_MIPS64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
-
-#----------------------------------------------------------------------------
-# <tool>-<platform> stuff
-#----------------------------------------------------------------------------
-TOOL_DEPENDENCIES_@VGCONF_PLATFORM_PRI_CAPS@ = \
-	$(top_builddir)/coregrind/libcoregrind-@VGCONF_ARCH_PRI@-@VGCONF_OS@.a \
-	$(top_builddir)/VEX/libvex-@VGCONF_ARCH_PRI@-@VGCONF_OS@.a
-
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@TOOL_DEPENDENCIES_@VGCONF_PLATFORM_SEC_CAPS@ = \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(top_builddir)/coregrind/libcoregrind-@VGCONF_ARCH_SEC@-@VGCONF_OS@.a \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(top_builddir)/VEX/libvex-@VGCONF_ARCH_SEC@-@VGCONF_OS@.a
-
-TOOL_LDADD_COMMON = -lgcc -lm
-TOOL_LDADD_@VGCONF_PLATFORM_PRI_CAPS@ = \
-	$(TOOL_DEPENDENCIES_@VGCONF_PLATFORM_PRI_CAPS@) $(TOOL_LDADD_COMMON)
-
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@TOOL_LDADD_@VGCONF_PLATFORM_SEC_CAPS@ = \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(TOOL_DEPENDENCIES_@VGCONF_PLATFORM_SEC_CAPS@) $(TOOL_LDADD_COMMON)
-
-
-# -Wl,--build-id=none is needed when linking tools with a linker that only
-# knows -Ttext and not -Ttext-segment. Without this flag newer ld versions
-# (2.20 and later) create a .note.gnu.build-id at the default text segment
-# address, which of course means the resulting executable
-# is unusable. So we have to tell ld not to generate that, with
-# --build-id=none unless the linker supports -Ttext-segment.
-TOOL_LDFLAGS_COMMON_LINUX = \
-	-static -nodefaultlibs -nostartfiles -u _start @FLAG_NO_BUILD_ID@
-
-TOOL_LDFLAGS_COMMON_DARWIN = \
-	-nodefaultlibs -nostartfiles -Wl,-u,__start -Wl,-e,__start
-
-TOOL_LDFLAGS_X86_LINUX = \
-	$(TOOL_LDFLAGS_COMMON_LINUX) @FLAG_M32@
-
-TOOL_LDFLAGS_AMD64_LINUX = \
-	$(TOOL_LDFLAGS_COMMON_LINUX) @FLAG_M64@
-
-TOOL_LDFLAGS_PPC32_LINUX = \
-	$(TOOL_LDFLAGS_COMMON_LINUX) @FLAG_M32@
-
-TOOL_LDFLAGS_PPC64_LINUX = \
-	$(TOOL_LDFLAGS_COMMON_LINUX) @FLAG_M64@
-
-TOOL_LDFLAGS_ARM_LINUX = $(TOOL_LDFLAGS_COMMON_LINUX) @FLAG_M32@ \
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include \
+	-I$(top_srcdir)/coregrind -I$(top_builddir)/include \
+	-I$(top_srcdir)/VEX/pub -DVGA_@VGCONF_ARCH_PRI@=1 \
+	-DVGO_@VGCONF_OS@=1 -DVGP_@VGCONF_ARCH_PRI@_@VGCONF_OS@=1 \
+	-DVGPV_@VGCONF_ARCH_PRI@_@VGCONF_OS@_@VGCONF_PLATVARIANT@=1 \
 	$(am__append_2)
-TOOL_LDFLAGS_S390X_LINUX = \
-	$(TOOL_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 
-TOOL_LDFLAGS_X86_DARWIN = \
-	$(TOOL_LDFLAGS_COMMON_DARWIN) -arch i386
-
-TOOL_LDFLAGS_AMD64_DARWIN = \
-	$(TOOL_LDFLAGS_COMMON_DARWIN) -arch x86_64
-
-
-# MIPS Linux default start symbol is __start, not _start like on x86 or amd
-TOOL_LDFLAGS_MIPS32_LINUX = \
-	-static -nodefaultlibs -nostartfiles -u __start @FLAG_NO_BUILD_ID@ \
-	@FLAG_M32@
-
-TOOL_LDFLAGS_MIPS64_LINUX = \
-	-static -nodefaultlibs -nostartfiles -u __start @FLAG_NO_BUILD_ID@ \
-	@FLAG_M64@
-
-
-# NB for 64-bit darwin.  We may want to set -Wl,-pagezero_size to
-# something smaller than the default of 4G, so as to facilitate
-# loading clients who are also linked thusly (currently m_ume.c
-# will fail to load them).  Although such setting is probably
-# better done in link_tool_exe.c.
-#
-#	-Wl,-pagezero_size,0x100000000
-
-#----------------------------------------------------------------------------
-# vgpreload_<tool>-<platform>.a stuff
-#----------------------------------------------------------------------------
-LIBREPLACEMALLOC_X86_LINUX = \
-	$(top_builddir)/coregrind/libreplacemalloc_toolpreload-x86-linux.a
-
-LIBREPLACEMALLOC_AMD64_LINUX = \
-	$(top_builddir)/coregrind/libreplacemalloc_toolpreload-amd64-linux.a
-
-LIBREPLACEMALLOC_PPC32_LINUX = \
-	$(top_builddir)/coregrind/libreplacemalloc_toolpreload-ppc32-linux.a
-
-LIBREPLACEMALLOC_PPC64_LINUX = \
-	$(top_builddir)/coregrind/libreplacemalloc_toolpreload-ppc64-linux.a
-
-LIBREPLACEMALLOC_ARM_LINUX = \
-	$(top_builddir)/coregrind/libreplacemalloc_toolpreload-arm-linux.a
-
-LIBREPLACEMALLOC_X86_DARWIN = \
-	$(top_builddir)/coregrind/libreplacemalloc_toolpreload-x86-darwin.a
-
-LIBREPLACEMALLOC_AMD64_DARWIN = \
-	$(top_builddir)/coregrind/libreplacemalloc_toolpreload-amd64-darwin.a
-
-LIBREPLACEMALLOC_S390X_LINUX = \
-	$(top_builddir)/coregrind/libreplacemalloc_toolpreload-s390x-linux.a
-
-LIBREPLACEMALLOC_MIPS32_LINUX = \
-	$(top_builddir)/coregrind/libreplacemalloc_toolpreload-mips32-linux.a
-
-LIBREPLACEMALLOC_MIPS64_LINUX = \
-	$(top_builddir)/coregrind/libreplacemalloc_toolpreload-mips64-linux.a
-
-LIBREPLACEMALLOC_LDFLAGS_X86_LINUX = \
-	-Wl,--whole-archive \
-	$(LIBREPLACEMALLOC_X86_LINUX) \
-	-Wl,--no-whole-archive
-
-LIBREPLACEMALLOC_LDFLAGS_AMD64_LINUX = \
-	-Wl,--whole-archive \
-	$(LIBREPLACEMALLOC_AMD64_LINUX) \
-	-Wl,--no-whole-archive
-
-LIBREPLACEMALLOC_LDFLAGS_PPC32_LINUX = \
-	-Wl,--whole-archive \
-	$(LIBREPLACEMALLOC_PPC32_LINUX) \
-	-Wl,--no-whole-archive
-
-LIBREPLACEMALLOC_LDFLAGS_PPC64_LINUX = \
-	-Wl,--whole-archive \
-	$(LIBREPLACEMALLOC_PPC64_LINUX) \
-	-Wl,--no-whole-archive
-
-LIBREPLACEMALLOC_LDFLAGS_ARM_LINUX = \
-	-Wl,--whole-archive \
-	$(LIBREPLACEMALLOC_ARM_LINUX) \
-	-Wl,--no-whole-archive
-
-LIBREPLACEMALLOC_LDFLAGS_X86_DARWIN = \
-	$(LIBREPLACEMALLOC_X86_DARWIN)
-
-LIBREPLACEMALLOC_LDFLAGS_AMD64_DARWIN = \
-	$(LIBREPLACEMALLOC_AMD64_DARWIN)
-
-LIBREPLACEMALLOC_LDFLAGS_S390X_LINUX = \
-	-Wl,--whole-archive \
-	$(LIBREPLACEMALLOC_S390X_LINUX) \
-	-Wl,--no-whole-archive
-
-LIBREPLACEMALLOC_LDFLAGS_MIPS32_LINUX = \
-	-Wl,--whole-archive \
-	$(LIBREPLACEMALLOC_MIPS32_LINUX) \
-	-Wl,--no-whole-archive
-
-LIBREPLACEMALLOC_LDFLAGS_MIPS64_LINUX = \
-	-Wl,--whole-archive \
-	$(LIBREPLACEMALLOC_MIPS64_LINUX) \
-	-Wl,--no-whole-archive
-
-EXTRA_DIST = docs/bbv-manual.xml
-BBV_SOURCES_COMMON = bbv_main.c
-exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_SOURCES = \
-	$(BBV_SOURCES_COMMON)
-
-exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CPPFLAGS = \
-	$(AM_CPPFLAGS_@VGCONF_PLATFORM_PRI_CAPS@)
-
-exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CFLAGS = \
-	$(AM_CFLAGS_@VGCONF_PLATFORM_PRI_CAPS@)
-
-exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_DEPENDENCIES = \
-	$(TOOL_DEPENDENCIES_@VGCONF_PLATFORM_PRI_CAPS@)
-
-exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_LDADD = \
-	$(TOOL_LDADD_@VGCONF_PLATFORM_PRI_CAPS@)
-
-exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_LDFLAGS = \
-	$(TOOL_LDFLAGS_@VGCONF_PLATFORM_PRI_CAPS@)
-
-exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_LINK = \
-	$(top_builddir)/coregrind/link_tool_exe_@VGCONF_OS@ \
-	@VALT_LOAD_ADDRESS_PRI@ \
-	$(LINK) \
-	$(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CFLAGS) \
-	$(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_LDFLAGS)
-
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_SOURCES = \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(BBV_SOURCES_COMMON)
-
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CPPFLAGS = \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(AM_CPPFLAGS_@VGCONF_PLATFORM_SEC_CAPS@)
-
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CFLAGS = \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(AM_CFLAGS_@VGCONF_PLATFORM_SEC_CAPS@)
-
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_DEPENDENCIES = \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(TOOL_DEPENDENCIES_@VGCONF_PLATFORM_SEC_CAPS@)
-
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_LDADD = \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(TOOL_LDADD_@VGCONF_PLATFORM_SEC_CAPS@)
-
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_LDFLAGS = \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(TOOL_LDFLAGS_@VGCONF_PLATFORM_SEC_CAPS@)
-
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_LINK = \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(top_builddir)/coregrind/link_tool_exe_@VGCONF_OS@ \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	@VALT_LOAD_ADDRESS_SEC@ \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(LINK) \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CFLAGS) \
-@VGCONF_HAVE_PLATFORM_SEC_TRUE@	$(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_LDFLAGS)
-
+# Nb: Tools need to augment these flags with an arch-selection option, such
+# as $(AM_FLAG_M3264_PRI).
+AM_CFLAGS = -Winline -Wall -Wshadow -g
+AM_CXXFLAGS = -Winline -Wall -Wshadow -g
+# Include AM_CPPFLAGS in AM_CCASFLAGS to allow for older versions of
+# automake;  see comments in Makefile.all.am for more detail.
+AM_CCASFLAGS = $(AM_CPPFLAGS)
+@VGCONF_OS_IS_DARWIN_TRUE@noinst_DSYMS = $(check_PROGRAMS)
+dist_noinst_SCRIPTS = filter_stderr
+SUBDIRS = .
+EXTRA_DIST = intAdd.stderr.exp intAdd.vgtest true.stderr.exp true.vgtest
 all: all-recursive
 
 .SUFFIXES:
 .SUFFIXES: .c .o .obj
-$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/Makefile.tool.am $(top_srcdir)/Makefile.all.am $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir)/Makefile.tool-tests.am $(top_srcdir)/Makefile.all.am $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -638,9 +444,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign exp-bbv/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign cojac/tests/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign exp-bbv/Makefile
+	  $(AUTOMAKE) --foreign cojac/tests/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -650,7 +456,7 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	    echo ' cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)'; \
 	    cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe);; \
 	esac;
-$(top_srcdir)/Makefile.tool.am $(top_srcdir)/Makefile.all.am:
+$(top_srcdir)/Makefile.tool-tests.am $(top_srcdir)/Makefile.all.am:
 
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
@@ -661,14 +467,11 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 
-clean-noinstPROGRAMS:
-	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-exp-bbv-@VGCONF_ARCH_PRI@-@VGCONF_OS@$(EXEEXT): $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_OBJECTS) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_DEPENDENCIES) $(EXTRA_exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_DEPENDENCIES) 
-	@rm -f exp-bbv-@VGCONF_ARCH_PRI@-@VGCONF_OS@$(EXEEXT)
-	$(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_LINK) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_OBJECTS) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_LDADD) $(LIBS)
-exp-bbv-@VGCONF_ARCH_SEC@-@VGCONF_OS@$(EXEEXT): $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_OBJECTS) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_DEPENDENCIES) $(EXTRA_exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_DEPENDENCIES) 
-	@rm -f exp-bbv-@VGCONF_ARCH_SEC@-@VGCONF_OS@$(EXEEXT)
-	$(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_LINK) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_OBJECTS) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_LDADD) $(LIBS)
+clean-checkPROGRAMS:
+	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+intAdd$(EXEEXT): $(intAdd_OBJECTS) $(intAdd_DEPENDENCIES) $(EXTRA_intAdd_DEPENDENCIES) 
+	@rm -f intAdd$(EXEEXT)
+	$(LINK) $(intAdd_OBJECTS) $(intAdd_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -676,8 +479,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/intAdd.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -694,34 +496,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.o: bbv_main.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CPPFLAGS) $(CPPFLAGS) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CFLAGS) $(CFLAGS) -MT exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.o -MD -MP -MF $(DEPDIR)/exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.Tpo -c -o exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.o `test -f 'bbv_main.c' || echo '$(srcdir)/'`bbv_main.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.Tpo $(DEPDIR)/exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bbv_main.c' object='exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CPPFLAGS) $(CPPFLAGS) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CFLAGS) $(CFLAGS) -c -o exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.o `test -f 'bbv_main.c' || echo '$(srcdir)/'`bbv_main.c
-
-exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.obj: bbv_main.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CPPFLAGS) $(CPPFLAGS) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CFLAGS) $(CFLAGS) -MT exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.obj -MD -MP -MF $(DEPDIR)/exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.Tpo -c -o exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.obj `if test -f 'bbv_main.c'; then $(CYGPATH_W) 'bbv_main.c'; else $(CYGPATH_W) '$(srcdir)/bbv_main.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.Tpo $(DEPDIR)/exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bbv_main.c' object='exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CPPFLAGS) $(CPPFLAGS) $(exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@_CFLAGS) $(CFLAGS) -c -o exp_bbv_@VGCONF_ARCH_PRI@_@VGCONF_OS@-bbv_main.obj `if test -f 'bbv_main.c'; then $(CYGPATH_W) 'bbv_main.c'; else $(CYGPATH_W) '$(srcdir)/bbv_main.c'; fi`
-
-exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.o: bbv_main.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CPPFLAGS) $(CPPFLAGS) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CFLAGS) $(CFLAGS) -MT exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.o -MD -MP -MF $(DEPDIR)/exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.Tpo -c -o exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.o `test -f 'bbv_main.c' || echo '$(srcdir)/'`bbv_main.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.Tpo $(DEPDIR)/exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bbv_main.c' object='exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CPPFLAGS) $(CPPFLAGS) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CFLAGS) $(CFLAGS) -c -o exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.o `test -f 'bbv_main.c' || echo '$(srcdir)/'`bbv_main.c
-
-exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.obj: bbv_main.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CPPFLAGS) $(CPPFLAGS) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CFLAGS) $(CFLAGS) -MT exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.obj -MD -MP -MF $(DEPDIR)/exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.Tpo -c -o exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.obj `if test -f 'bbv_main.c'; then $(CYGPATH_W) 'bbv_main.c'; else $(CYGPATH_W) '$(srcdir)/bbv_main.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.Tpo $(DEPDIR)/exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='bbv_main.c' object='exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CPPFLAGS) $(CPPFLAGS) $(exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@_CFLAGS) $(CFLAGS) -c -o exp_bbv_@VGCONF_ARCH_SEC@_@VGCONF_OS@-bbv_main.obj `if test -f 'bbv_main.c'; then $(CYGPATH_W) 'bbv_main.c'; else $(CYGPATH_W) '$(srcdir)/bbv_main.c'; fi`
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -914,8 +688,10 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
+	$(MAKE) $(AM_MAKEFLAGS) $(check_PROGRAMS)
+	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-recursive
-all-am: Makefile $(PROGRAMS) all-local
+all-am: Makefile $(SCRIPTS)
 installdirs: installdirs-recursive
 installdirs-am:
 install: install-recursive
@@ -950,8 +726,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-recursive
 
-clean-am: clean-generic clean-local clean-noinstPROGRAMS \
-	mostlyclean-am
+clean-am: clean-checkPROGRAMS clean-generic clean-local mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -rf ./$(DEPDIR)
@@ -977,7 +752,7 @@ install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
-install-exec-am: install-exec-local
+install-exec-am:
 
 install-html: install-html-recursive
 
@@ -1018,23 +793,22 @@ ps-am:
 
 uninstall-am:
 
-.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \
-	install-am install-strip tags-recursive
+.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) check-am \
+	ctags-recursive install-am install-strip tags-recursive
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
-	all all-am all-local check check-am clean clean-generic \
-	clean-local clean-noinstPROGRAMS ctags ctags-recursive \
-	distclean distclean-compile distclean-generic distclean-tags \
-	distdir dvi dvi-am html html-am info info-am install \
-	install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-exec-local \
-	install-html install-html-am install-info install-info-am \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am
+	all all-am check check-am check-local clean \
+	clean-checkPROGRAMS clean-generic clean-local ctags \
+	ctags-recursive distclean distclean-compile distclean-generic \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic pdf pdf-am \
+	ps ps-am tags tags-recursive uninstall uninstall-am
 
 
 # This used to be required when Vex had a handwritten Makefile.  It
@@ -1102,15 +876,9 @@ clean-noinst_DSYMS:
 	  rm -rf $$f.dSYM; \
 	done
 
-#----------------------------------------------------------------------------
-# General stuff
-#----------------------------------------------------------------------------
-
-all-local: inplace-noinst_PROGRAMS inplace-noinst_DSYMS
+check-local: build-noinst_DSYMS
 
 clean-local: clean-noinst_DSYMS
-
-install-exec-local: install-noinst_PROGRAMS install-noinst_DSYMS
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

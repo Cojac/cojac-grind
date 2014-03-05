@@ -1,4 +1,5 @@
 *.o
+*.deps/
 .in_place/
 Makefile
 VEX/.deps/
