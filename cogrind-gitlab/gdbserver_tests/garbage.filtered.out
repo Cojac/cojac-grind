@@ -1,0 +1,250 @@
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     23043 23027  0  80   0 -  1044 -      15:36 pts/1    00:00:00 sh -c ./filter_make_empty mcblocklistsearch < mcblocklistsearch.stdout.out > vg_regtest.tmp.23027
+Tue Feb 25 15:36:50 CET 2014
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     23050 23027  0  80   0 -  1044 -      15:36 pts/1    00:00:00 sh -c ./filter_make_empty mcblocklistsearch < mcblocklistsearch.stderr.out > vg_regtest.tmp.23027
+Tue Feb 25 15:36:50 CET 2014
+==23038== (action at startup) vgdb me ... 
+==23038== 
+==23038== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==23038==   /path/to/gdb ./../memcheck/tests/leak-tree
+==23038== and then give GDB the following command
+==23038==   target remote | /home/luis/Desktop/valgrind-3.9.0/.in_place/../../bin/vgdb --pid=23038 --vgdb-prefix=./vgdb-prefix-mcblocklistsearch
+==23038== --pid is optional if only one valgrind process is running
+==23038== 
+==23038== Reset valgrind output to log (orderly_finish)
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     23057 23027  0  80   0 -  1044 -      15:36 pts/1    00:00:00 sh -c ./filter_make_empty mcblocklistsearch < mcblocklistsearch.stdoutB.out > vg_regtest.tmp.23027
+Tue Feb 25 15:36:50 CET 2014
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     23259 23027  0  80   0 -  1044 -      15:36 pts/1    00:00:00 sh -c ./filter_make_empty mcbreak < mcbreak.stderr.out > vg_regtest.tmp.23027
+Tue Feb 25 15:36:52 CET 2014
+==23158== Memcheck, a memory error detector
+==23158== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==23158== Using Valgrind-3.9.0 and LibVEX; rerun with -h for copyright info
+==23158== Command: ./t
+==23158== 
+==23158== (action at startup) vgdb me ... 
+==23158== 
+==23158== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==23158==   /path/to/gdb ./t
+==23158== and then give GDB the following command
+==23158==   target remote | /home/luis/Desktop/valgrind-3.9.0/.in_place/../../bin/vgdb --pid=23158 --vgdb-prefix=./vgdb-prefix-mcbreak
+==23158== --pid is optional if only one valgrind process is running
+==23158== 
+==23158== Conditional jump or move depends on uninitialised value(s)
+==23158==    at 0x400C40: make_error (t.c:40)
+==23158==    by 0x400CA0: level (t.c:50)
+==23158==    by 0x400F90: main (t.c:122)
+==23158== 
+==23158== (action on error) vgdb me ... 
+==23158== Continuing ...
+==23158== Conditional jump or move depends on uninitialised value(s)
+==23158==    at 0x400C40: make_error (t.c:40)
+==23158==    by 0x400F9A: main (t.c:123)
+==23158== 
+==23158== (action on error) vgdb me ... 
+==23158== Reset valgrind output to log (orderly_finish)
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     23643 23027  0  80   0 -  1044 -      15:36 pts/1    00:00:00 sh -c ./filter_make_empty mchelp < mchelp.stdout.out > vg_regtest.tmp.23027
+Tue Feb 25 15:36:55 CET 2014
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     23650 23027  0  80   0 -  1044 -      15:36 pts/1    00:00:00 sh -c ./filter_make_empty mchelp < mchelp.stderr.out > vg_regtest.tmp.23027
+Tue Feb 25 15:36:55 CET 2014
+==23639== Memcheck, a memory error detector
+==23639== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==23639== Using Valgrind-3.9.0 and LibVEX; rerun with -h for copyright info
+==23639== Command: ./t
+==23639== 
+==23639== (action at startup) vgdb me ... 
+==23639== 
+==23639== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==23639==   /path/to/gdb ./t
+==23639== and then give GDB the following command
+==23639==   target remote | /home/luis/Desktop/valgrind-3.9.0/.in_place/../../bin/vgdb --pid=23639 --vgdb-prefix=./vgdb-prefix-mchelp
+==23639== --pid is optional if only one valgrind process is running
+==23639== 
+==23639== Reset valgrind output to log (orderly_finish)
+main ready to sleep and/or burn
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     23865 23027  0  80   0 -  1044 -      15:36 pts/1    00:00:00 sh -c ./filter_make_empty mcinfcallRU < mcinfcallRU.stdoutB.out > vg_regtest.tmp.23027
+Tue Feb 25 15:36:58 CET 2014
+Reading symbols from /home/luis/Desktop/valgrind-3.9.0/gdbserver_tests/sleepers...done.
+(gdb) (gdb) Remote debugging using | ./vgdb --wait=60 --vgdb-prefix=./vgdb-prefix-mcinfcallRU
+Reading symbols from /lib64/ld-linux-x86-64.so.2...(no debugging symbols found)...done.
+Loaded symbols for /lib64/ld-linux-x86-64.so.2
+[Switching to Thread 23753]
+0x0000000004000af0 in ?? () from /lib64/ld-linux-x86-64.so.2
+(gdb) vgdb launched process attached
+(gdb) (gdb) (gdb) (gdb) (gdb) (gdb) (gdb) Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x0000000000400b1d in do_burn () at sleepers.c:39
+39	   for (i = 0; i < burn; i++) loopnr++;
+(gdb)   Id   Target Id         Frame 
+* 1    Thread 23753 (tid 1 VgTs_Runnable) 0x0000000000400b1d in do_burn ()
+    at sleepers.c:39
+(gdb) 
+Thread 1 (Thread 23753):
+#0  0x0000000000400b1d in do_burn () at sleepers.c:39
+        i = 79380916
+        loopnr = 79380916
+#1  0x0000000000400d2a in sleeper_or_burner (v=0xfff000100) at sleepers.c:87
+        i = 0
+        s = 0xfff000100
+#2  0x000000000040117f in main (argc=5, argv=0xfff000288) at sleepers.c:189
+        threads_spec = 0xfff000555 ""
+        ebbr = 4196752
+        egll = 0
+        zzzz = 4198896
+        b = {name = 0x4013d8 "Brussels", sleep = 0, burn = 0, t = -1}
+        l = {name = 0x4013e1 "London", sleep = 0, burn = 0, t = -1}
+        p = {name = 0x4013e8 "Petaouchnok", sleep = 0, burn = 0, t = -1}
+        m = {name = 0x4013f4 "main", sleep = 0, burn = 1, t = 0}
+        some_mem = 0x53d6040 ""
+(gdb) (gdb) (gdb) (gdb) (gdb) $1 = void
+(gdb) (gdb) F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     23872 23027  0  80   0 -  1044 -      15:36 pts/1    00:00:00 sh -c ./filter_make_empty mcinfcallRU < mcinfcallRU.stderrB.out > vg_regtest.tmp.23027
+Tue Feb 25 15:36:58 CET 2014
+relaying data between gdb and process 23753
+vgdb-error value changed from 0 to 999999
+==23753== monitor command request to kill this process
+Remote connection closed
+main ready to sleep and/or burn
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     24129 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty mcinvokeRU < mcinvokeRU.stderr.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:05 CET 2014
+==24103== Memcheck, a memory error detector
+==24103== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==24103== Using Valgrind-3.9.0 and LibVEX; rerun with -h for copyright info
+==24103== Command: ./sleepers 1 0 1000000000 B-B-B-B-
+==24103== 
+loops/sleep_ms/burn/threads_spec:  1 0 1000000000 B-B-B-B-
+Brussels ready to sleep and/or burn
+London ready to sleep and/or burn
+Petaouchnok ready to sleep and/or burn
+main ready to sleep and/or burn
+==24103== Reset valgrind output to log (orderly_finish)
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     24278 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty mcinvokeWS < mcinvokeWS.stderr.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:12 CET 2014
+==24232== Memcheck, a memory error detector
+==24232== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==24232== Using Valgrind-3.9.0 and LibVEX; rerun with -h for copyright info
+==24232== Command: ./sleepers 1 10000000 0 -S-S-S-S
+==24232== 
+loops/sleep_ms/burn/threads_spec:  1 10000000 0 -S-S-S-S
+Brussels ready to sleep and/or burn
+London ready to sleep and/or burn
+Petaouchnok ready to sleep and/or burn
+main ready to sleep and/or burn
+==24232== Reset valgrind output to log (orderly_finish)
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     25113 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty mcsignopass < mcsignopass.stderrB.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:17 CET 2014
+relaying data between gdb and process 24960
+vgdb-error value changed from 0 to 999999
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     25283 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty mcsigpass < mcsigpass.stderrB.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:19 CET 2014
+relaying data between gdb and process 25127
+vgdb-error value changed from 0 to 999999
+The program is not being run.
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     25303 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty mcvabits < mcvabits.stdout.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:20 CET 2014
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     25310 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty mcvabits < mcvabits.stderr.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:20 CET 2014
+==25297== Memcheck, a memory error detector
+==25297== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==25297== Using Valgrind-3.9.0 and LibVEX; rerun with -h for copyright info
+==25297== Command: ./t
+==25297== 
+==25297== (action at startup) vgdb me ... 
+==25297== 
+==25297== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==25297==   /path/to/gdb ./t
+==25297== and then give GDB the following command
+==25297==   target remote | /home/luis/Desktop/valgrind-3.9.0/.in_place/../../bin/vgdb --pid=25297 --vgdb-prefix=./vgdb-prefix-mcvabits
+==25297== --pid is optional if only one valgrind process is running
+==25297== 
+==25297== Reset valgrind output to log (orderly_finish)
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     25477 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty mcwatchpoints < mcwatchpoints.stdout.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:23 CET 2014
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     25630 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty mcwatchpoints < mcwatchpoints.stderrB.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:23 CET 2014
+relaying data between gdb and process 25470
+vgdb-error value changed from 0 to 999999
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     25650 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty mssnapshot < mssnapshot.stdout.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:24 CET 2014
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     25657 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty mssnapshot < mssnapshot.stderr.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:24 CET 2014
+==25644== Massif, a heap profiler
+==25644== Copyright (C) 2003-2013, and GNU GPL'd, by Nicholas Nethercote
+==25644== Using Valgrind-3.9.0 and LibVEX; rerun with -h for copyright info
+==25644== Command: ./t
+==25644== 
+==25644== (action at startup) vgdb me ... 
+==25644== 
+==25644== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==25644==   /path/to/gdb ./t
+==25644== and then give GDB the following command
+==25644==   target remote | /home/luis/Desktop/valgrind-3.9.0/.in_place/../../bin/vgdb --pid=25644 --vgdb-prefix=./vgdb-prefix-mssnapshot
+==25644== --pid is optional if only one valgrind process is running
+==25644== 
+==25644== Reset valgrind output to log (orderly_finish)
+main ready to sleep and/or burn
+(gdb) (gdb) (gdb) (gdb) (gdb) changed burning parameters
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     25927 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty nlcontrolc < nlcontrolc.stderrB.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:29 CET 2014
+relaying data between gdb and process 25787
+vgdb-error value changed from 0 to 999999
+82	../sysdeps/unix/syscall-template.S: No such file or directory.
+F S UID        PID  PPID  C PRI  NI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S luis     26869 23027  0  80   0 -  1044 -      15:37 pts/1    00:00:00 sh -c ./filter_make_empty nlself_invalidate < nlself_invalidate.stdoutB.out > vg_regtest.tmp.23027
+Tue Feb 25 15:37:37 CET 2014
+Reading symbols from /home/luis/Desktop/valgrind-3.9.0/gdbserver_tests/self_invalidate...done.
+(gdb) (gdb) Remote debugging using | ./vgdb --wait=60 --vgdb-prefix=./vgdb-prefix-nlself_invalidate
+Reading symbols from /lib64/ld-linux-x86-64.so.2...(no debugging symbols found)...done.
+Loaded symbols for /lib64/ld-linux-x86-64.so.2
+[Switching to Thread 26836]
+0x0000000004000af0 in ?? () from /lib64/ld-linux-x86-64.so.2
+(gdb) vgdb launched process attached
+(gdb) (gdb) Breakpoint 1 at 0x400506: file self_invalidate.c, line 10.
+(gdb) (gdb) Continuing.
+
+Breakpoint 1, 0x0000000000400506 in main () at self_invalidate.c:10
+10	__asm__ __volatile__
+(gdb) Continuing.
+
+Breakpoint 1, 0x0000000000400506 in main () at self_invalidate.c:10
+10	__asm__ __volatile__
+(gdb) Continuing.
+
+Breakpoint 1, 0x0000000000400506 in main () at self_invalidate.c:10
+10	__asm__ __volatile__
+(gdb) Continuing.
+
+Breakpoint 1, 0x0000000000400506 in main () at self_invalidate.c:10
+10	__asm__ __volatile__
+(gdb) Continuing.
+
+Breakpoint 1, 0x0000000000400506 in main () at self_invalidate.c:10
+10	__asm__ __volatile__
+(gdb) Continuing.
+
+Breakpoint 1, 0x0000000000400506 in main () at self_invalidate.c:10
+10	__asm__ __volatile__
+(gdb) (gdb) A debugging session is active.
+
+	Inferior 1 [Remote target] will be detached.
+
+Quit anyway? (y or n) [answered Y; input not from terminal]
+Ending remote debugging.
+gdbserver: continuing in 5000 ms ...

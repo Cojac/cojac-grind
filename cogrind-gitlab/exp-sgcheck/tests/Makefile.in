@@ -71,12 +71,18 @@ DIST_COMMON = $(dist_noinst_SCRIPTS) $(srcdir)/Makefile.am \
 @VGCONF_HAVE_PLATFORM_SEC_TRUE@am__append_2 = -DVGA_SEC_@VGCONF_ARCH_SEC@=1  \
 @VGCONF_HAVE_PLATFORM_SEC_TRUE@		-DVGP_SEC_@VGCONF_ARCH_PRI@_@VGCONF_OS@=1
 
+@HAS_WRITE_STRINGS_WARNING_TRUE@am__append_3 = -Wno-write-strings
+@COMPILER_IS_CLANG_TRUE@am__append_4 = -Wno-format-extra-args \
+@COMPILER_IS_CLANG_TRUE@	-Wno-literal-range \
+@COMPILER_IS_CLANG_TRUE@	-Wno-string-plus-int # \
+@COMPILER_IS_CLANG_TRUE@	drd/tests/annotate_ignore_rw.c
+@COMPILER_IS_CLANG_TRUE@am__append_5 = -Wno-unused-private-field    # drd/tests/tsan_unittest.cpp
 check_PROGRAMS = bad_percentify$(EXEEXT) globalerr$(EXEEXT) \
 	hackedbz2$(EXEEXT) hsg$(EXEEXT) preen_invars$(EXEEXT) \
 	preen_invars_so.so$(EXEEXT) stackerr$(EXEEXT)
 subdir = exp-sgcheck/tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -87,8 +93,10 @@ bad_percentify_SOURCES = bad_percentify.c
 bad_percentify_OBJECTS = bad_percentify.$(OBJEXT)
 bad_percentify_LDADD = $(LDADD)
 globalerr_SOURCES = globalerr.c
-globalerr_OBJECTS = globalerr.$(OBJEXT)
+globalerr_OBJECTS = globalerr-globalerr.$(OBJEXT)
 globalerr_LDADD = $(LDADD)
+globalerr_LINK = $(CCLD) $(globalerr_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
 hackedbz2_SOURCES = hackedbz2.c
 hackedbz2_OBJECTS = hackedbz2-hackedbz2.$(OBJEXT)
 hackedbz2_LDADD = $(LDADD)
@@ -145,13 +153,13 @@ CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = @CFLAGS@
+CFLAGS = @CFLAGS@ $(am__append_3) $(am__append_4)
 CFLAGS_MPI = @CFLAGS_MPI@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
+CXXFLAGS = @CXXFLAGS@ $(am__append_5)
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_SUPP = @DEFAULT_SUPP@
 DEFS = @DEFS@
@@ -168,6 +176,7 @@ FLAG_M64 = @FLAG_M64@
 FLAG_MMMX = @FLAG_MMMX@
 FLAG_MSSE = @FLAG_MSSE@
 FLAG_NO_BUILD_ID = @FLAG_NO_BUILD_ID@
+FLAG_T_TEXT = @FLAG_T_TEXT@
 FLAG_UNLIMITED_INLINE_UNIT_GROWTH = @FLAG_UNLIMITED_INLINE_UNIT_GROWTH@
 FLAG_W_EXTRA = @FLAG_W_EXTRA@
 FLAG_W_NO_EMPTY_BODY = @FLAG_W_NO_EMPTY_BODY@
@@ -366,6 +375,9 @@ AM_CCASFLAGS_S390X_LINUX = @FLAG_M64@ -g -mzarch -march=z900
 AM_FLAG_M3264_MIPS32_LINUX = @FLAG_M32@
 AM_CFLAGS_MIPS32_LINUX = @FLAG_M32@ $(AM_CFLAGS_BASE) -mips32
 AM_CCASFLAGS_MIPS32_LINUX = @FLAG_M32@ -mips32 -g
+AM_FLAG_M3264_MIPS64_LINUX = @FLAG_M64@
+AM_CFLAGS_MIPS64_LINUX = @FLAG_M64@ $(AM_CFLAGS_BASE) -mips64
+AM_CCASFLAGS_MIPS64_LINUX = @FLAG_M64@ -mips64 -g
 
 # Flags for the primary target.  These must be used to build the
 # regtests and performance tests.  In fact, these must be used to
@@ -392,6 +404,7 @@ PRELOAD_LDFLAGS_X86_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch i386
 PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M32@
+PRELOAD_LDFLAGS_MIPS64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include \
 	-I$(top_srcdir)/coregrind -I$(top_builddir)/include \
 	-I$(top_srcdir)/VEX/pub -DVGA_@VGCONF_ARCH_PRI@=1 \
@@ -433,7 +446,7 @@ EXTRA_DIST = \
 # To make it a bit more realistic, build hackedbz2.c with at 
 # least some optimisation.
 hackedbz2_CFLAGS = $(AM_CFLAGS) -O -Wno-inline
-
+globalerr_CFLAGS = $(AM_CFLAGS) @FLAG_W_NO_UNINITIALIZED@
 # C ones
 #pth_create_LDADD	= -lpthread
 
@@ -498,7 +511,7 @@ bad_percentify$(EXEEXT): $(bad_percentify_OBJECTS) $(bad_percentify_DEPENDENCIES
 	$(LINK) $(bad_percentify_OBJECTS) $(bad_percentify_LDADD) $(LIBS)
 globalerr$(EXEEXT): $(globalerr_OBJECTS) $(globalerr_DEPENDENCIES) $(EXTRA_globalerr_DEPENDENCIES) 
 	@rm -f globalerr$(EXEEXT)
-	$(LINK) $(globalerr_OBJECTS) $(globalerr_LDADD) $(LIBS)
+	$(globalerr_LINK) $(globalerr_OBJECTS) $(globalerr_LDADD) $(LIBS)
 hackedbz2$(EXEEXT): $(hackedbz2_OBJECTS) $(hackedbz2_DEPENDENCIES) $(EXTRA_hackedbz2_DEPENDENCIES) 
 	@rm -f hackedbz2$(EXEEXT)
 	$(hackedbz2_LINK) $(hackedbz2_OBJECTS) $(hackedbz2_LDADD) $(LIBS)
@@ -522,7 +535,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bad_percentify.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/globalerr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/globalerr-globalerr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hackedbz2-hackedbz2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hsg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/preen_invars.Po@am__quote@
@@ -530,18 +543,34 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stackerr.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+globalerr-globalerr.o: globalerr.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(globalerr_CFLAGS) $(CFLAGS) -MT globalerr-globalerr.o -MD -MP -MF $(DEPDIR)/globalerr-globalerr.Tpo -c -o globalerr-globalerr.o `test -f 'globalerr.c' || echo '$(srcdir)/'`globalerr.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/globalerr-globalerr.Tpo $(DEPDIR)/globalerr-globalerr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='globalerr.c' object='globalerr-globalerr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(globalerr_CFLAGS) $(CFLAGS) -c -o globalerr-globalerr.o `test -f 'globalerr.c' || echo '$(srcdir)/'`globalerr.c
+
+globalerr-globalerr.obj: globalerr.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(globalerr_CFLAGS) $(CFLAGS) -MT globalerr-globalerr.obj -MD -MP -MF $(DEPDIR)/globalerr-globalerr.Tpo -c -o globalerr-globalerr.obj `if test -f 'globalerr.c'; then $(CYGPATH_W) 'globalerr.c'; else $(CYGPATH_W) '$(srcdir)/globalerr.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/globalerr-globalerr.Tpo $(DEPDIR)/globalerr-globalerr.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='globalerr.c' object='globalerr-globalerr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(globalerr_CFLAGS) $(CFLAGS) -c -o globalerr-globalerr.obj `if test -f 'globalerr.c'; then $(CYGPATH_W) 'globalerr.c'; else $(CYGPATH_W) '$(srcdir)/globalerr.c'; fi`
 
 hackedbz2-hackedbz2.o: hackedbz2.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hackedbz2_CFLAGS) $(CFLAGS) -MT hackedbz2-hackedbz2.o -MD -MP -MF $(DEPDIR)/hackedbz2-hackedbz2.Tpo -c -o hackedbz2-hackedbz2.o `test -f 'hackedbz2.c' || echo '$(srcdir)/'`hackedbz2.c

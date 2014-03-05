@@ -73,11 +73,18 @@ DIST_COMMON = $(dist_noinst_SCRIPTS) $(noinst_HEADERS) \
 @VGCONF_HAVE_PLATFORM_SEC_TRUE@am__append_2 = -DVGA_SEC_@VGCONF_ARCH_SEC@=1  \
 @VGCONF_HAVE_PLATFORM_SEC_TRUE@		-DVGP_SEC_@VGCONF_ARCH_PRI@_@VGCONF_OS@=1
 
+@HAS_WRITE_STRINGS_WARNING_TRUE@am__append_3 = -Wno-write-strings
+@COMPILER_IS_CLANG_TRUE@am__append_4 = -Wno-format-extra-args \
+@COMPILER_IS_CLANG_TRUE@	-Wno-literal-range \
+@COMPILER_IS_CLANG_TRUE@	-Wno-string-plus-int # \
+@COMPILER_IS_CLANG_TRUE@	drd/tests/annotate_ignore_rw.c
+@COMPILER_IS_CLANG_TRUE@am__append_5 = -Wno-unused-private-field    # drd/tests/tsan_unittest.cpp
 check_PROGRAMS = arch_test$(EXEEXT) os_test$(EXEEXT) true$(EXEEXT) \
-	x86_amd64_features$(EXEEXT) s390x_features$(EXEEXT)
+	x86_amd64_features$(EXEEXT) s390x_features$(EXEEXT) \
+	mips_features$(EXEEXT)
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -87,6 +94,9 @@ CONFIG_CLEAN_VPATH_FILES =
 arch_test_SOURCES = arch_test.c
 arch_test_OBJECTS = arch_test.$(OBJEXT)
 arch_test_LDADD = $(LDADD)
+mips_features_SOURCES = mips_features.c
+mips_features_OBJECTS = mips_features.$(OBJEXT)
+mips_features_LDADD = $(LDADD)
 os_test_SOURCES = os_test.c
 os_test_OBJECTS = os_test.$(OBJEXT)
 os_test_LDADD = $(LDADD)
@@ -111,10 +121,10 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = arch_test.c os_test.c s390x_features.c true.c \
-	x86_amd64_features.c
-DIST_SOURCES = arch_test.c os_test.c s390x_features.c true.c \
-	x86_amd64_features.c
+SOURCES = arch_test.c mips_features.c os_test.c s390x_features.c \
+	true.c x86_amd64_features.c
+DIST_SOURCES = arch_test.c mips_features.c os_test.c s390x_features.c \
+	true.c x86_amd64_features.c
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -138,13 +148,13 @@ CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = @CFLAGS@
+CFLAGS = @CFLAGS@ $(am__append_3) $(am__append_4)
 CFLAGS_MPI = @CFLAGS_MPI@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
+CXXFLAGS = @CXXFLAGS@ $(am__append_5)
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_SUPP = @DEFAULT_SUPP@
 DEFS = @DEFS@
@@ -161,6 +171,7 @@ FLAG_M64 = @FLAG_M64@
 FLAG_MMMX = @FLAG_MMMX@
 FLAG_MSSE = @FLAG_MSSE@
 FLAG_NO_BUILD_ID = @FLAG_NO_BUILD_ID@
+FLAG_T_TEXT = @FLAG_T_TEXT@
 FLAG_UNLIMITED_INLINE_UNIT_GROWTH = @FLAG_UNLIMITED_INLINE_UNIT_GROWTH@
 FLAG_W_EXTRA = @FLAG_W_EXTRA@
 FLAG_W_NO_EMPTY_BODY = @FLAG_W_NO_EMPTY_BODY@
@@ -359,6 +370,9 @@ AM_CCASFLAGS_S390X_LINUX = @FLAG_M64@ -g -mzarch -march=z900
 AM_FLAG_M3264_MIPS32_LINUX = @FLAG_M32@
 AM_CFLAGS_MIPS32_LINUX = @FLAG_M32@ $(AM_CFLAGS_BASE) -mips32
 AM_CCASFLAGS_MIPS32_LINUX = @FLAG_M32@ -mips32 -g
+AM_FLAG_M3264_MIPS64_LINUX = @FLAG_M64@
+AM_CFLAGS_MIPS64_LINUX = @FLAG_M64@ $(AM_CFLAGS_BASE) -mips64
+AM_CCASFLAGS_MIPS64_LINUX = @FLAG_M64@ -mips64 -g
 
 # Flags for the primary target.  These must be used to build the
 # regtests and performance tests.  In fact, these must be used to
@@ -385,6 +399,7 @@ PRELOAD_LDFLAGS_X86_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch i386
 PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M32@
+PRELOAD_LDFLAGS_MIPS64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include \
 	-I$(top_srcdir)/coregrind -I$(top_builddir)/include \
 	-I$(top_srcdir)/VEX/pub -DVGA_@VGCONF_ARCH_PRI@=1 \
@@ -401,7 +416,9 @@ AM_CXXFLAGS = -Winline -Wall -Wshadow -g $(AM_FLAG_M3264_PRI)
 AM_CCASFLAGS = $(AM_CPPFLAGS)
 @VGCONF_OS_IS_DARWIN_TRUE@noinst_DSYMS = $(check_PROGRAMS)
 dist_noinst_SCRIPTS = \
+	check_headers_and_includes \
 	check_isa-2_06_cap \
+	check_isa-2_07_cap \
 	check_makefile_consistency \
 	check_dfp_cap \
 	check_vmx_cap \
@@ -411,7 +428,9 @@ dist_noinst_SCRIPTS = \
 	filter_numbers \
 	filter_stderr_basic \
 	filter_sink \
+	filter_xml_frames \
 	platform_test \
+	post_regtest_checks \
 	vg_regtest
 
 noinst_HEADERS = \
@@ -464,6 +483,9 @@ clean-checkPROGRAMS:
 arch_test$(EXEEXT): $(arch_test_OBJECTS) $(arch_test_DEPENDENCIES) $(EXTRA_arch_test_DEPENDENCIES) 
 	@rm -f arch_test$(EXEEXT)
 	$(LINK) $(arch_test_OBJECTS) $(arch_test_LDADD) $(LIBS)
+mips_features$(EXEEXT): $(mips_features_OBJECTS) $(mips_features_DEPENDENCIES) $(EXTRA_mips_features_DEPENDENCIES) 
+	@rm -f mips_features$(EXEEXT)
+	$(LINK) $(mips_features_OBJECTS) $(mips_features_LDADD) $(LIBS)
 os_test$(EXEEXT): $(os_test_OBJECTS) $(os_test_DEPENDENCIES) $(EXTRA_os_test_DEPENDENCIES) 
 	@rm -f os_test$(EXEEXT)
 	$(LINK) $(os_test_OBJECTS) $(os_test_LDADD) $(LIBS)
@@ -484,24 +506,27 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arch_test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mips_features.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/os_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/s390x_features.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/true.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/x86_amd64_features-x86_amd64_features.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 x86_amd64_features-x86_amd64_features.o: x86_amd64_features.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(x86_amd64_features_CFLAGS) $(CFLAGS) -MT x86_amd64_features-x86_amd64_features.o -MD -MP -MF $(DEPDIR)/x86_amd64_features-x86_amd64_features.Tpo -c -o x86_amd64_features-x86_amd64_features.o `test -f 'x86_amd64_features.c' || echo '$(srcdir)/'`x86_amd64_features.c

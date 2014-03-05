@@ -76,7 +76,7 @@ DIST_COMMON = README $(am__configure_deps) $(dist_noinst_DATA) \
 @VGCONF_PLATVARIANT_IS_ANDROID_TRUE@am__append_1 = -nostdlib
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -216,6 +216,7 @@ FLAG_M64 = @FLAG_M64@
 FLAG_MMMX = @FLAG_MMMX@
 FLAG_MSSE = @FLAG_MSSE@
 FLAG_NO_BUILD_ID = @FLAG_NO_BUILD_ID@
+FLAG_T_TEXT = @FLAG_T_TEXT@
 FLAG_UNLIMITED_INLINE_UNIT_GROWTH = @FLAG_UNLIMITED_INLINE_UNIT_GROWTH@
 FLAG_W_EXTRA = @FLAG_W_EXTRA@
 FLAG_W_NO_EMPTY_BODY = @FLAG_W_NO_EMPTY_BODY@
@@ -415,6 +416,9 @@ AM_CCASFLAGS_S390X_LINUX = @FLAG_M64@ -g -mzarch -march=z900
 AM_FLAG_M3264_MIPS32_LINUX = @FLAG_M32@
 AM_CFLAGS_MIPS32_LINUX = @FLAG_M32@ $(AM_CFLAGS_BASE) -mips32
 AM_CCASFLAGS_MIPS32_LINUX = @FLAG_M32@ -mips32 -g
+AM_FLAG_M3264_MIPS64_LINUX = @FLAG_M64@
+AM_CFLAGS_MIPS64_LINUX = @FLAG_M64@ $(AM_CFLAGS_BASE) -mips64
+AM_CCASFLAGS_MIPS64_LINUX = @FLAG_M64@ -mips64 -g
 
 # Flags for the primary target.  These must be used to build the
 # regtests and performance tests.  In fact, these must be used to
@@ -441,7 +445,16 @@ PRELOAD_LDFLAGS_X86_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch i386
 PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M32@
-TOOLS = cojac
+PRELOAD_LDFLAGS_MIPS64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
+TOOLS = memcheck \
+		cachegrind \
+		callgrind \
+		massif \
+		lackey \
+		none \
+		helgrind \
+		drd
+
 EXP_TOOLS = exp-sgcheck \
 		exp-bbv \
 		exp-dhat
@@ -459,6 +472,7 @@ SUBDIRS = \
 	tests \
 	perf \
 	gdbserver_tests \
+	memcheck/tests/vbit-test \
 	auxprogs \
 	mpi \
 	docs
@@ -1173,11 +1187,13 @@ default.supp: $(DEFAULT_SUPP_FILES)
 regtest: check
 	gdbserver_tests/make_local_links $(GDB)
 	if @PERL@ tests/vg_regtest gdbserver_tests $(TOOLS) $(EXP_TOOLS) ; then \
-	   tests/check_makefile_consistency gdbserver_tests $(TOOLS) $(EXP_TOOLS); \
+	   tests/post_regtest_checks $(abs_top_srcdir) gdbserver_tests $(TOOLS) $(EXP_TOOLS); \
 	else \
-	   tests/check_makefile_consistency gdbserver_tests $(TOOLS) $(EXP_TOOLS); \
+	   tests/post_regtest_checks $(abs_top_srcdir) gdbserver_tests $(TOOLS) $(EXP_TOOLS); \
 	   false; \
 	fi
+post-regtest-checks:
+	tests/post_regtest_checks $(abs_top_srcdir) gdbserver_tests $(TOOLS) $(EXP_TOOLS)
 nonexp-regtest: check
 	@PERL@ tests/vg_regtest $(TOOLS)
 exp-regtest: check

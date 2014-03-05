@@ -71,13 +71,22 @@ DIST_COMMON = $(dist_noinst_SCRIPTS) $(srcdir)/Makefile.am \
 @VGCONF_HAVE_PLATFORM_SEC_TRUE@am__append_2 = -DVGA_SEC_@VGCONF_ARCH_SEC@=1  \
 @VGCONF_HAVE_PLATFORM_SEC_TRUE@		-DVGP_SEC_@VGCONF_ARCH_PRI@_@VGCONF_OS@=1
 
-check_PROGRAMS = allexec$(EXEEXT) branches$(EXEEXT) \
-	FPUarithmetic$(EXEEXT) LoadStore$(EXEEXT) LoadStore1$(EXEEXT) \
-	MemCpyTest$(EXEEXT) MIPS32int$(EXEEXT) MoveIns$(EXEEXT) \
-	round$(EXEEXT) vfp$(EXEEXT)
+@HAS_WRITE_STRINGS_WARNING_TRUE@am__append_3 = -Wno-write-strings
+@COMPILER_IS_CLANG_TRUE@am__append_4 = -Wno-format-extra-args \
+@COMPILER_IS_CLANG_TRUE@	-Wno-literal-range \
+@COMPILER_IS_CLANG_TRUE@	-Wno-string-plus-int # \
+@COMPILER_IS_CLANG_TRUE@	drd/tests/annotate_ignore_rw.c
+@COMPILER_IS_CLANG_TRUE@am__append_5 = -Wno-unused-private-field    # drd/tests/tsan_unittest.cpp
+check_PROGRAMS = allexec$(EXEEXT) block_size$(EXEEXT) \
+	branches$(EXEEXT) FPUarithmetic$(EXEEXT) LoadStore$(EXEEXT) \
+	LoadStore1$(EXEEXT) MemCpyTest$(EXEEXT) MIPS32int$(EXEEXT) \
+	MoveIns$(EXEEXT) round$(EXEEXT) vfp$(EXEEXT) \
+	SignalException$(EXEEXT) bug320057-mips32$(EXEEXT) \
+	mips32_dsp$(EXEEXT) mips32_dspr2$(EXEEXT) \
+	unaligned_load_store$(EXEEXT) test_fcsr$(EXEEXT)
 subdir = none/tests/mips32
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -102,17 +111,40 @@ MemCpyTest_LDADD = $(LDADD)
 MoveIns_SOURCES = MoveIns.c
 MoveIns_OBJECTS = MoveIns.$(OBJEXT)
 MoveIns_LDADD = $(LDADD)
+SignalException_SOURCES = SignalException.c
+SignalException_OBJECTS = SignalException.$(OBJEXT)
+SignalException_LDADD = $(LDADD)
 allexec_SOURCES = allexec.c
 allexec_OBJECTS = allexec-allexec.$(OBJEXT)
 allexec_LDADD = $(LDADD)
 allexec_LINK = $(CCLD) $(allexec_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
+block_size_SOURCES = block_size.c
+block_size_OBJECTS = block_size.$(OBJEXT)
+block_size_LDADD = $(LDADD)
 branches_SOURCES = branches.c
 branches_OBJECTS = branches.$(OBJEXT)
 branches_LDADD = $(LDADD)
+bug320057_mips32_SOURCES = bug320057-mips32.c
+bug320057_mips32_OBJECTS = bug320057-mips32.$(OBJEXT)
+bug320057_mips32_LDADD = $(LDADD)
+bug320057_mips32_LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(bug320057_mips32_LDFLAGS) $(LDFLAGS) -o $@
+mips32_dsp_SOURCES = mips32_dsp.c
+mips32_dsp_OBJECTS = mips32_dsp.$(OBJEXT)
+mips32_dsp_LDADD = $(LDADD)
+mips32_dspr2_SOURCES = mips32_dspr2.c
+mips32_dspr2_OBJECTS = mips32_dspr2.$(OBJEXT)
+mips32_dspr2_LDADD = $(LDADD)
 round_SOURCES = round.c
 round_OBJECTS = round.$(OBJEXT)
 round_LDADD = $(LDADD)
+test_fcsr_SOURCES = test_fcsr.c
+test_fcsr_OBJECTS = test_fcsr.$(OBJEXT)
+test_fcsr_LDADD = $(LDADD)
+unaligned_load_store_SOURCES = unaligned_load_store.c
+unaligned_load_store_OBJECTS = unaligned_load_store.$(OBJEXT)
+unaligned_load_store_LDADD = $(LDADD)
 vfp_SOURCES = vfp.c
 vfp_OBJECTS = vfp.$(OBJEXT)
 vfp_LDADD = $(LDADD)
@@ -126,9 +158,15 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = FPUarithmetic.c LoadStore.c LoadStore1.c MIPS32int.c \
-	MemCpyTest.c MoveIns.c allexec.c branches.c round.c vfp.c
+	MemCpyTest.c MoveIns.c SignalException.c allexec.c \
+	block_size.c branches.c bug320057-mips32.c mips32_dsp.c \
+	mips32_dspr2.c round.c test_fcsr.c unaligned_load_store.c \
+	vfp.c
 DIST_SOURCES = FPUarithmetic.c LoadStore.c LoadStore1.c MIPS32int.c \
-	MemCpyTest.c MoveIns.c allexec.c branches.c round.c vfp.c
+	MemCpyTest.c MoveIns.c SignalException.c allexec.c \
+	block_size.c branches.c bug320057-mips32.c mips32_dsp.c \
+	mips32_dspr2.c round.c test_fcsr.c unaligned_load_store.c \
+	vfp.c
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -151,13 +189,13 @@ CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = @CFLAGS@
+CFLAGS = @CFLAGS@ $(am__append_3) $(am__append_4)
 CFLAGS_MPI = @CFLAGS_MPI@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
+CXXFLAGS = @CXXFLAGS@ $(am__append_5)
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_SUPP = @DEFAULT_SUPP@
 DEFS = @DEFS@
@@ -174,6 +212,7 @@ FLAG_M64 = @FLAG_M64@
 FLAG_MMMX = @FLAG_MMMX@
 FLAG_MSSE = @FLAG_MSSE@
 FLAG_NO_BUILD_ID = @FLAG_NO_BUILD_ID@
+FLAG_T_TEXT = @FLAG_T_TEXT@
 FLAG_UNLIMITED_INLINE_UNIT_GROWTH = @FLAG_UNLIMITED_INLINE_UNIT_GROWTH@
 FLAG_W_EXTRA = @FLAG_W_EXTRA@
 FLAG_W_NO_EMPTY_BODY = @FLAG_W_NO_EMPTY_BODY@
@@ -372,6 +411,9 @@ AM_CCASFLAGS_S390X_LINUX = @FLAG_M64@ -g -mzarch -march=z900
 AM_FLAG_M3264_MIPS32_LINUX = @FLAG_M32@
 AM_CFLAGS_MIPS32_LINUX = @FLAG_M32@ $(AM_CFLAGS_BASE) -mips32
 AM_CCASFLAGS_MIPS32_LINUX = @FLAG_M32@ -mips32 -g
+AM_FLAG_M3264_MIPS64_LINUX = @FLAG_M64@
+AM_CFLAGS_MIPS64_LINUX = @FLAG_M64@ $(AM_CFLAGS_BASE) -mips64
+AM_CCASFLAGS_MIPS64_LINUX = @FLAG_M64@ -mips64 -g
 
 # Flags for the primary target.  These must be used to build the
 # regtests and performance tests.  In fact, these must be used to
@@ -398,6 +440,7 @@ PRELOAD_LDFLAGS_X86_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch i386
 PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M32@
+PRELOAD_LDFLAGS_MIPS64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include \
 	-I$(top_srcdir)/coregrind -I$(top_builddir)/include \
 	-I$(top_srcdir)/VEX/pub -DVGA_@VGCONF_ARCH_PRI@=1 \
@@ -415,22 +458,37 @@ AM_CCASFLAGS = $(AM_CPPFLAGS) @FLAG_M32@
 @VGCONF_OS_IS_DARWIN_TRUE@noinst_DSYMS = $(check_PROGRAMS)
 dist_noinst_SCRIPTS = filter_stderr
 EXTRA_DIST = \
+	block_size.stdout.exp block_size.stderr.exp block_size.vgtest \
 	branches.stdout.exp branches.stderr.exp branches.vgtest \
 	FPUarithmetic.stdout.exp FPUarithmetic.stdout.exp-mips32 \
-        FPUarithmetic.stderr.exp FPUarithmetic.vgtest \
+	FPUarithmetic.stderr.exp FPUarithmetic.vgtest \
 	LoadStore.stdout.exp LoadStore.stdout.exp-BE LoadStore.stderr.exp \
 	LoadStore.vgtest \
 	LoadStore1.stdout.exp LoadStore1.stdout.exp-LE LoadStore1.stderr.exp \
 	LoadStore1.vgtest \
 	MemCpyTest.stdout.exp MemCpyTest.stderr.exp MemCpyTest.vgtest \
-	MIPS32int.stdout.exp MIPS32int.stdout.exp-BE MIPS32int.stdout.exp-mips32 \
-        MIPS32int.stderr.exp MIPS32int.vgtest \
+	MIPS32int.stdout.exp-mips32-BE MIPS32int.stdout.exp-mips32r2-BE \
+	MIPS32int.stdout.exp-mips32-LE MIPS32int.stdout.exp-mips32r2-LE \
+	MIPS32int.stderr.exp MIPS32int.vgtest \
 	MoveIns.stdout.exp MoveIns.stdout.exp-BE MoveIns.stderr.exp MoveIns.vgtest \
 	round.stdout.exp round.stderr.exp round.vgtest \
-	vfp.stdout.exp vfp.stdout.exp-BE vfp.stdout.exp-mips32 vfp.stderr.exp \
-        vfp.vgtest
+	vfp.stdout.exp-mips32-BE vfp.stdout.exp-mips32r2-BE \
+	vfp.stdout.exp-mips32-LE vfp.stdout.exp-mips32r2-LE vfp.stderr.exp \
+	vfp.vgtest \
+	SignalException.stderr.exp SignalException.vgtest \
+	bug320057-mips32.stdout.exp bug320057-mips32.stderr.exp \
+	bug320057-mips32.vgtest \
+	mips32_dsp.stdout.exp mips32_dsp.stdout.exp-BE \
+	mips32_dsp.stdout.exp-mips32 mips32_dsp.stderr.exp \
+	mips32_dsp.vgtest \
+	mips32_dspr2.stdout.exp mips32_dspr2.stderr.exp \
+	mips32_dspr2.stdout.exp-mips32 mips32_dspr2.vgtest \
+	unaligned_load_store.stdout.exp-LE unaligned_load_store.stdout.exp-BE \
+	unaligned_load_store.stderr.exp unaligned_load_store.vgtest \
+	test_fcsr.stdout.exp test_fcsr.stderr.exp test_fcsr.vgtest
 
 allexec_CFLAGS = $(AM_CFLAGS) @FLAG_W_NO_NONNULL@
+bug320057_mips32_LDFLAGS = -lrt
 all: all-am
 
 .SUFFIXES:
@@ -487,15 +545,36 @@ MemCpyTest$(EXEEXT): $(MemCpyTest_OBJECTS) $(MemCpyTest_DEPENDENCIES) $(EXTRA_Me
 MoveIns$(EXEEXT): $(MoveIns_OBJECTS) $(MoveIns_DEPENDENCIES) $(EXTRA_MoveIns_DEPENDENCIES) 
 	@rm -f MoveIns$(EXEEXT)
 	$(LINK) $(MoveIns_OBJECTS) $(MoveIns_LDADD) $(LIBS)
+SignalException$(EXEEXT): $(SignalException_OBJECTS) $(SignalException_DEPENDENCIES) $(EXTRA_SignalException_DEPENDENCIES) 
+	@rm -f SignalException$(EXEEXT)
+	$(LINK) $(SignalException_OBJECTS) $(SignalException_LDADD) $(LIBS)
 allexec$(EXEEXT): $(allexec_OBJECTS) $(allexec_DEPENDENCIES) $(EXTRA_allexec_DEPENDENCIES) 
 	@rm -f allexec$(EXEEXT)
 	$(allexec_LINK) $(allexec_OBJECTS) $(allexec_LDADD) $(LIBS)
+block_size$(EXEEXT): $(block_size_OBJECTS) $(block_size_DEPENDENCIES) $(EXTRA_block_size_DEPENDENCIES) 
+	@rm -f block_size$(EXEEXT)
+	$(LINK) $(block_size_OBJECTS) $(block_size_LDADD) $(LIBS)
 branches$(EXEEXT): $(branches_OBJECTS) $(branches_DEPENDENCIES) $(EXTRA_branches_DEPENDENCIES) 
 	@rm -f branches$(EXEEXT)
 	$(LINK) $(branches_OBJECTS) $(branches_LDADD) $(LIBS)
+bug320057-mips32$(EXEEXT): $(bug320057_mips32_OBJECTS) $(bug320057_mips32_DEPENDENCIES) $(EXTRA_bug320057_mips32_DEPENDENCIES) 
+	@rm -f bug320057-mips32$(EXEEXT)
+	$(bug320057_mips32_LINK) $(bug320057_mips32_OBJECTS) $(bug320057_mips32_LDADD) $(LIBS)
+mips32_dsp$(EXEEXT): $(mips32_dsp_OBJECTS) $(mips32_dsp_DEPENDENCIES) $(EXTRA_mips32_dsp_DEPENDENCIES) 
+	@rm -f mips32_dsp$(EXEEXT)
+	$(LINK) $(mips32_dsp_OBJECTS) $(mips32_dsp_LDADD) $(LIBS)
+mips32_dspr2$(EXEEXT): $(mips32_dspr2_OBJECTS) $(mips32_dspr2_DEPENDENCIES) $(EXTRA_mips32_dspr2_DEPENDENCIES) 
+	@rm -f mips32_dspr2$(EXEEXT)
+	$(LINK) $(mips32_dspr2_OBJECTS) $(mips32_dspr2_LDADD) $(LIBS)
 round$(EXEEXT): $(round_OBJECTS) $(round_DEPENDENCIES) $(EXTRA_round_DEPENDENCIES) 
 	@rm -f round$(EXEEXT)
 	$(LINK) $(round_OBJECTS) $(round_LDADD) $(LIBS)
+test_fcsr$(EXEEXT): $(test_fcsr_OBJECTS) $(test_fcsr_DEPENDENCIES) $(EXTRA_test_fcsr_DEPENDENCIES) 
+	@rm -f test_fcsr$(EXEEXT)
+	$(LINK) $(test_fcsr_OBJECTS) $(test_fcsr_LDADD) $(LIBS)
+unaligned_load_store$(EXEEXT): $(unaligned_load_store_OBJECTS) $(unaligned_load_store_DEPENDENCIES) $(EXTRA_unaligned_load_store_DEPENDENCIES) 
+	@rm -f unaligned_load_store$(EXEEXT)
+	$(LINK) $(unaligned_load_store_OBJECTS) $(unaligned_load_store_LDADD) $(LIBS)
 vfp$(EXEEXT): $(vfp_OBJECTS) $(vfp_DEPENDENCIES) $(EXTRA_vfp_DEPENDENCIES) 
 	@rm -f vfp$(EXEEXT)
 	$(LINK) $(vfp_OBJECTS) $(vfp_LDADD) $(LIBS)
@@ -512,24 +591,33 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MIPS32int.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MemCpyTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MoveIns.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SignalException.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/allexec-allexec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/block_size.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/branches.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bug320057-mips32.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mips32_dsp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mips32_dspr2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/round.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_fcsr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unaligned_load_store.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vfp.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 allexec-allexec.o: allexec.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(allexec_CFLAGS) $(CFLAGS) -MT allexec-allexec.o -MD -MP -MF $(DEPDIR)/allexec-allexec.Tpo -c -o allexec-allexec.o `test -f 'allexec.c' || echo '$(srcdir)/'`allexec.c

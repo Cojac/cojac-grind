@@ -70,7 +70,7 @@ noinst_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2)
 @BUILD_MPIWRAP_SEC_TRUE@am__append_3 = libmpiwrap-@VGCONF_ARCH_SEC@-@VGCONF_OS@.so
 subdir = mpi
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -163,6 +163,7 @@ FLAG_M64 = @FLAG_M64@
 FLAG_MMMX = @FLAG_MMMX@
 FLAG_MSSE = @FLAG_MSSE@
 FLAG_NO_BUILD_ID = @FLAG_NO_BUILD_ID@
+FLAG_T_TEXT = @FLAG_T_TEXT@
 FLAG_UNLIMITED_INLINE_UNIT_GROWTH = @FLAG_UNLIMITED_INLINE_UNIT_GROWTH@
 FLAG_W_EXTRA = @FLAG_W_EXTRA@
 FLAG_W_NO_EMPTY_BODY = @FLAG_W_NO_EMPTY_BODY@
@@ -361,6 +362,9 @@ AM_CCASFLAGS_S390X_LINUX = @FLAG_M64@ -g -mzarch -march=z900
 AM_FLAG_M3264_MIPS32_LINUX = @FLAG_M32@
 AM_CFLAGS_MIPS32_LINUX = @FLAG_M32@ $(AM_CFLAGS_BASE) -mips32
 AM_CCASFLAGS_MIPS32_LINUX = @FLAG_M32@ -mips32 -g
+AM_FLAG_M3264_MIPS64_LINUX = @FLAG_M64@
+AM_CFLAGS_MIPS64_LINUX = @FLAG_M64@ $(AM_CFLAGS_BASE) -mips64
+AM_CCASFLAGS_MIPS64_LINUX = @FLAG_M64@ -mips64 -g
 
 # Flags for the primary target.  These must be used to build the
 # regtests and performance tests.  In fact, these must be used to
@@ -387,6 +391,7 @@ PRELOAD_LDFLAGS_X86_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch i386
 PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M32@
+PRELOAD_LDFLAGS_MIPS64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 DEFAULT_INCLUDES = 
 EXTRA_DIST = \
 	mpiwrap_type_test.c
@@ -397,13 +402,13 @@ EXTRA_DIST = \
 @VGCONF_OS_IS_DARWIN_TRUE@MPI_FLAG_M3264_SEC = $(AM_FLAG_M3264_SEC)
 @VGCONF_OS_IS_LINUX_TRUE@MPI_FLAG_M3264_SEC = $(AM_FLAG_M3264_SEC)
 @BUILD_MPIWRAP_PRI_TRUE@libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so_SOURCES = libmpiwrap.c
-@BUILD_MPIWRAP_PRI_TRUE@libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so_CPPFLAGS = -I../include
+@BUILD_MPIWRAP_PRI_TRUE@libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so_CPPFLAGS = -I$(top_srcdir)/include
 @BUILD_MPIWRAP_PRI_TRUE@libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so_CFLAGS = \
 @BUILD_MPIWRAP_PRI_TRUE@	$(CFLAGS_MPI) $(MPI_FLAG_M3264_PRI)
 
 @BUILD_MPIWRAP_PRI_TRUE@libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so_LDFLAGS = $(LDFLAGS_MPI)
 @BUILD_MPIWRAP_SEC_TRUE@libmpiwrap_@VGCONF_ARCH_SEC@_@VGCONF_OS@_so_SOURCES = libmpiwrap.c
-@BUILD_MPIWRAP_SEC_TRUE@libmpiwrap_@VGCONF_ARCH_SEC@_@VGCONF_OS@_so_CPPFLAGS = -I../include
+@BUILD_MPIWRAP_SEC_TRUE@libmpiwrap_@VGCONF_ARCH_SEC@_@VGCONF_OS@_so_CPPFLAGS = -I$(top_srcdir)/include
 @BUILD_MPIWRAP_SEC_TRUE@libmpiwrap_@VGCONF_ARCH_SEC@_@VGCONF_OS@_so_CFLAGS = \
 @BUILD_MPIWRAP_SEC_TRUE@	$(CFLAGS_MPI) $(MPI_FLAG_M3264_SEC)
 
@@ -463,18 +468,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmpiwrap_@VGCONF_ARCH_SEC@_@VGCONF_OS@_so-libmpiwrap.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so-libmpiwrap.o: libmpiwrap.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so_CPPFLAGS) $(CPPFLAGS) $(libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so_CFLAGS) $(CFLAGS) -MT libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so-libmpiwrap.o -MD -MP -MF $(DEPDIR)/libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so-libmpiwrap.Tpo -c -o libmpiwrap_@VGCONF_ARCH_PRI@_@VGCONF_OS@_so-libmpiwrap.o `test -f 'libmpiwrap.c' || echo '$(srcdir)/'`libmpiwrap.c

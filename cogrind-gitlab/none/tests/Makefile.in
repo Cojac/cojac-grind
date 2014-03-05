@@ -73,22 +73,29 @@ DIST_COMMON = $(dist_noinst_SCRIPTS) $(noinst_HEADERS) \
 @VGCONF_HAVE_PLATFORM_SEC_TRUE@am__append_2 = -DVGA_SEC_@VGCONF_ARCH_SEC@=1  \
 @VGCONF_HAVE_PLATFORM_SEC_TRUE@		-DVGP_SEC_@VGCONF_ARCH_PRI@_@VGCONF_OS@=1
 
+@HAS_WRITE_STRINGS_WARNING_TRUE@am__append_3 = -Wno-write-strings
+@COMPILER_IS_CLANG_TRUE@am__append_4 = -Wno-format-extra-args \
+@COMPILER_IS_CLANG_TRUE@	-Wno-literal-range \
+@COMPILER_IS_CLANG_TRUE@	-Wno-string-plus-int # \
+@COMPILER_IS_CLANG_TRUE@	drd/tests/annotate_ignore_rw.c
+@COMPILER_IS_CLANG_TRUE@am__append_5 = -Wno-unused-private-field    # drd/tests/tsan_unittest.cpp
 
 # Arch-specific tests.
-@VGCONF_ARCHS_INCLUDE_X86_TRUE@am__append_3 = x86
-@VGCONF_ARCHS_INCLUDE_AMD64_TRUE@am__append_4 = amd64
-@VGCONF_ARCHS_INCLUDE_PPC32_TRUE@am__append_5 = ppc32
-@VGCONF_ARCHS_INCLUDE_PPC64_TRUE@am__append_6 = ppc64
-@VGCONF_ARCHS_INCLUDE_ARM_TRUE@am__append_7 = arm
-@VGCONF_ARCHS_INCLUDE_S390X_TRUE@am__append_8 = s390x
-@VGCONF_ARCHS_INCLUDE_MIPS32_TRUE@am__append_9 = mips32
+@VGCONF_ARCHS_INCLUDE_X86_TRUE@am__append_6 = x86
+@VGCONF_ARCHS_INCLUDE_AMD64_TRUE@am__append_7 = amd64
+@VGCONF_ARCHS_INCLUDE_PPC32_TRUE@am__append_8 = ppc32
+@VGCONF_ARCHS_INCLUDE_PPC64_TRUE@am__append_9 = ppc64
+@VGCONF_ARCHS_INCLUDE_ARM_TRUE@am__append_10 = arm
+@VGCONF_ARCHS_INCLUDE_S390X_TRUE@am__append_11 = s390x
+@VGCONF_ARCHS_INCLUDE_MIPS32_TRUE@am__append_12 = mips32
+@VGCONF_ARCHS_INCLUDE_MIPS64_TRUE@am__append_13 = mips64
 
 # OS-specific tests
-@VGCONF_OS_IS_LINUX_TRUE@am__append_10 = linux
-@VGCONF_OS_IS_DARWIN_TRUE@am__append_11 = darwin
+@VGCONF_OS_IS_LINUX_TRUE@am__append_14 = linux
+@VGCONF_OS_IS_DARWIN_TRUE@am__append_15 = darwin
 
 # Platform-specific tests
-@VGCONF_PLATFORMS_INCLUDE_X86_LINUX_TRUE@am__append_12 = x86-linux
+@VGCONF_PLATFORMS_INCLUDE_X86_LINUX_TRUE@am__append_16 = x86-linux
 check_PROGRAMS = ansi$(EXEEXT) args$(EXEEXT) async-sigs$(EXEEXT) \
 	bitfield1$(EXEEXT) bug129866$(EXEEXT) closeall$(EXEEXT) \
 	coolo_strlen$(EXEEXT) discard$(EXEEXT) exec-sigmask$(EXEEXT) \
@@ -99,13 +106,13 @@ check_PROGRAMS = ansi$(EXEEXT) args$(EXEEXT) async-sigs$(EXEEXT) \
 	fdleak_socketpair$(EXEEXT) floored$(EXEEXT) fork$(EXEEXT) \
 	fucomip$(EXEEXT) mmap_fcntl_bug$(EXEEXT) munmap_exe$(EXEEXT) \
 	map_unaligned$(EXEEXT) map_unmap$(EXEEXT) mq$(EXEEXT) \
-	nestedfns$(EXEEXT) pending$(EXEEXT) \
-	procfs-cmdline-exe$(EXEEXT) pth_atfork1$(EXEEXT) \
-	pth_blockedsig$(EXEEXT) pth_cancel1$(EXEEXT) \
-	pth_cancel2$(EXEEXT) pth_cvsimple$(EXEEXT) pth_empty$(EXEEXT) \
-	pth_exit$(EXEEXT) pth_exit2$(EXEEXT) pth_mutexspeed$(EXEEXT) \
-	pth_once$(EXEEXT) pth_rwlock$(EXEEXT) pth_stackalign$(EXEEXT) \
-	rcrl$(EXEEXT) readline1$(EXEEXT) require-text-symbol$(EXEEXT) \
+	pending$(EXEEXT) procfs-cmdline-exe$(EXEEXT) \
+	pth_atfork1$(EXEEXT) pth_blockedsig$(EXEEXT) \
+	pth_cancel1$(EXEEXT) pth_cancel2$(EXEEXT) \
+	pth_cvsimple$(EXEEXT) pth_empty$(EXEEXT) pth_exit$(EXEEXT) \
+	pth_exit2$(EXEEXT) pth_mutexspeed$(EXEEXT) pth_once$(EXEEXT) \
+	pth_rwlock$(EXEEXT) pth_stackalign$(EXEEXT) rcrl$(EXEEXT) \
+	readline1$(EXEEXT) require-text-symbol$(EXEEXT) \
 	res_search$(EXEEXT) resolv$(EXEEXT) rlimit_nofile$(EXEEXT) \
 	selfrun$(EXEEXT) sem$(EXEEXT) semlimit$(EXEEXT) \
 	sha1_test$(EXEEXT) shortpush$(EXEEXT) shorts$(EXEEXT) \
@@ -116,7 +123,8 @@ check_PROGRAMS = ansi$(EXEEXT) args$(EXEEXT) async-sigs$(EXEEXT) \
 	tls.so$(EXEEXT) tls2.so$(EXEEXT) valgrind_cpp_test$(EXEEXT) \
 	vgprintf$(EXEEXT) coolo_sigaction$(EXEEXT) gxx304$(EXEEXT) \
 	process_vm_readv_writev$(EXEEXT) $(am__EXEEXT_1) \
-	$(am__EXEEXT_2) $(am__EXEEXT_3)
+	$(am__EXEEXT_2) $(am__EXEEXT_3) $(am__EXEEXT_4)
+@HAVE_NESTED_FUNCTIONS_TRUE@am__append_17 = nestedfns
 
 # DDD:
 # - manythreads and thread-exits have lots of this:
@@ -128,26 +136,27 @@ check_PROGRAMS = ansi$(EXEEXT) args$(EXEEXT) async-sigs$(EXEEXT) \
 # --61831:0:aspacem  NSegment{    , start=0x10067a000, end=0x109a1efff,
 #                    smode=SmFixed, dev=0, ino=0, offset=0, fnIdx=-1, hasR=0,
 #                    hasW=0, hasX=0, hasT=0, mark=0, name="(none)"}
-@VGCONF_PLATFORMS_INCLUDE_AMD64_DARWIN_FALSE@am__append_13 = \
+@VGCONF_PLATFORMS_INCLUDE_AMD64_DARWIN_FALSE@am__append_18 = \
 @VGCONF_PLATFORMS_INCLUDE_AMD64_DARWIN_FALSE@	manythreads \
 @VGCONF_PLATFORMS_INCLUDE_AMD64_DARWIN_FALSE@	thread-exits
 
 # This doesn't appear to be compilable on Darwin.
-@VGCONF_OS_IS_DARWIN_FALSE@am__append_14 = rlimit64_nofile 
-@BUILD_IFUNC_TESTS_TRUE@am__append_15 = ifunc
+@VGCONF_OS_IS_DARWIN_FALSE@am__append_19 = rlimit64_nofile 
+@BUILD_IFUNC_TESTS_TRUE@am__append_20 = ifunc
 subdir = none/tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-@VGCONF_PLATFORMS_INCLUDE_AMD64_DARWIN_FALSE@am__EXEEXT_1 = manythreads$(EXEEXT) \
+@HAVE_NESTED_FUNCTIONS_TRUE@am__EXEEXT_1 = nestedfns$(EXEEXT)
+@VGCONF_PLATFORMS_INCLUDE_AMD64_DARWIN_FALSE@am__EXEEXT_2 = manythreads$(EXEEXT) \
 @VGCONF_PLATFORMS_INCLUDE_AMD64_DARWIN_FALSE@	thread-exits$(EXEEXT)
-@VGCONF_OS_IS_DARWIN_FALSE@am__EXEEXT_2 = rlimit64_nofile$(EXEEXT)
-@BUILD_IFUNC_TESTS_TRUE@am__EXEEXT_3 = ifunc$(EXEEXT)
+@VGCONF_OS_IS_DARWIN_FALSE@am__EXEEXT_3 = rlimit64_nofile$(EXEEXT)
+@BUILD_IFUNC_TESTS_TRUE@am__EXEEXT_4 = ifunc$(EXEEXT)
 ansi_SOURCES = ansi.c
 ansi_OBJECTS = ansi-ansi.$(OBJEXT)
 ansi_LDADD = $(LDADD)
@@ -503,13 +512,13 @@ CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = @CFLAGS@
+CFLAGS = @CFLAGS@ $(am__append_3) $(am__append_4)
 CFLAGS_MPI = @CFLAGS_MPI@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
+CXXFLAGS = @CXXFLAGS@ $(am__append_5)
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_SUPP = @DEFAULT_SUPP@
 DEFS = @DEFS@
@@ -526,6 +535,7 @@ FLAG_M64 = @FLAG_M64@
 FLAG_MMMX = @FLAG_MMMX@
 FLAG_MSSE = @FLAG_MSSE@
 FLAG_NO_BUILD_ID = @FLAG_NO_BUILD_ID@
+FLAG_T_TEXT = @FLAG_T_TEXT@
 FLAG_UNLIMITED_INLINE_UNIT_GROWTH = @FLAG_UNLIMITED_INLINE_UNIT_GROWTH@
 FLAG_W_EXTRA = @FLAG_W_EXTRA@
 FLAG_W_NO_EMPTY_BODY = @FLAG_W_NO_EMPTY_BODY@
@@ -724,6 +734,9 @@ AM_CCASFLAGS_S390X_LINUX = @FLAG_M64@ -g -mzarch -march=z900
 AM_FLAG_M3264_MIPS32_LINUX = @FLAG_M32@
 AM_CFLAGS_MIPS32_LINUX = @FLAG_M32@ $(AM_CFLAGS_BASE) -mips32
 AM_CCASFLAGS_MIPS32_LINUX = @FLAG_M32@ -mips32 -g
+AM_FLAG_M3264_MIPS64_LINUX = @FLAG_M64@
+AM_CFLAGS_MIPS64_LINUX = @FLAG_M64@ $(AM_CFLAGS_BASE) -mips64
+AM_CCASFLAGS_MIPS64_LINUX = @FLAG_M64@ -mips64 -g
 
 # Flags for the primary target.  These must be used to build the
 # regtests and performance tests.  In fact, these must be used to
@@ -750,6 +763,7 @@ PRELOAD_LDFLAGS_X86_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch i386
 PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M32@
+PRELOAD_LDFLAGS_MIPS64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include \
 	-I$(top_srcdir)/coregrind -I$(top_builddir)/include \
 	-I$(top_srcdir)/VEX/pub -DVGA_@VGCONF_ARCH_PRI@=1 \
@@ -765,11 +779,13 @@ AM_CXXFLAGS = -Winline -Wall -Wshadow -g $(AM_FLAG_M3264_PRI)
 # automake;  see comments in Makefile.all.am for more detail.
 AM_CCASFLAGS = $(AM_CPPFLAGS)
 @VGCONF_OS_IS_DARWIN_TRUE@noinst_DSYMS = $(check_PROGRAMS)
-SUBDIRS = . $(am__append_3) $(am__append_4) $(am__append_5) \
-	$(am__append_6) $(am__append_7) $(am__append_8) \
+SUBDIRS = . $(am__append_6) $(am__append_7) $(am__append_8) \
 	$(am__append_9) $(am__append_10) $(am__append_11) \
-	$(am__append_12)
-DIST_SUBDIRS = x86 amd64 ppc32 ppc64 arm s390x mips32 linux darwin x86-linux .
+	$(am__append_12) $(am__append_13) $(am__append_14) \
+	$(am__append_15) $(am__append_16)
+DIST_SUBDIRS = x86 amd64 ppc32 ppc64 arm s390x mips32 mips64 linux darwin \
+               x86-linux .
+
 dist_noinst_SCRIPTS = \
 	filter_cmdline0 \
 	filter_cmdline1 \
@@ -1301,18 +1317,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vgprintf.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 ansi-ansi.o: ansi.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ansi_CFLAGS) $(CFLAGS) -MT ansi-ansi.o -MD -MP -MF $(DEPDIR)/ansi-ansi.Tpo -c -o ansi-ansi.o `test -f 'ansi.c' || echo '$(srcdir)/'`ansi.c
@@ -1385,15 +1403,17 @@ tls_so-tls_so.obj: tls_so.c
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(tls_so_CFLAGS) $(CFLAGS) -c -o tls_so-tls_so.obj `if test -f 'tls_so.c'; then $(CYGPATH_W) 'tls_so.c'; else $(CYGPATH_W) '$(srcdir)/tls_so.c'; fi`
 
 .cpp.o:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCXX_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCXX_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`

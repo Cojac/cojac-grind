@@ -1,4 +1,4 @@
-/* config.h.in.  Generated from configure.in by autoheader.  */
+/* config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define to 1 if you're using Bionic */
 #undef BIONIC_LIBC
@@ -20,6 +20,9 @@
 
 /* Darwin / Mac OS X version */
 #undef DARWIN_VERS
+
+/* Disable intercept pthread_spin_lock() on MIPS32 and MIPS64. */
+#undef DISABLE_PTHREAD_SPINLOCK_INTERCEPT
 
 /* configured to run as an inner Valgrind */
 #undef ENABLE_INNER
@@ -47,6 +50,12 @@
 
 /* Define to 1 if you're using glibc 2.16.x */
 #undef GLIBC_2_16
+
+/* Define to 1 if you're using glibc 2.17.x */
+#undef GLIBC_2_17
+
+/* Define to 1 if you're using glibc 2.18.x */
+#undef GLIBC_2_18
 
 /* Define to 1 if you're using glibc 2.2.x */
 #undef GLIBC_2_2
@@ -77,6 +86,9 @@
 
 /* Define to 1 if you have the <asm/unistd.h> header file. */
 #undef HAVE_ASM_UNISTD_H
+
+/* Define to 1 if as supports floating point phased out category. */
+#undef HAVE_AS_PPC_FPPO
 
 /* Define to 1 if as supports mtocrf/mfocrf. */
 #undef HAVE_AS_PPC_MFTOCRF
@@ -198,11 +210,17 @@
 /* Define to 1 if you have the `pthread_rwlock_timedwrlock' function. */
 #undef HAVE_PTHREAD_RWLOCK_TIMEDWRLOCK
 
+/* Define to 1 if you have the `pthread_setname_np' function. */
+#undef HAVE_PTHREAD_SETNAME_NP
+
 /* Define to 1 if you have the `pthread_spin_lock' function. */
 #undef HAVE_PTHREAD_SPIN_LOCK
 
 /* Define to 1 if you have the `pthread_yield' function. */
 #undef HAVE_PTHREAD_YIELD
+
+/* Define to 1 if you have the `PTRACE_GETREGS' ptrace request. */
+#undef HAVE_PTRACE_GETREGS
 
 /* Define to 1 if you have the `readlinkat' function. */
 #undef HAVE_READLINKAT
@@ -329,9 +347,6 @@
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
-
-/* configured memory alignment 2*PAGE_SIZE */
-#undef SHM_ALIGNMENT
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS

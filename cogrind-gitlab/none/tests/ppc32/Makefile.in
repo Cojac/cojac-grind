@@ -71,6 +71,12 @@ DIST_COMMON = $(dist_noinst_SCRIPTS) $(srcdir)/Makefile.am \
 @VGCONF_HAVE_PLATFORM_SEC_TRUE@am__append_2 = -DVGA_SEC_@VGCONF_ARCH_SEC@=1  \
 @VGCONF_HAVE_PLATFORM_SEC_TRUE@		-DVGP_SEC_@VGCONF_ARCH_PRI@_@VGCONF_OS@=1
 
+@HAS_WRITE_STRINGS_WARNING_TRUE@am__append_3 = -Wno-write-strings
+@COMPILER_IS_CLANG_TRUE@am__append_4 = -Wno-format-extra-args \
+@COMPILER_IS_CLANG_TRUE@	-Wno-literal-range \
+@COMPILER_IS_CLANG_TRUE@	-Wno-string-plus-int # \
+@COMPILER_IS_CLANG_TRUE@	drd/tests/annotate_ignore_rw.c
+@COMPILER_IS_CLANG_TRUE@am__append_5 = -Wno-unused-private-field    # drd/tests/tsan_unittest.cpp
 check_PROGRAMS = allexec$(EXEEXT) bug129390-ppc32$(EXEEXT) \
 	bug139050-ppc32$(EXEEXT) ldstrev$(EXEEXT) lsw$(EXEEXT) \
 	jm-insns$(EXEEXT) mftocrf$(EXEEXT) mcrfs$(EXEEXT) \
@@ -80,10 +86,12 @@ check_PROGRAMS = allexec$(EXEEXT) bug129390-ppc32$(EXEEXT) \
 	test_isa_2_06_part1$(EXEEXT) test_isa_2_06_part2$(EXEEXT) \
 	test_isa_2_06_part3$(EXEEXT) test_dfp1$(EXEEXT) \
 	test_dfp2$(EXEEXT) test_dfp3$(EXEEXT) test_dfp4$(EXEEXT) \
-	test_dfp5$(EXEEXT)
+	test_dfp5$(EXEEXT) test_isa_2_07_part1$(EXEEXT) \
+	test_isa_2_07_part2$(EXEEXT) test_tm$(EXEEXT) \
+	test_touch_tm$(EXEEXT)
 subdir = none/tests/ppc32
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -181,6 +189,28 @@ test_isa_2_06_part3_OBJECTS =  \
 test_isa_2_06_part3_LDADD = $(LDADD)
 test_isa_2_06_part3_LINK = $(CCLD) $(test_isa_2_06_part3_CFLAGS) \
 	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+test_isa_2_07_part1_SOURCES = test_isa_2_07_part1.c
+test_isa_2_07_part1_OBJECTS =  \
+	test_isa_2_07_part1-test_isa_2_07_part1.$(OBJEXT)
+test_isa_2_07_part1_LDADD = $(LDADD)
+test_isa_2_07_part1_LINK = $(CCLD) $(test_isa_2_07_part1_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+test_isa_2_07_part2_SOURCES = test_isa_2_07_part2.c
+test_isa_2_07_part2_OBJECTS =  \
+	test_isa_2_07_part2-test_isa_2_07_part2.$(OBJEXT)
+test_isa_2_07_part2_LDADD = $(LDADD)
+test_isa_2_07_part2_LINK = $(CCLD) $(test_isa_2_07_part2_CFLAGS) \
+	$(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+test_tm_SOURCES = test_tm.c
+test_tm_OBJECTS = test_tm-test_tm.$(OBJEXT)
+test_tm_LDADD = $(LDADD)
+test_tm_LINK = $(CCLD) $(test_tm_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+test_touch_tm_SOURCES = test_touch_tm.c
+test_touch_tm_OBJECTS = test_touch_tm-test_touch_tm.$(OBJEXT)
+test_touch_tm_LDADD = $(LDADD)
+test_touch_tm_LINK = $(CCLD) $(test_touch_tm_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 tw_SOURCES = tw.c
 tw_OBJECTS = tw.$(OBJEXT)
 tw_LDADD = $(LDADD)
@@ -204,13 +234,17 @@ SOURCES = allexec.c bug129390-ppc32.c bug139050-ppc32.c jm-insns.c \
 	power6_bcmp.c round.c testVMX.c test_dfp1.c test_dfp2.c \
 	test_dfp3.c test_dfp4.c test_dfp5.c test_fx.c test_gx.c \
 	test_isa_2_06_part1.c test_isa_2_06_part2.c \
-	test_isa_2_06_part3.c tw.c twi.c xlc_dbl_u32.c
+	test_isa_2_06_part3.c test_isa_2_07_part1.c \
+	test_isa_2_07_part2.c test_tm.c test_touch_tm.c tw.c twi.c \
+	xlc_dbl_u32.c
 DIST_SOURCES = allexec.c bug129390-ppc32.c bug139050-ppc32.c \
 	jm-insns.c ldstrev.c lsw.c mcrfs.c mftocrf.c power5+_round.c \
 	power6_bcmp.c round.c testVMX.c test_dfp1.c test_dfp2.c \
 	test_dfp3.c test_dfp4.c test_dfp5.c test_fx.c test_gx.c \
 	test_isa_2_06_part1.c test_isa_2_06_part2.c \
-	test_isa_2_06_part3.c tw.c twi.c xlc_dbl_u32.c
+	test_isa_2_06_part3.c test_isa_2_07_part1.c \
+	test_isa_2_07_part2.c test_tm.c test_touch_tm.c tw.c twi.c \
+	xlc_dbl_u32.c
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -233,13 +267,13 @@ CCAS = @CCAS@
 CCASDEPMODE = @CCASDEPMODE@
 CCASFLAGS = @CCASFLAGS@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = @CFLAGS@
+CFLAGS = @CFLAGS@ $(am__append_3) $(am__append_4)
 CFLAGS_MPI = @CFLAGS_MPI@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
+CXXFLAGS = @CXXFLAGS@ $(am__append_5)
 CYGPATH_W = @CYGPATH_W@
 DEFAULT_SUPP = @DEFAULT_SUPP@
 DEFS = @DEFS@
@@ -256,6 +290,7 @@ FLAG_M64 = @FLAG_M64@
 FLAG_MMMX = @FLAG_MMMX@
 FLAG_MSSE = @FLAG_MSSE@
 FLAG_NO_BUILD_ID = @FLAG_NO_BUILD_ID@
+FLAG_T_TEXT = @FLAG_T_TEXT@
 FLAG_UNLIMITED_INLINE_UNIT_GROWTH = @FLAG_UNLIMITED_INLINE_UNIT_GROWTH@
 FLAG_W_EXTRA = @FLAG_W_EXTRA@
 FLAG_W_NO_EMPTY_BODY = @FLAG_W_NO_EMPTY_BODY@
@@ -454,6 +489,9 @@ AM_CCASFLAGS_S390X_LINUX = @FLAG_M64@ -g -mzarch -march=z900
 AM_FLAG_M3264_MIPS32_LINUX = @FLAG_M32@
 AM_CFLAGS_MIPS32_LINUX = @FLAG_M32@ $(AM_CFLAGS_BASE) -mips32
 AM_CCASFLAGS_MIPS32_LINUX = @FLAG_M32@ -mips32 -g
+AM_FLAG_M3264_MIPS64_LINUX = @FLAG_M64@
+AM_CFLAGS_MIPS64_LINUX = @FLAG_M64@ $(AM_CFLAGS_BASE) -mips64
+AM_CCASFLAGS_MIPS64_LINUX = @FLAG_M64@ -mips64 -g
 
 # Flags for the primary target.  These must be used to build the
 # regtests and performance tests.  In fact, these must be used to
@@ -480,6 +518,7 @@ PRELOAD_LDFLAGS_X86_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch i386
 PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M32@
+PRELOAD_LDFLAGS_MIPS64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include \
 	-I$(top_srcdir)/coregrind -I$(top_builddir)/include \
 	-I$(top_srcdir)/VEX/pub -DVGA_@VGCONF_ARCH_PRI@=1 \
@@ -507,6 +546,7 @@ EXTRA_DIST = \
 	jm-fp.stderr.exp jm-fp.stdout.exp jm-fp.vgtest \
 	jm-vmx.stderr.exp jm-vmx.stdout.exp jm-vmx.stdout.exp_Minus_nan \
 	jm-vmx.vgtest \
+	jm-misc.stderr.exp jm-misc.stdout.exp jm-misc.vgtest \
 	mftocrf.stderr.exp mftocrf.stdout.exp mftocrf.vgtest \
 	mcrfs.stderr.exp mcrfs.stdout.exp mcrfs.vgtest \
 	round.stderr.exp round.stdout.exp round.vgtest \
@@ -518,6 +558,7 @@ EXTRA_DIST = \
 	twi.stderr.exp twi.stdout.exp twi.vgtest \
 	tw.stderr.exp tw.stdout.exp tw.vgtest \
 	xlc_dbl_u32.stderr.exp xlc_dbl_u32.stdout.exp xlc_dbl_u32.vgtest \
+	opcodes.h \
 	power5+_round.stderr.exp power5+_round.stdout.exp power5+_round.vgtest \
 	power6_bcmp.stderr.exp power6_bcmp.stdout.exp power6_bcmp.vgtest \
 	test_isa_2_06_part1.stderr.exp  test_isa_2_06_part1.stdout.exp  test_isa_2_06_part1.vgtest \
@@ -528,7 +569,13 @@ EXTRA_DIST = \
 	test_dfp2.stdout.exp_Without_dcffix \
 	test_dfp3.stderr.exp test_dfp3.stdout.exp test_dfp3.vgtest \
 	test_dfp4.stderr.exp test_dfp4.stdout.exp test_dfp4.vgtest \
-	test_dfp5.stderr.exp test_dfp5.stdout.exp test_dfp5.vgtest
+	test_dfp5.stderr.exp test_dfp5.stdout.exp test_dfp5.vgtest \
+	jm_vec_isa_2_07.stderr.exp jm_vec_isa_2_07.stdout.exp jm_vec_isa_2_07.vgtest \
+	jm_fp_isa_2_07.stderr.exp jm_fp_isa_2_07.stdout.exp jm_fp_isa_2_07.vgtest \
+	jm_int_isa_2_07.stderr.exp jm_int_isa_2_07.stdout.exp jm_int_isa_2_07.vgtest \
+	test_isa_2_07_part2.stderr.exp test_isa_2_07_part2.stdout.exp test_isa_2_07_part2.vgtest \
+	test_tm.stderr.exp test_tm.stdout.exp test_tm.vgtest \
+	test_touch_tm.stderr.exp test_touch_tm.stdout.exp test_touch_tm.vgtest
 
 allexec_CFLAGS = $(AM_CFLAGS) @FLAG_W_NO_NONNULL@
 @HAS_ALTIVEC_FALSE@ALTIVEC_FLAG = 
@@ -541,6 +588,10 @@ allexec_CFLAGS = $(AM_CFLAGS) @FLAG_W_NO_NONNULL@
 @HAS_DFP_TRUE@BUILD_FLAGS_DFP = -mhard-dfp -mcpu=power6
 @HAS_DFP_FALSE@DFP_FLAG = 
 @HAS_DFP_TRUE@DFP_FLAG = -DHAS_DFP
+@HAS_ISA_2_07_FALSE@BUILD_FLAGS_ISA_2_07 = 
+@HAS_ISA_2_07_TRUE@BUILD_FLAGS_ISA_2_07 = -mhtm  -mcpu=power8
+@HAS_ISA_2_07_FALSE@ISA_2_07_FLAG = 
+@HAS_ISA_2_07_TRUE@ISA_2_07_FLAG = -DHAS_ISA_2_07
 jm_insns_CFLAGS = $(AM_CFLAGS) -Winline -Wall -O -g -mregnames -maltivec \
 			@FLAG_M32@ $(ALTIVEC_FLAG)
 
@@ -570,6 +621,18 @@ test_dfp4_CFLAGS = $(AM_CFLAGS) -Winline -Wall -O -lm -g -mregnames $(DFP_FLAG) 
 
 test_dfp5_CFLAGS = $(AM_CFLAGS) -Winline -Wall -O -lm -g -mregnames $(DFP_FLAG) \
 			@FLAG_M32@ $(BUILD_FLAGS_DFP)
+
+test_isa_2_07_part1_CFLAGS = $(AM_CFLAGS) -Winline -Wall -O -lm -g -mregnames $(ISA_2_07_FLAG) \
+                        @FLAG_M32@ $(BUILD_FLAGS_ISA_2_07)
+
+test_isa_2_07_part2_CFLAGS = $(AM_CFLAGS) -Winline -Wall -O -lm -g -mregnames $(ISA_2_07_FLAG) \
+			@FLAG_M32@ $(BUILD_FLAGS_ISA_2_07)
+
+test_tm_CFLAGS = $(AM_CFLAGS) -Winline -Wall -O -lm -g -mregnames $(ISA_2_07_FLAG) \
+			@FLAG_M32@ $(BUILD_FLAGS_ISA_2_07)
+
+test_touch_tm_CFLAGS = $(AM_CFLAGS) -Winline -Wall -O -lm -g -mregnames $(ISA_2_07_FLAG) \
+			@FLAG_M32@ $(BUILD_FLAGS_ISA_2_07)
 
 all: all-am
 
@@ -675,6 +738,18 @@ test_isa_2_06_part2$(EXEEXT): $(test_isa_2_06_part2_OBJECTS) $(test_isa_2_06_par
 test_isa_2_06_part3$(EXEEXT): $(test_isa_2_06_part3_OBJECTS) $(test_isa_2_06_part3_DEPENDENCIES) $(EXTRA_test_isa_2_06_part3_DEPENDENCIES) 
 	@rm -f test_isa_2_06_part3$(EXEEXT)
 	$(test_isa_2_06_part3_LINK) $(test_isa_2_06_part3_OBJECTS) $(test_isa_2_06_part3_LDADD) $(LIBS)
+test_isa_2_07_part1$(EXEEXT): $(test_isa_2_07_part1_OBJECTS) $(test_isa_2_07_part1_DEPENDENCIES) $(EXTRA_test_isa_2_07_part1_DEPENDENCIES) 
+	@rm -f test_isa_2_07_part1$(EXEEXT)
+	$(test_isa_2_07_part1_LINK) $(test_isa_2_07_part1_OBJECTS) $(test_isa_2_07_part1_LDADD) $(LIBS)
+test_isa_2_07_part2$(EXEEXT): $(test_isa_2_07_part2_OBJECTS) $(test_isa_2_07_part2_DEPENDENCIES) $(EXTRA_test_isa_2_07_part2_DEPENDENCIES) 
+	@rm -f test_isa_2_07_part2$(EXEEXT)
+	$(test_isa_2_07_part2_LINK) $(test_isa_2_07_part2_OBJECTS) $(test_isa_2_07_part2_LDADD) $(LIBS)
+test_tm$(EXEEXT): $(test_tm_OBJECTS) $(test_tm_DEPENDENCIES) $(EXTRA_test_tm_DEPENDENCIES) 
+	@rm -f test_tm$(EXEEXT)
+	$(test_tm_LINK) $(test_tm_OBJECTS) $(test_tm_LDADD) $(LIBS)
+test_touch_tm$(EXEEXT): $(test_touch_tm_OBJECTS) $(test_touch_tm_DEPENDENCIES) $(EXTRA_test_touch_tm_DEPENDENCIES) 
+	@rm -f test_touch_tm$(EXEEXT)
+	$(test_touch_tm_LINK) $(test_touch_tm_OBJECTS) $(test_touch_tm_LDADD) $(LIBS)
 tw$(EXEEXT): $(tw_OBJECTS) $(tw_DEPENDENCIES) $(EXTRA_tw_DEPENDENCIES) 
 	@rm -f tw$(EXEEXT)
 	$(LINK) $(tw_OBJECTS) $(tw_LDADD) $(LIBS)
@@ -713,23 +788,29 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_isa_2_06_part1-test_isa_2_06_part1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_isa_2_06_part2-test_isa_2_06_part2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_isa_2_06_part3-test_isa_2_06_part3.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_isa_2_07_part1-test_isa_2_07_part1.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_isa_2_07_part2-test_isa_2_07_part2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_tm-test_tm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_touch_tm-test_touch_tm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tw.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/twi.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xlc_dbl_u32.Po@am__quote@
 
 .c.o:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ $< &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c $<
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ $<
 
 .c.obj:
-@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.obj$$||'`;\
+@am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $$depbase.Tpo -c -o $@ `$(CYGPATH_W) '$<'` &&\
+@am__fastdepCC_TRUE@	$(am__mv) $$depbase.Tpo $$depbase.Po
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+@am__fastdepCC_FALSE@	$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 allexec-allexec.o: allexec.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(allexec_CFLAGS) $(CFLAGS) -MT allexec-allexec.o -MD -MP -MF $(DEPDIR)/allexec-allexec.Tpo -c -o allexec-allexec.o `test -f 'allexec.c' || echo '$(srcdir)/'`allexec.c
@@ -884,6 +965,62 @@ test_isa_2_06_part3-test_isa_2_06_part3.obj: test_isa_2_06_part3.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_isa_2_06_part3.c' object='test_isa_2_06_part3-test_isa_2_06_part3.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_isa_2_06_part3_CFLAGS) $(CFLAGS) -c -o test_isa_2_06_part3-test_isa_2_06_part3.obj `if test -f 'test_isa_2_06_part3.c'; then $(CYGPATH_W) 'test_isa_2_06_part3.c'; else $(CYGPATH_W) '$(srcdir)/test_isa_2_06_part3.c'; fi`
+
+test_isa_2_07_part1-test_isa_2_07_part1.o: test_isa_2_07_part1.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_isa_2_07_part1_CFLAGS) $(CFLAGS) -MT test_isa_2_07_part1-test_isa_2_07_part1.o -MD -MP -MF $(DEPDIR)/test_isa_2_07_part1-test_isa_2_07_part1.Tpo -c -o test_isa_2_07_part1-test_isa_2_07_part1.o `test -f 'test_isa_2_07_part1.c' || echo '$(srcdir)/'`test_isa_2_07_part1.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/test_isa_2_07_part1-test_isa_2_07_part1.Tpo $(DEPDIR)/test_isa_2_07_part1-test_isa_2_07_part1.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_isa_2_07_part1.c' object='test_isa_2_07_part1-test_isa_2_07_part1.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_isa_2_07_part1_CFLAGS) $(CFLAGS) -c -o test_isa_2_07_part1-test_isa_2_07_part1.o `test -f 'test_isa_2_07_part1.c' || echo '$(srcdir)/'`test_isa_2_07_part1.c
+
+test_isa_2_07_part1-test_isa_2_07_part1.obj: test_isa_2_07_part1.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_isa_2_07_part1_CFLAGS) $(CFLAGS) -MT test_isa_2_07_part1-test_isa_2_07_part1.obj -MD -MP -MF $(DEPDIR)/test_isa_2_07_part1-test_isa_2_07_part1.Tpo -c -o test_isa_2_07_part1-test_isa_2_07_part1.obj `if test -f 'test_isa_2_07_part1.c'; then $(CYGPATH_W) 'test_isa_2_07_part1.c'; else $(CYGPATH_W) '$(srcdir)/test_isa_2_07_part1.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/test_isa_2_07_part1-test_isa_2_07_part1.Tpo $(DEPDIR)/test_isa_2_07_part1-test_isa_2_07_part1.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_isa_2_07_part1.c' object='test_isa_2_07_part1-test_isa_2_07_part1.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_isa_2_07_part1_CFLAGS) $(CFLAGS) -c -o test_isa_2_07_part1-test_isa_2_07_part1.obj `if test -f 'test_isa_2_07_part1.c'; then $(CYGPATH_W) 'test_isa_2_07_part1.c'; else $(CYGPATH_W) '$(srcdir)/test_isa_2_07_part1.c'; fi`
+
+test_isa_2_07_part2-test_isa_2_07_part2.o: test_isa_2_07_part2.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_isa_2_07_part2_CFLAGS) $(CFLAGS) -MT test_isa_2_07_part2-test_isa_2_07_part2.o -MD -MP -MF $(DEPDIR)/test_isa_2_07_part2-test_isa_2_07_part2.Tpo -c -o test_isa_2_07_part2-test_isa_2_07_part2.o `test -f 'test_isa_2_07_part2.c' || echo '$(srcdir)/'`test_isa_2_07_part2.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/test_isa_2_07_part2-test_isa_2_07_part2.Tpo $(DEPDIR)/test_isa_2_07_part2-test_isa_2_07_part2.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_isa_2_07_part2.c' object='test_isa_2_07_part2-test_isa_2_07_part2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_isa_2_07_part2_CFLAGS) $(CFLAGS) -c -o test_isa_2_07_part2-test_isa_2_07_part2.o `test -f 'test_isa_2_07_part2.c' || echo '$(srcdir)/'`test_isa_2_07_part2.c
+
+test_isa_2_07_part2-test_isa_2_07_part2.obj: test_isa_2_07_part2.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_isa_2_07_part2_CFLAGS) $(CFLAGS) -MT test_isa_2_07_part2-test_isa_2_07_part2.obj -MD -MP -MF $(DEPDIR)/test_isa_2_07_part2-test_isa_2_07_part2.Tpo -c -o test_isa_2_07_part2-test_isa_2_07_part2.obj `if test -f 'test_isa_2_07_part2.c'; then $(CYGPATH_W) 'test_isa_2_07_part2.c'; else $(CYGPATH_W) '$(srcdir)/test_isa_2_07_part2.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/test_isa_2_07_part2-test_isa_2_07_part2.Tpo $(DEPDIR)/test_isa_2_07_part2-test_isa_2_07_part2.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_isa_2_07_part2.c' object='test_isa_2_07_part2-test_isa_2_07_part2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_isa_2_07_part2_CFLAGS) $(CFLAGS) -c -o test_isa_2_07_part2-test_isa_2_07_part2.obj `if test -f 'test_isa_2_07_part2.c'; then $(CYGPATH_W) 'test_isa_2_07_part2.c'; else $(CYGPATH_W) '$(srcdir)/test_isa_2_07_part2.c'; fi`
+
+test_tm-test_tm.o: test_tm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_tm_CFLAGS) $(CFLAGS) -MT test_tm-test_tm.o -MD -MP -MF $(DEPDIR)/test_tm-test_tm.Tpo -c -o test_tm-test_tm.o `test -f 'test_tm.c' || echo '$(srcdir)/'`test_tm.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/test_tm-test_tm.Tpo $(DEPDIR)/test_tm-test_tm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_tm.c' object='test_tm-test_tm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_tm_CFLAGS) $(CFLAGS) -c -o test_tm-test_tm.o `test -f 'test_tm.c' || echo '$(srcdir)/'`test_tm.c
+
+test_tm-test_tm.obj: test_tm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_tm_CFLAGS) $(CFLAGS) -MT test_tm-test_tm.obj -MD -MP -MF $(DEPDIR)/test_tm-test_tm.Tpo -c -o test_tm-test_tm.obj `if test -f 'test_tm.c'; then $(CYGPATH_W) 'test_tm.c'; else $(CYGPATH_W) '$(srcdir)/test_tm.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/test_tm-test_tm.Tpo $(DEPDIR)/test_tm-test_tm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_tm.c' object='test_tm-test_tm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_tm_CFLAGS) $(CFLAGS) -c -o test_tm-test_tm.obj `if test -f 'test_tm.c'; then $(CYGPATH_W) 'test_tm.c'; else $(CYGPATH_W) '$(srcdir)/test_tm.c'; fi`
+
+test_touch_tm-test_touch_tm.o: test_touch_tm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_touch_tm_CFLAGS) $(CFLAGS) -MT test_touch_tm-test_touch_tm.o -MD -MP -MF $(DEPDIR)/test_touch_tm-test_touch_tm.Tpo -c -o test_touch_tm-test_touch_tm.o `test -f 'test_touch_tm.c' || echo '$(srcdir)/'`test_touch_tm.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/test_touch_tm-test_touch_tm.Tpo $(DEPDIR)/test_touch_tm-test_touch_tm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_touch_tm.c' object='test_touch_tm-test_touch_tm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_touch_tm_CFLAGS) $(CFLAGS) -c -o test_touch_tm-test_touch_tm.o `test -f 'test_touch_tm.c' || echo '$(srcdir)/'`test_touch_tm.c
+
+test_touch_tm-test_touch_tm.obj: test_touch_tm.c
+@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_touch_tm_CFLAGS) $(CFLAGS) -MT test_touch_tm-test_touch_tm.obj -MD -MP -MF $(DEPDIR)/test_touch_tm-test_touch_tm.Tpo -c -o test_touch_tm-test_touch_tm.obj `if test -f 'test_touch_tm.c'; then $(CYGPATH_W) 'test_touch_tm.c'; else $(CYGPATH_W) '$(srcdir)/test_touch_tm.c'; fi`
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/test_touch_tm-test_touch_tm.Tpo $(DEPDIR)/test_touch_tm-test_touch_tm.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_touch_tm.c' object='test_touch_tm-test_touch_tm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_touch_tm_CFLAGS) $(CFLAGS) -c -o test_touch_tm-test_touch_tm.obj `if test -f 'test_touch_tm.c'; then $(CYGPATH_W) 'test_touch_tm.c'; else $(CYGPATH_W) '$(srcdir)/test_touch_tm.c'; fi`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \

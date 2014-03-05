@@ -53,7 +53,7 @@ host_triplet = @host@
 subdir = docs
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -105,6 +105,7 @@ FLAG_M64 = @FLAG_M64@
 FLAG_MMMX = @FLAG_MMMX@
 FLAG_MSSE = @FLAG_MSSE@
 FLAG_NO_BUILD_ID = @FLAG_NO_BUILD_ID@
+FLAG_T_TEXT = @FLAG_T_TEXT@
 FLAG_UNLIMITED_INLINE_UNIT_GROWTH = @FLAG_UNLIMITED_INLINE_UNIT_GROWTH@
 FLAG_W_EXTRA = @FLAG_W_EXTRA@
 FLAG_W_NO_EMPTY_BODY = @FLAG_W_NO_EMPTY_BODY@
@@ -224,6 +225,7 @@ EXTRA_DIST = \
 	internals/3_4_BUGSTATUS.txt \
 	internals/3_5_BUGSTATUS.txt \
 	internals/3_7_BUGSTATUS.txt \
+	internals/3_8_BUGSTATUS.txt \
 	internals/arm_thumb_notes_gdbserver.txt \
 	internals/avx-notes.txt \
 	internals/BIG_APP_NOTES.txt \

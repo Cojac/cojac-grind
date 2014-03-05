@@ -1,6 +1,0 @@
-fred@fred-fubunt:~/workspace/cogrind$ valgrind --trace-flags=00100000 --trace-notbelow=0 --tool=cojac ../HelloCojac/Debug/HelloCojac 2>a.txt
-
-
-./vg-in-place --tool=cojac ../HelloCojac/Debug/HelloCojac
-
-

@@ -1,0 +1,35 @@
+--- origin5-bz2.stderr.exp-glibc212-s390x	2013-10-23 12:50:18.000000000 +0200
++++ origin5-bz2.stderr.out	2014-02-25 15:39:12.435410798 +0100
+@@ -75,17 +75,6 @@
+    at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+-   at 0x........: mainSort (origin5-bz2.c:2859)
+-   by 0x........: BZ2_blockSort (origin5-bz2.c:3105)
+-   by 0x........: BZ2_compressBlock (origin5-bz2.c:4034)
+-   by 0x........: handle_compress (origin5-bz2.c:4753)
+-   by 0x........: BZ2_bzCompress (origin5-bz2.c:4822)
+-   by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+-   by 0x........: main (origin5-bz2.c:6484)
+- Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6479)
+-
+-Use of uninitialised value of size 8
+    at 0x........: mainSort (origin5-bz2.c:2963)
+    by 0x........: BZ2_blockSort (origin5-bz2.c:3105)
+    by 0x........: BZ2_compressBlock (origin5-bz2.c:4034)
+@@ -131,6 +120,12 @@
+ 
+ Conditional jump or move depends on uninitialised value(s)
+    at 0x........: main (origin5-bz2.c:6512)
+- Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6479)
++ Uninitialised value was created by a heap allocation
++   at 0x........: malloc (vg_replace_malloc.c:...)
++   by 0x........: g_serviceFn (origin5-bz2.c:6429)
++   by 0x........: default_bzalloc (origin5-bz2.c:4470)
++   by 0x........: BZ2_decompress (origin5-bz2.c:1578)
++   by 0x........: BZ2_bzDecompress (origin5-bz2.c:5192)
++   by 0x........: BZ2_bzBuffToBuffDecompress (origin5-bz2.c:5678)
++   by 0x........: main (origin5-bz2.c:6498)
+ 

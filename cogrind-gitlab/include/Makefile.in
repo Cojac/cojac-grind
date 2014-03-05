@@ -55,7 +55,7 @@ subdir = include
 DIST_COMMON = $(nobase_pkginclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.in
+am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -138,6 +138,7 @@ FLAG_M64 = @FLAG_M64@
 FLAG_MMMX = @FLAG_MMMX@
 FLAG_MSSE = @FLAG_MSSE@
 FLAG_NO_BUILD_ID = @FLAG_NO_BUILD_ID@
+FLAG_T_TEXT = @FLAG_T_TEXT@
 FLAG_UNLIMITED_INLINE_UNIT_GROWTH = @FLAG_UNLIMITED_INLINE_UNIT_GROWTH@
 FLAG_W_EXTRA = @FLAG_W_EXTRA@
 FLAG_W_NO_EMPTY_BODY = @FLAG_W_NO_EMPTY_BODY@
@@ -249,14 +250,12 @@ nobase_pkginclude_HEADERS = \
 	pub_tool_aspacemgr.h 		\
 	pub_tool_clientstate.h		\
 	pub_tool_clreq.h		\
-	pub_tool_cpuid.h 		\
 	pub_tool_debuginfo.h 		\
 	pub_tool_errormgr.h 		\
 	pub_tool_execontext.h 		\
 	pub_tool_gdbserver.h 		\
 	pub_tool_poolalloc.h 		\
 	pub_tool_hashtable.h 		\
-	pub_tool_inner.h 		\
 	pub_tool_libcbase.h 		\
 	pub_tool_libcassert.h 		\
 	pub_tool_libcfile.h 		\
@@ -291,6 +290,7 @@ nobase_pkginclude_HEADERS = \
 	vki/vki-posixtypes-arm-linux.h	 \
 	vki/vki-posixtypes-s390x-linux.h \
 	vki/vki-posixtypes-mips32-linux.h \
+	vki/vki-posixtypes-mips64-linux.h \
 	vki/vki-amd64-linux.h		\
 	vki/vki-ppc32-linux.h		\
 	vki/vki-ppc64-linux.h		\
@@ -298,6 +298,7 @@ nobase_pkginclude_HEADERS = \
 	vki/vki-arm-linux.h		\
 	vki/vki-s390x-linux.h		\
 	vki/vki-mips32-linux.h		\
+	vki/vki-mips64-linux.h		\
 	vki/vki-scnums-amd64-linux.h	\
 	vki/vki-scnums-ppc32-linux.h	\
 	vki/vki-scnums-ppc64-linux.h	\
@@ -305,7 +306,19 @@ nobase_pkginclude_HEADERS = \
 	vki/vki-scnums-arm-linux.h	\
 	vki/vki-scnums-s390x-linux.h	\
 	vki/vki-scnums-mips32-linux.h	\
-	vki/vki-scnums-darwin.h
+	vki/vki-scnums-mips64-linux.h	\
+	vki/vki-scnums-darwin.h         \
+	vki/vki-xen.h                   \
+	vki/vki-xen-domctl.h		\
+	vki/vki-xen-evtchn.h		\
+	vki/vki-xen-gnttab.h		\
+	vki/vki-xen-hvm.h		\
+	vki/vki-xen-memory.h		\
+	vki/vki-xen-mmuext.h		\
+	vki/vki-xen-sysctl.h		\
+	vki/vki-xen-version.h		\
+	vki/vki-xen-x86.h		\
+	vki/vki-linux-drm.h
 
 all: all-am
 
