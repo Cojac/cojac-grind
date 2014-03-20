@@ -115,6 +115,7 @@ VG_REGPARM(3) void oa_callbackI32_2x64 (UInt a, UInt b, OA_InstrumentContext c);
 VG_REGPARM(2) void oa_callbackI32_1x64 (UInt a,         OA_InstrumentContext c);
 VG_REGPARM(3) void oa_callbackI32_2xF32( Int a,  Int b, OA_InstrumentContext c);
 VG_REGPARM(3) void oa_callbackI32_2xF64(UInt a, UInt b, OA_InstrumentContext c);
+VG_REGPARM(2) void oa_callbackI32_1xF64(UInt a,         OA_InstrumentContext ic);
 
 VG_REGPARM(3) void oa_callbackI64_2x32 (ULong a, ULong b, OA_InstrumentContext c);
 VG_REGPARM(2) void oa_callbackI64_1x32 (ULong a,          OA_InstrumentContext c);
@@ -123,6 +124,7 @@ VG_REGPARM(2) void oa_callbackI64_1x64 ( Long a,          OA_InstrumentContext c
 VG_REGPARM(3) void oa_callbackI64_2x16 (ULong a, ULong b, OA_InstrumentContext c);
 VG_REGPARM(3) void oa_callbackI64_2xF32(ULong a, ULong b, OA_InstrumentContext c);
 VG_REGPARM(3) void oa_callbackI64_2xF64(ULong a, ULong b, OA_InstrumentContext c);
+VG_REGPARM(2) void oa_callbackI64_1xF64(ULong a,         OA_InstrumentContext ic);
 
 /*------------------------------------------------------------*/
 /*--- Errors and suppressions                              ---*/

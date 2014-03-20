@@ -111,6 +111,7 @@ static void populate_iop_struct(void) {
     init_iop(Iop_Mul64Fx2, "Mul64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
     init_iop(Iop_Div64F0x2,"Div64F0x2", oa_callbackI32_2xF64, oa_callbackI64_2xF64);
     init_iop(Iop_Div64Fx2, "Div64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
+    init_iop(Iop_F64toI32S, "F64toI32S",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
   }
 }
 

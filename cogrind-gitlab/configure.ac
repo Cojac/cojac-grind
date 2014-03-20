@@ -2842,9 +2842,6 @@ AC_CONFIG_FILES([
    none/tests/x86-linux/Makefile
    exp-sgcheck/Makefile
    exp-sgcheck/tests/Makefile
-   drd/Makefile
-   drd/scripts/download-and-build-splash2
-   drd/tests/Makefile
    exp-bbv/Makefile
    exp-bbv/tests/Makefile
    exp-bbv/tests/x86/Makefile

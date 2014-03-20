@@ -115,7 +115,25 @@ static void check_DivF64(Double a, Double b, OA_InstrumentContext inscon) {
   }
 }
 
+static void check_F64toI32S(Double a, OA_InstrumentContext inscon) {
+  OA_(maybe_error)(Err_Precision, inscon); return;
+  if (isinf(a)){
+    OA_(maybe_error)(Err_Infinity, inscon); return; //Seg faut when uncommented!!!!
+  }
+  if (isnan(a)){
+    OA_(maybe_error)(Err_NaN, inscon); return; ///Seg faut when uncommented!!!!
+  }
+}
+
 /*--------------------------------------------------------------------*/
+
+VG_REGPARM(2) void oa_callbackI64_1xF64(ULong la, OA_InstrumentContext ic) {
+  Double a = OA_(doubleFromULong)(la);
+  switch(ic->op) {
+    case Iop_F64toI32S: check_F64toI32S(a, ic); break;
+	  default: break;
+	}
+}
 
 VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext ic) {
   Double a=OA_(doubleFromULong)(la);
@@ -159,6 +177,10 @@ VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext
 
 static partOfF64op opF64_buf;
 static char        isOpF64Part=False;
+
+VG_REGPARM(2) void oa_callbackI32_1xF64(UInt la, OA_InstrumentContext ic){
+  //TODO 32 Bits arch
+}
 
 VG_REGPARM(3) void oa_callbackI32_2xF64(UInt a, UInt b, OA_InstrumentContext ic) {
   if (isOpF64Part) { // second half of the callback

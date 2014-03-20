@@ -5,8 +5,7 @@ include $(top_srcdir)/Makefile.all.am
 
 TOOLS =		memcheck \
 		none \
-		cojac \
-		drd
+		cojac
 
 EXP_TOOLS = 	exp-sgcheck \
 		exp-bbv \
