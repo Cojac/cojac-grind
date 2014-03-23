@@ -4,8 +4,14 @@ dir=`dirname $0`
 
 $dir/../../tests/filter_stderr_basic    |
 
-# Remove "Lackey, ..." line and the following copyright line.
-sed "/^Lackey, an example Valgrind tool/ , /./ d" |
+# Remove "Cojac-, ..." line and the following copyright line.
+sed "/^Cojac-0.0.1, the Cojac-grind numerical problem sniffer/ , /./ d" |
+
+# Remove stats line and the following copyright line.
+sed "/^Cojac instrumentation statistics:/ , /./ d" |
+
+# Remove stats line and the following copyright line.
+sed "/.*_dl_lookup_symbol_x.*/ , /./ d" |
 
 # Filter all the numbers.
 ../../tests/filter_numbers |

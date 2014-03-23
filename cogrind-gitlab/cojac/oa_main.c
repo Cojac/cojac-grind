@@ -90,6 +90,11 @@ static void populate_iop_struct(void) {
   if (OA_(options).castToI16) {
     init_iop(Iop_32to16,  "32to16", oa_callbackI32_1x32, oa_callbackI64_1x32);
   }
+  
+  if (OA_(options).castFromF64) {
+    init_iop(Iop_F64toI32S, "F64toI32S",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
+    init_iop(Iop_F64toI64S, "F64toI64S",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
+  }
 
   if (OA_(options).f32) {
     init_iop(Iop_AddF32,  "AddF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
@@ -111,7 +116,6 @@ static void populate_iop_struct(void) {
     init_iop(Iop_Mul64Fx2, "Mul64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
     init_iop(Iop_Div64F0x2,"Div64F0x2", oa_callbackI32_2xF64, oa_callbackI64_2xF64);
     init_iop(Iop_Div64Fx2, "Div64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_F64toI32S, "F64toI32S",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
   }
 }
 
@@ -397,6 +401,7 @@ static void oa_print_usage(void) {
   VG_(printf)("    --f32=yes|no   Watch 32bits float operations [yes]\n");
   VG_(printf)("    --f64=yes|no   Watch 64bits double operations [yes]\n");
   VG_(printf)("    --castToI16=yes|no    Watch int to short typecasting [yes]\n");
+  VG_(printf)("    --castFromF64=yes|no    Watch float or double to int or long typecasting [yes]\n");
   VG_(printf)("    --stacktrace=<number> Depth of the stacktrace [1] \n");
 }
 static void oa_print_debug_usage(void) {
@@ -417,6 +422,8 @@ static Bool oa_process_cmd_line_option(const HChar* argv) {
     return True;
   } else if (VG_BOOL_CLO(argv, "--i64", OA_(options).i64)) {
     return True;
+  } else if (VG_BOOL_CLO(argv, "--castFromF64", OA_(options).castFromF64)) {
+    return True;
   } else if (VG_BOOL_CLO(argv, "--castToI16", OA_(options).castToI16)) {
     return True;
   }
@@ -426,6 +433,7 @@ static Bool oa_process_cmd_line_option(const HChar* argv) {
 //-----------------------------------------------------------------
 static void oa_set_default_options(void) {
   OA_(options).castToI16    = True;
+  OA_(options).castFromF64  = True;
   OA_(options).f32          = True;
   OA_(options).f64          = True;
   OA_(options).i16          = True;

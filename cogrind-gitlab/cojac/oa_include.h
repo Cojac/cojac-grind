@@ -72,6 +72,7 @@ typedef struct {
   Bool i16;
   Bool i64;
   Bool castToI16;
+  Bool castFromF64;
 } cojacOptions;
 
 typedef struct {

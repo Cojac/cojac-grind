@@ -124,12 +124,22 @@ static void check_F64toI32S(Double a, OA_InstrumentContext inscon) {
   }
 }
 
+static void check_F64toI64S(Double a, OA_InstrumentContext inscon) {
+  if (isinf(a)){
+    OA_(maybe_error)(Err_Infinity, inscon); return;
+  }
+  if (isnan(a)){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+}
+
 /*--------------------------------------------------------------------*/
 
 VG_REGPARM(3) void oa_callbackI64_1xF64(UInt ia, ULong la, OA_InstrumentContext ic) {
   Double b = OA_(doubleFromULong)(la);
   switch(ic->op) {
     case Iop_F64toI32S: check_F64toI32S(b, ic); break;
+    case Iop_F64toI64S: check_F64toI64S(b, ic); break;
 	  default: break;
 	}
 }
