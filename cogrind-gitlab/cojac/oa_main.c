@@ -101,6 +101,10 @@ static void populate_iop_struct(void) {
     init_iop(Iop_SubF32,  "SubF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
     init_iop(Iop_MulF32,  "MulF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
     init_iop(Iop_DivF32,  "DivF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    init_iop(Iop_Add32F0x4,  "Add32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    init_iop(Iop_Sub32F0x4,  "Sub32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    init_iop(Iop_Mul32F0x4,  "Mul32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    init_iop(Iop_Div32F0x4,  "Div32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
   }
 
   if (OA_(options).f64) {
@@ -326,7 +330,7 @@ static void instrument_Unop(IRSB* sb, IRStmt* st, Addr64 cia) {
 //-----------------------------------------------------------------
 /* instruments a Binary Operation Expression in a Ist_WrTmp statement */
 static void instrument_Binop(IRSB* sb, IRStmt* st, IRType type, Addr64 cia) {
-  HChar thisFct[]="instrument_Binop";
+  HChar thisFct[]="instrument_Biop";
   IRDirty* di;
   IRExpr** argv;
   IRExpr *op = st->Ist.WrTmp.data;

@@ -135,11 +135,11 @@ static void check_F64toI64S(Double a, OA_InstrumentContext inscon) {
 
 /*--------------------------------------------------------------------*/
 
-VG_REGPARM(3) void oa_callbackI64_1xF64(UInt ia, ULong la, OA_InstrumentContext ic) {
-  Double b = OA_(doubleFromULong)(la);
+VG_REGPARM(3) void oa_callbackI64_1xF64(UInt roundingMode, ULong la, OA_InstrumentContext ic) {
+  Double value = OA_(doubleFromULong)(la);
   switch(ic->op) {
-    case Iop_F64toI32S: check_F64toI32S(b, ic); break;
-    case Iop_F64toI64S: check_F64toI64S(b, ic); break;
+    case Iop_F64toI32S: check_F64toI32S(value, ic); break;
+    case Iop_F64toI64S: check_F64toI64S(value, ic); break;
 	  default: break;
 	}
 }

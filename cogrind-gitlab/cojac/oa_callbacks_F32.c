@@ -120,9 +120,13 @@ VG_REGPARM(3) void oa_callbackI32_2xF32(Int a, Int b, OA_InstrumentContext ic) {
   Float fa=OA_(floatFromInt)(a);
   Float fb=OA_(floatFromInt)(b);
   switch(ic->op) {
+    case Iop_Add32F0x4:
     case Iop_AddF32:  check_AddF32(fa,fb,ic); break;
+    case Iop_Sub32F0x4:
     case Iop_SubF32:  check_SubF32(fa,fb,ic); break;
+    case Iop_Mul32F0x4:
     case Iop_MulF32:  check_MulF32(fa,fb,ic); break;
+    case Iop_Div32F0x4:
     case Iop_DivF32:  check_DivF32(fa,fb,ic); break;
     default: break;
   }
