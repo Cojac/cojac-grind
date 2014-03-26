@@ -5,13 +5,16 @@ dir=`dirname $0`
 $dir/../../tests/filter_stderr_basic    |
 
 # Remove "Cojac-, ..." line and the following copyright line.
-sed "/^Cojac-0.0.1, the Cojac-grind numerical problem sniffer/ , /./ d" |
+sed "/^Cojac-0.0.1, the Cojac-grind numerical problem sniffer/ , /Bapst./ d" |
 
-# Remove stats line and the following copyright line.
-sed "/^Cojac instrumentation statistics:/ , /./ d" |
+# Remove empty lines
+sed "/^$/d" |
 
-# Remove stats line and the following copyright line.
-sed "/.*_dl_lookup_symbol_x.*/ , /./ d" |
+# Remove stats line.
+sed "/^Cojac instrumentation statistics:/ , /^ERROR SUMMARY*/ d" |
+
+# Remove LibC Overflows
+sed "/.*_dl_lookup_symbol_x.*/d" |
 
 # Filter all the numbers.
 ../../tests/filter_numbers |

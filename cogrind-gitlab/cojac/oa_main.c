@@ -375,10 +375,12 @@ static void instrument_Triop(IRSB* sb, IRStmt* st, Addr64 cia) {
   updateStats(inscon->op);
   oa_event_expr = mkIRExpr_HWord( (HWord)inscon );
   IRExpr * args1[2];
-  packToI32orI64(sb, op->Iex.Triop.details->arg2, args1, irop);
+  packToI32orI64(sb, op->Iex.Triop.details->arg1, args1, irop);
   IRExpr * args2[2];
-  packToI32orI64(sb, op->Iex.Triop.details->arg3, args2, irop);
-  argv = mkIRExprVec_3(args1[0], args2[0], oa_event_expr);
+  packToI32orI64(sb, op->Iex.Triop.details->arg2, args2, irop);
+  IRExpr * args3[2];
+  packToI32orI64(sb, op->Iex.Triop.details->arg3, args3, irop);
+  argv = mkIRExprVec_4(args1[0], args2[0], args3[0], oa_event_expr);
   di = unsafeIRDirty_0_N( 3, thisFct, VG_(fnptr_to_fnentry)( f ), argv);
   addStmtToIRSB( sb, IRStmt_Dirty(di) );
   if (args1[1] != NULL) {

@@ -116,6 +116,9 @@ static void check_DivF64(Double a, Double b, OA_InstrumentContext inscon) {
 }
 
 static void check_F64toI32S(Double a, OA_InstrumentContext inscon) {
+  if (a > INT_MAX){
+    OA_(maybe_error)(Err_Overflow, inscon);
+  }
   if (isinf(a)){
     OA_(maybe_error)(Err_Infinity, inscon); return;
   }
@@ -125,6 +128,9 @@ static void check_F64toI32S(Double a, OA_InstrumentContext inscon) {
 }
 
 static void check_F64toI64S(Double a, OA_InstrumentContext inscon) {
+  if (a > LONG_MAX){
+    OA_(maybe_error)(Err_Overflow, inscon);
+  }
   if (isinf(a)){
     OA_(maybe_error)(Err_Infinity, inscon); return;
   }
