@@ -4,6 +4,18 @@ dist_noinst_SCRIPTS = filter_stderr
 
 SUBDIRS = .
 
-EXTRA_DIST = intAdd.stderr.exp intAdd.vgtest true.stderr.exp true.vgtest
+EXTRA_DIST = intAddOverflow.stderr.exp intAddOverflow.vgtest true.stderr.exp true.vgtest \
+              doubleToIntInf.stderr.exp doubleToIntInf.vgtest \
+              doubleToIntNaN.stderr.exp doubleToIntNaN.vgtest \
+              doubleToIntOverflow.stderr.exp doubleToIntOverflow.vgtest \
+              doubleToLongInf.stderr.exp doubleToLongInf.vgtest \
+              doubleToLongNaN.stderr.exp doubleToLongNaN.vgtest \
+              doubleToLongOverflow.stderr.exp doubleToLongOverflow.vgtest
 
-check_PROGRAMS = intAdd
+check_PROGRAMS = intAddOverflow \
+                  doubleToIntInf \
+                  doubleToIntNaN \
+                  doubleToIntOverflow \
+                  doubleToLongInf \
+                  doubleToLongNaN \
+                  doubleToLongOverflow
