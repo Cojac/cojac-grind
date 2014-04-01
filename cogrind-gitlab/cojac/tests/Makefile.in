@@ -77,8 +77,9 @@ DIST_COMMON = $(dist_noinst_SCRIPTS) $(srcdir)/Makefile.am \
 @COMPILER_IS_CLANG_TRUE@	-Wno-string-plus-int # \
 @COMPILER_IS_CLANG_TRUE@	drd/tests/annotate_ignore_rw.c
 @COMPILER_IS_CLANG_TRUE@am__append_5 = -Wno-unused-private-field    # drd/tests/tsan_unittest.cpp
-check_PROGRAMS = intAddOverflow$(EXEEXT) doubleToIntInf$(EXEEXT) \
-	doubleToIntNaN$(EXEEXT) doubleToIntOverflow$(EXEEXT) \
+check_PROGRAMS = intAddOverflow$(EXEEXT) doubleToInt$(EXEEXT) \
+	doubleToIntInf$(EXEEXT) doubleToIntNaN$(EXEEXT) \
+	doubleToIntOverflow$(EXEEXT) doubleToLong$(EXEEXT) \
 	doubleToLongInf$(EXEEXT) doubleToLongNaN$(EXEEXT) \
 	doubleToLongOverflow$(EXEEXT)
 subdir = cojac/tests
@@ -90,6 +91,9 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
+doubleToInt_SOURCES = doubleToInt.c
+doubleToInt_OBJECTS = doubleToInt.$(OBJEXT)
+doubleToInt_LDADD = $(LDADD)
 doubleToIntInf_SOURCES = doubleToIntInf.c
 doubleToIntInf_OBJECTS = doubleToIntInf.$(OBJEXT)
 doubleToIntInf_LDADD = $(LDADD)
@@ -99,6 +103,9 @@ doubleToIntNaN_LDADD = $(LDADD)
 doubleToIntOverflow_SOURCES = doubleToIntOverflow.c
 doubleToIntOverflow_OBJECTS = doubleToIntOverflow.$(OBJEXT)
 doubleToIntOverflow_LDADD = $(LDADD)
+doubleToLong_SOURCES = doubleToLong.c
+doubleToLong_OBJECTS = doubleToLong.$(OBJEXT)
+doubleToLong_LDADD = $(LDADD)
 doubleToLongInf_SOURCES = doubleToLongInf.c
 doubleToLongInf_OBJECTS = doubleToLongInf.$(OBJEXT)
 doubleToLongInf_LDADD = $(LDADD)
@@ -120,12 +127,12 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = doubleToIntInf.c doubleToIntNaN.c doubleToIntOverflow.c \
-	doubleToLongInf.c doubleToLongNaN.c doubleToLongOverflow.c \
-	intAddOverflow.c
-DIST_SOURCES = doubleToIntInf.c doubleToIntNaN.c doubleToIntOverflow.c \
-	doubleToLongInf.c doubleToLongNaN.c doubleToLongOverflow.c \
-	intAddOverflow.c
+SOURCES = doubleToInt.c doubleToIntInf.c doubleToIntNaN.c \
+	doubleToIntOverflow.c doubleToLong.c doubleToLongInf.c \
+	doubleToLongNaN.c doubleToLongOverflow.c intAddOverflow.c
+DIST_SOURCES = doubleToInt.c doubleToIntInf.c doubleToIntNaN.c \
+	doubleToIntOverflow.c doubleToLong.c doubleToLongInf.c \
+	doubleToLongNaN.c doubleToLongOverflow.c intAddOverflow.c
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -331,7 +338,8 @@ AM_CFLAGS_BASE = \
 	-Wmissing-declarations \
 	@FLAG_W_NO_FORMAT_ZERO_LENGTH@ \
 	-fno-strict-aliasing \
-	-fno-builtin
+	-fno-builtin \
+	-frounding-math
 
 @VGCONF_OS_IS_DARWIN_FALSE@AM_CFLAGS_PIC = -fpic -O -g -fno-omit-frame-pointer -fno-strict-aliasing \
 @VGCONF_OS_IS_DARWIN_FALSE@		-fno-builtin
@@ -456,9 +464,11 @@ AM_CCASFLAGS = $(AM_CPPFLAGS)
 dist_noinst_SCRIPTS = filter_stderr
 SUBDIRS = .
 EXTRA_DIST = intAddOverflow.stderr.exp intAddOverflow.vgtest true.stderr.exp true.vgtest \
+			  doubleToInt.stderr.exp doubleToInt.vgtest \
               doubleToIntInf.stderr.exp doubleToIntInf.vgtest \
               doubleToIntNaN.stderr.exp doubleToIntNaN.vgtest \
               doubleToIntOverflow.stderr.exp doubleToIntOverflow.vgtest \
+              doubleToLong.stderr.exp doubleToLong.vgtest \
               doubleToLongInf.stderr.exp doubleToLongInf.vgtest \
               doubleToLongNaN.stderr.exp doubleToLongNaN.vgtest \
               doubleToLongOverflow.stderr.exp doubleToLongOverflow.vgtest
@@ -501,6 +511,9 @@ $(am__aclocal_m4_deps):
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
+doubleToInt$(EXEEXT): $(doubleToInt_OBJECTS) $(doubleToInt_DEPENDENCIES) $(EXTRA_doubleToInt_DEPENDENCIES) 
+	@rm -f doubleToInt$(EXEEXT)
+	$(LINK) $(doubleToInt_OBJECTS) $(doubleToInt_LDADD) $(LIBS)
 doubleToIntInf$(EXEEXT): $(doubleToIntInf_OBJECTS) $(doubleToIntInf_DEPENDENCIES) $(EXTRA_doubleToIntInf_DEPENDENCIES) 
 	@rm -f doubleToIntInf$(EXEEXT)
 	$(LINK) $(doubleToIntInf_OBJECTS) $(doubleToIntInf_LDADD) $(LIBS)
@@ -510,6 +523,9 @@ doubleToIntNaN$(EXEEXT): $(doubleToIntNaN_OBJECTS) $(doubleToIntNaN_DEPENDENCIES
 doubleToIntOverflow$(EXEEXT): $(doubleToIntOverflow_OBJECTS) $(doubleToIntOverflow_DEPENDENCIES) $(EXTRA_doubleToIntOverflow_DEPENDENCIES) 
 	@rm -f doubleToIntOverflow$(EXEEXT)
 	$(LINK) $(doubleToIntOverflow_OBJECTS) $(doubleToIntOverflow_LDADD) $(LIBS)
+doubleToLong$(EXEEXT): $(doubleToLong_OBJECTS) $(doubleToLong_DEPENDENCIES) $(EXTRA_doubleToLong_DEPENDENCIES) 
+	@rm -f doubleToLong$(EXEEXT)
+	$(LINK) $(doubleToLong_OBJECTS) $(doubleToLong_LDADD) $(LIBS)
 doubleToLongInf$(EXEEXT): $(doubleToLongInf_OBJECTS) $(doubleToLongInf_DEPENDENCIES) $(EXTRA_doubleToLongInf_DEPENDENCIES) 
 	@rm -f doubleToLongInf$(EXEEXT)
 	$(LINK) $(doubleToLongInf_OBJECTS) $(doubleToLongInf_LDADD) $(LIBS)
@@ -529,9 +545,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToInt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToIntInf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToIntNaN.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToIntOverflow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToLong.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToLongInf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToLongNaN.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToLongOverflow.Po@am__quote@

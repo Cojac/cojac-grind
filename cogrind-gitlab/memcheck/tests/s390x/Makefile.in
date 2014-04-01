@@ -294,7 +294,8 @@ AM_CFLAGS_BASE = \
 	-Wmissing-declarations \
 	@FLAG_W_NO_FORMAT_ZERO_LENGTH@ \
 	-fno-strict-aliasing \
-	-fno-builtin
+	-fno-builtin \
+	-frounding-math
 
 @VGCONF_OS_IS_DARWIN_FALSE@AM_CFLAGS_PIC = -fpic -O -g -fno-omit-frame-pointer -fno-strict-aliasing \
 @VGCONF_OS_IS_DARWIN_FALSE@		-fno-builtin

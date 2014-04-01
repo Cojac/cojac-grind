@@ -101,10 +101,10 @@ static void populate_iop_struct(void) {
     init_iop(Iop_SubF32,  "SubF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
     init_iop(Iop_MulF32,  "MulF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
     init_iop(Iop_DivF32,  "DivF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_Add32F0x4,  "Add32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_Sub32F0x4,  "Sub32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_Mul32F0x4,  "Mul32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_Div32F0x4,  "Div32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    //init_iop(Iop_Add32F0x4,  "Add32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    //init_iop(Iop_Sub32F0x4,  "Sub32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    //init_iop(Iop_Mul32F0x4,  "Mul32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    //init_iop(Iop_Div32F0x4,  "Div32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
   }
 
   if (OA_(options).f64) {

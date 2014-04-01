@@ -4,8 +4,8 @@
 
 
 int main(){
-	double a = 2.0 * LONG_MAX;
-	long b;
+	double a = INT_MAX - 0.5;
+	int b;
 	b = a;
 	return 0;
 }

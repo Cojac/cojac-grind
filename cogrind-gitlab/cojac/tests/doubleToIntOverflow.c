@@ -4,7 +4,7 @@
 
 
 int main(){
-	double a = LONG_MAX;
+	double a = 1.0 + INT_MAX;
 	int b;
 	b = a;
 	return 0;
