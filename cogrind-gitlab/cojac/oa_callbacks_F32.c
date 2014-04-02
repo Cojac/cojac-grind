@@ -101,20 +101,10 @@ static void check_MulF32(Float a, Float b, OA_InstrumentContext inscon) {
   if (isnan(res) && !isnan(a) && !isnan(b)) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
-  
-}
-
-static void check_DivF32_Underflow(Float a, Float b, OA_InstrumentContext inscon) {
-  /*#pragma STDC FENV_ACCESS ON
-  fexcept_t *except;
-  feclearexcept(FE_ALL_EXCEPT);
-  a / b;
-  fegetexceptflag(except, FE_UNDERFLOW);
-  if((*except & FE_UNDERFLOW) == FE_UNDERFLOW){
-    OA_(maybe_error)(Err_Underflow, inscon);
+  if(a!=0.0f && b!=0.0f && res == 0.0f) {
+    OA_(maybe_error)(Err_Underflow, inscon); return;
   }
-  OA_(maybe_error)(Err_Infinity, inscon); return;
-  */
+  
 }
 
 static void check_DivF32(Float a, Float b, OA_InstrumentContext inscon) {
@@ -128,30 +118,30 @@ static void check_DivF32(Float a, Float b, OA_InstrumentContext inscon) {
   if (isnan(res) && !isnan(a) && !isnan(b)) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
-  check_DivF32_Underflow(a, b, inscon);
+  if(a!=0.0f && b!=0.0f && res == 0.0f) {
+    OA_(maybe_error)(Err_Underflow, inscon); return;
+  }
 }
 
 
 /*--------------------------------------------------------------------*/
 VG_REGPARM(3) void oa_callbackI32_2xF32(Int a, Int b, OA_InstrumentContext ic) {
-  VG_(printf)("CallBack I32\n");
   Float fa = OA_(floatFromInt)(a);
   Float fb = OA_(floatFromInt)(b);
   switch(ic->op) {
-    /*case Iop_Add32F0x4:
+    case Iop_Add32F0x4:
     case Iop_AddF32:  check_AddF32(fa,fb,ic); break;
     case Iop_Sub32F0x4:
     case Iop_SubF32:  check_SubF32(fa,fb,ic); break;
     case Iop_Mul32F0x4:
     case Iop_MulF32:  check_MulF32(fa,fb,ic); break;
     case Iop_Div32F0x4: 
-    case Iop_DivF32:  check_DivF32(fa,fb,ic); break;*/
+    case Iop_DivF32:  check_DivF32(fa,fb,ic); break;
     default: break;
   }
 }
 
 VG_REGPARM(3) void oa_callbackI64_2xF32(ULong la, ULong lb, OA_InstrumentContext ic) {
-  VG_(printf)("CallBack I64\n");
   Int a, a1, b, b1;
   OA_(longToTwoInts)(la, &a, &a1);
   OA_(longToTwoInts)(lb, &b, &b1);

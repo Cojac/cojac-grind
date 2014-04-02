@@ -100,6 +100,9 @@ static void check_MulF64(Double a, Double b, OA_InstrumentContext inscon) {
   if (isnan(res) && !isnan(a) && !isnan(b)) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
+  if(a!=0.0 && b!=0.0 && res == 0.0) {
+    OA_(maybe_error)(Err_Underflow, inscon); return;
+  }
 }
 
 static void check_DivF64(Double a, Double b, OA_InstrumentContext inscon) {
@@ -112,6 +115,9 @@ static void check_DivF64(Double a, Double b, OA_InstrumentContext inscon) {
   }
   if (isnan(res) && !isnan(a) && !isnan(b)) {
     OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+  if(a!=0.0 && b!=0.0 && res == 0.0) {
+    OA_(maybe_error)(Err_Underflow, inscon); return;
   }
 }
 
