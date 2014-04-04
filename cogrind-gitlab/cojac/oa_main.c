@@ -94,6 +94,7 @@ static void populate_iop_struct(void) {
   if (OA_(options).castFromF64) {
     init_iop(Iop_F64toI32S, "F64toI32S",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
     init_iop(Iop_F64toI64S, "F64toI64S",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
+    init_iop(Iop_F64toF32, "F64toF32",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
   }
 
   if (OA_(options).f32) {

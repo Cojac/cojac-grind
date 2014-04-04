@@ -77,11 +77,11 @@ DIST_COMMON = $(dist_noinst_SCRIPTS) $(srcdir)/Makefile.am \
 @COMPILER_IS_CLANG_TRUE@	-Wno-string-plus-int # \
 @COMPILER_IS_CLANG_TRUE@	drd/tests/annotate_ignore_rw.c
 @COMPILER_IS_CLANG_TRUE@am__append_5 = -Wno-unused-private-field    # drd/tests/tsan_unittest.cpp
-check_PROGRAMS = intAddOverflow$(EXEEXT) doubleToInt$(EXEEXT) \
-	doubleToIntInf$(EXEEXT) doubleToIntNaN$(EXEEXT) \
-	doubleToIntOverflow$(EXEEXT) doubleToLong$(EXEEXT) \
-	doubleToLongInf$(EXEEXT) doubleToLongNaN$(EXEEXT) \
-	doubleToLongOverflow$(EXEEXT)
+check_PROGRAMS = Add32Overflow$(EXEEXT) F64toI32S$(EXEEXT) \
+	F64toI32SInf$(EXEEXT) F64toI32SNaN$(EXEEXT) \
+	F64toI32SOverflow$(EXEEXT) F64toI32SOverflowNeg$(EXEEXT) \
+	F64toI64S$(EXEEXT) F64toI64SInf$(EXEEXT) F64toI64SNaN$(EXEEXT) \
+	F64toI64SOverflow$(EXEEXT) F64toI64SOverflowNeg$(EXEEXT)
 subdir = cojac/tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -91,33 +91,39 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-doubleToInt_SOURCES = doubleToInt.c
-doubleToInt_OBJECTS = doubleToInt.$(OBJEXT)
-doubleToInt_LDADD = $(LDADD)
-doubleToIntInf_SOURCES = doubleToIntInf.c
-doubleToIntInf_OBJECTS = doubleToIntInf.$(OBJEXT)
-doubleToIntInf_LDADD = $(LDADD)
-doubleToIntNaN_SOURCES = doubleToIntNaN.c
-doubleToIntNaN_OBJECTS = doubleToIntNaN.$(OBJEXT)
-doubleToIntNaN_LDADD = $(LDADD)
-doubleToIntOverflow_SOURCES = doubleToIntOverflow.c
-doubleToIntOverflow_OBJECTS = doubleToIntOverflow.$(OBJEXT)
-doubleToIntOverflow_LDADD = $(LDADD)
-doubleToLong_SOURCES = doubleToLong.c
-doubleToLong_OBJECTS = doubleToLong.$(OBJEXT)
-doubleToLong_LDADD = $(LDADD)
-doubleToLongInf_SOURCES = doubleToLongInf.c
-doubleToLongInf_OBJECTS = doubleToLongInf.$(OBJEXT)
-doubleToLongInf_LDADD = $(LDADD)
-doubleToLongNaN_SOURCES = doubleToLongNaN.c
-doubleToLongNaN_OBJECTS = doubleToLongNaN.$(OBJEXT)
-doubleToLongNaN_LDADD = $(LDADD)
-doubleToLongOverflow_SOURCES = doubleToLongOverflow.c
-doubleToLongOverflow_OBJECTS = doubleToLongOverflow.$(OBJEXT)
-doubleToLongOverflow_LDADD = $(LDADD)
-intAddOverflow_SOURCES = intAddOverflow.c
-intAddOverflow_OBJECTS = intAddOverflow.$(OBJEXT)
-intAddOverflow_LDADD = $(LDADD)
+Add32Overflow_SOURCES = Add32Overflow.c
+Add32Overflow_OBJECTS = Add32Overflow.$(OBJEXT)
+Add32Overflow_LDADD = $(LDADD)
+F64toI32S_SOURCES = F64toI32S.c
+F64toI32S_OBJECTS = F64toI32S.$(OBJEXT)
+F64toI32S_LDADD = $(LDADD)
+F64toI32SInf_SOURCES = F64toI32SInf.c
+F64toI32SInf_OBJECTS = F64toI32SInf.$(OBJEXT)
+F64toI32SInf_LDADD = $(LDADD)
+F64toI32SNaN_SOURCES = F64toI32SNaN.c
+F64toI32SNaN_OBJECTS = F64toI32SNaN.$(OBJEXT)
+F64toI32SNaN_LDADD = $(LDADD)
+F64toI32SOverflow_SOURCES = F64toI32SOverflow.c
+F64toI32SOverflow_OBJECTS = F64toI32SOverflow.$(OBJEXT)
+F64toI32SOverflow_LDADD = $(LDADD)
+F64toI32SOverflowNeg_SOURCES = F64toI32SOverflowNeg.c
+F64toI32SOverflowNeg_OBJECTS = F64toI32SOverflowNeg.$(OBJEXT)
+F64toI32SOverflowNeg_LDADD = $(LDADD)
+F64toI64S_SOURCES = F64toI64S.c
+F64toI64S_OBJECTS = F64toI64S.$(OBJEXT)
+F64toI64S_LDADD = $(LDADD)
+F64toI64SInf_SOURCES = F64toI64SInf.c
+F64toI64SInf_OBJECTS = F64toI64SInf.$(OBJEXT)
+F64toI64SInf_LDADD = $(LDADD)
+F64toI64SNaN_SOURCES = F64toI64SNaN.c
+F64toI64SNaN_OBJECTS = F64toI64SNaN.$(OBJEXT)
+F64toI64SNaN_LDADD = $(LDADD)
+F64toI64SOverflow_SOURCES = F64toI64SOverflow.c
+F64toI64SOverflow_OBJECTS = F64toI64SOverflow.$(OBJEXT)
+F64toI64SOverflow_LDADD = $(LDADD)
+F64toI64SOverflowNeg_SOURCES = F64toI64SOverflowNeg.c
+F64toI64SOverflowNeg_OBJECTS = F64toI64SOverflowNeg.$(OBJEXT)
+F64toI64SOverflowNeg_LDADD = $(LDADD)
 SCRIPTS = $(dist_noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -127,12 +133,14 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = doubleToInt.c doubleToIntInf.c doubleToIntNaN.c \
-	doubleToIntOverflow.c doubleToLong.c doubleToLongInf.c \
-	doubleToLongNaN.c doubleToLongOverflow.c intAddOverflow.c
-DIST_SOURCES = doubleToInt.c doubleToIntInf.c doubleToIntNaN.c \
-	doubleToIntOverflow.c doubleToLong.c doubleToLongInf.c \
-	doubleToLongNaN.c doubleToLongOverflow.c intAddOverflow.c
+SOURCES = Add32Overflow.c F64toI32S.c F64toI32SInf.c F64toI32SNaN.c \
+	F64toI32SOverflow.c F64toI32SOverflowNeg.c F64toI64S.c \
+	F64toI64SInf.c F64toI64SNaN.c F64toI64SOverflow.c \
+	F64toI64SOverflowNeg.c
+DIST_SOURCES = Add32Overflow.c F64toI32S.c F64toI32SInf.c \
+	F64toI32SNaN.c F64toI32SOverflow.c F64toI32SOverflowNeg.c \
+	F64toI64S.c F64toI64SInf.c F64toI64SNaN.c F64toI64SOverflow.c \
+	F64toI64SOverflowNeg.c
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -463,15 +471,17 @@ AM_CCASFLAGS = $(AM_CPPFLAGS)
 @VGCONF_OS_IS_DARWIN_TRUE@noinst_DSYMS = $(check_PROGRAMS)
 dist_noinst_SCRIPTS = filter_stderr
 SUBDIRS = .
-EXTRA_DIST = intAddOverflow.stderr.exp intAddOverflow.vgtest true.stderr.exp true.vgtest \
-			  doubleToInt.stderr.exp doubleToInt.vgtest \
-              doubleToIntInf.stderr.exp doubleToIntInf.vgtest \
-              doubleToIntNaN.stderr.exp doubleToIntNaN.vgtest \
-              doubleToIntOverflow.stderr.exp doubleToIntOverflow.vgtest \
-              doubleToLong.stderr.exp doubleToLong.vgtest \
-              doubleToLongInf.stderr.exp doubleToLongInf.vgtest \
-              doubleToLongNaN.stderr.exp doubleToLongNaN.vgtest \
-              doubleToLongOverflow.stderr.exp doubleToLongOverflow.vgtest
+EXTRA_DIST = Add32Overflow.stderr.exp Add32Overflow.vgtest true.stderr.exp true.vgtest \
+			        F64toI32S.stderr.exp F64toI32S.vgtest \
+              F64toI32SInf.stderr.exp F64toI32SInf.vgtest \
+              F64toI32SNaN.stderr.exp F64toI32SNaN.vgtest \
+              F64toI32SOverflow.stderr.exp F64toI32SOverflow.vgtest \
+              F64toI32SOverflowNeg.stderr.exp F64toI32SOverflowNeg.vgtest \
+              F64toI64S.stderr.exp F64toI64S.vgtest \
+              F64toI64SInf.stderr.exp F64toI64SInf.vgtest \
+              F64toI64SNaN.stderr.exp F64toI64SNaN.vgtest \
+              F64toI64SOverflow.stderr.exp F64toI64SOverflow.vgtest \
+              F64toI64SOverflowNeg.stderr.exp F64toI64SOverflowNeg.vgtest
 
 all: all-recursive
 
@@ -511,33 +521,39 @@ $(am__aclocal_m4_deps):
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
-doubleToInt$(EXEEXT): $(doubleToInt_OBJECTS) $(doubleToInt_DEPENDENCIES) $(EXTRA_doubleToInt_DEPENDENCIES) 
-	@rm -f doubleToInt$(EXEEXT)
-	$(LINK) $(doubleToInt_OBJECTS) $(doubleToInt_LDADD) $(LIBS)
-doubleToIntInf$(EXEEXT): $(doubleToIntInf_OBJECTS) $(doubleToIntInf_DEPENDENCIES) $(EXTRA_doubleToIntInf_DEPENDENCIES) 
-	@rm -f doubleToIntInf$(EXEEXT)
-	$(LINK) $(doubleToIntInf_OBJECTS) $(doubleToIntInf_LDADD) $(LIBS)
-doubleToIntNaN$(EXEEXT): $(doubleToIntNaN_OBJECTS) $(doubleToIntNaN_DEPENDENCIES) $(EXTRA_doubleToIntNaN_DEPENDENCIES) 
-	@rm -f doubleToIntNaN$(EXEEXT)
-	$(LINK) $(doubleToIntNaN_OBJECTS) $(doubleToIntNaN_LDADD) $(LIBS)
-doubleToIntOverflow$(EXEEXT): $(doubleToIntOverflow_OBJECTS) $(doubleToIntOverflow_DEPENDENCIES) $(EXTRA_doubleToIntOverflow_DEPENDENCIES) 
-	@rm -f doubleToIntOverflow$(EXEEXT)
-	$(LINK) $(doubleToIntOverflow_OBJECTS) $(doubleToIntOverflow_LDADD) $(LIBS)
-doubleToLong$(EXEEXT): $(doubleToLong_OBJECTS) $(doubleToLong_DEPENDENCIES) $(EXTRA_doubleToLong_DEPENDENCIES) 
-	@rm -f doubleToLong$(EXEEXT)
-	$(LINK) $(doubleToLong_OBJECTS) $(doubleToLong_LDADD) $(LIBS)
-doubleToLongInf$(EXEEXT): $(doubleToLongInf_OBJECTS) $(doubleToLongInf_DEPENDENCIES) $(EXTRA_doubleToLongInf_DEPENDENCIES) 
-	@rm -f doubleToLongInf$(EXEEXT)
-	$(LINK) $(doubleToLongInf_OBJECTS) $(doubleToLongInf_LDADD) $(LIBS)
-doubleToLongNaN$(EXEEXT): $(doubleToLongNaN_OBJECTS) $(doubleToLongNaN_DEPENDENCIES) $(EXTRA_doubleToLongNaN_DEPENDENCIES) 
-	@rm -f doubleToLongNaN$(EXEEXT)
-	$(LINK) $(doubleToLongNaN_OBJECTS) $(doubleToLongNaN_LDADD) $(LIBS)
-doubleToLongOverflow$(EXEEXT): $(doubleToLongOverflow_OBJECTS) $(doubleToLongOverflow_DEPENDENCIES) $(EXTRA_doubleToLongOverflow_DEPENDENCIES) 
-	@rm -f doubleToLongOverflow$(EXEEXT)
-	$(LINK) $(doubleToLongOverflow_OBJECTS) $(doubleToLongOverflow_LDADD) $(LIBS)
-intAddOverflow$(EXEEXT): $(intAddOverflow_OBJECTS) $(intAddOverflow_DEPENDENCIES) $(EXTRA_intAddOverflow_DEPENDENCIES) 
-	@rm -f intAddOverflow$(EXEEXT)
-	$(LINK) $(intAddOverflow_OBJECTS) $(intAddOverflow_LDADD) $(LIBS)
+Add32Overflow$(EXEEXT): $(Add32Overflow_OBJECTS) $(Add32Overflow_DEPENDENCIES) $(EXTRA_Add32Overflow_DEPENDENCIES) 
+	@rm -f Add32Overflow$(EXEEXT)
+	$(LINK) $(Add32Overflow_OBJECTS) $(Add32Overflow_LDADD) $(LIBS)
+F64toI32S$(EXEEXT): $(F64toI32S_OBJECTS) $(F64toI32S_DEPENDENCIES) $(EXTRA_F64toI32S_DEPENDENCIES) 
+	@rm -f F64toI32S$(EXEEXT)
+	$(LINK) $(F64toI32S_OBJECTS) $(F64toI32S_LDADD) $(LIBS)
+F64toI32SInf$(EXEEXT): $(F64toI32SInf_OBJECTS) $(F64toI32SInf_DEPENDENCIES) $(EXTRA_F64toI32SInf_DEPENDENCIES) 
+	@rm -f F64toI32SInf$(EXEEXT)
+	$(LINK) $(F64toI32SInf_OBJECTS) $(F64toI32SInf_LDADD) $(LIBS)
+F64toI32SNaN$(EXEEXT): $(F64toI32SNaN_OBJECTS) $(F64toI32SNaN_DEPENDENCIES) $(EXTRA_F64toI32SNaN_DEPENDENCIES) 
+	@rm -f F64toI32SNaN$(EXEEXT)
+	$(LINK) $(F64toI32SNaN_OBJECTS) $(F64toI32SNaN_LDADD) $(LIBS)
+F64toI32SOverflow$(EXEEXT): $(F64toI32SOverflow_OBJECTS) $(F64toI32SOverflow_DEPENDENCIES) $(EXTRA_F64toI32SOverflow_DEPENDENCIES) 
+	@rm -f F64toI32SOverflow$(EXEEXT)
+	$(LINK) $(F64toI32SOverflow_OBJECTS) $(F64toI32SOverflow_LDADD) $(LIBS)
+F64toI32SOverflowNeg$(EXEEXT): $(F64toI32SOverflowNeg_OBJECTS) $(F64toI32SOverflowNeg_DEPENDENCIES) $(EXTRA_F64toI32SOverflowNeg_DEPENDENCIES) 
+	@rm -f F64toI32SOverflowNeg$(EXEEXT)
+	$(LINK) $(F64toI32SOverflowNeg_OBJECTS) $(F64toI32SOverflowNeg_LDADD) $(LIBS)
+F64toI64S$(EXEEXT): $(F64toI64S_OBJECTS) $(F64toI64S_DEPENDENCIES) $(EXTRA_F64toI64S_DEPENDENCIES) 
+	@rm -f F64toI64S$(EXEEXT)
+	$(LINK) $(F64toI64S_OBJECTS) $(F64toI64S_LDADD) $(LIBS)
+F64toI64SInf$(EXEEXT): $(F64toI64SInf_OBJECTS) $(F64toI64SInf_DEPENDENCIES) $(EXTRA_F64toI64SInf_DEPENDENCIES) 
+	@rm -f F64toI64SInf$(EXEEXT)
+	$(LINK) $(F64toI64SInf_OBJECTS) $(F64toI64SInf_LDADD) $(LIBS)
+F64toI64SNaN$(EXEEXT): $(F64toI64SNaN_OBJECTS) $(F64toI64SNaN_DEPENDENCIES) $(EXTRA_F64toI64SNaN_DEPENDENCIES) 
+	@rm -f F64toI64SNaN$(EXEEXT)
+	$(LINK) $(F64toI64SNaN_OBJECTS) $(F64toI64SNaN_LDADD) $(LIBS)
+F64toI64SOverflow$(EXEEXT): $(F64toI64SOverflow_OBJECTS) $(F64toI64SOverflow_DEPENDENCIES) $(EXTRA_F64toI64SOverflow_DEPENDENCIES) 
+	@rm -f F64toI64SOverflow$(EXEEXT)
+	$(LINK) $(F64toI64SOverflow_OBJECTS) $(F64toI64SOverflow_LDADD) $(LIBS)
+F64toI64SOverflowNeg$(EXEEXT): $(F64toI64SOverflowNeg_OBJECTS) $(F64toI64SOverflowNeg_DEPENDENCIES) $(EXTRA_F64toI64SOverflowNeg_DEPENDENCIES) 
+	@rm -f F64toI64SOverflowNeg$(EXEEXT)
+	$(LINK) $(F64toI64SOverflowNeg_OBJECTS) $(F64toI64SOverflowNeg_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -545,15 +561,17 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToInt.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToIntInf.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToIntNaN.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToIntOverflow.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToLong.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToLongInf.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToLongNaN.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/doubleToLongOverflow.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/intAddOverflow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Add32Overflow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI32S.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI32SInf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI32SNaN.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI32SOverflow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI32SOverflowNeg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64S.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64SInf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64SNaN.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64SOverflow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64SOverflowNeg.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

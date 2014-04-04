@@ -122,7 +122,7 @@ static void check_DivF64(Double a, Double b, OA_InstrumentContext inscon) {
 }
 
 static void check_F64toI32S(Double a, OA_InstrumentContext inscon) {
-  if (a > INT_MAX){
+  if (a > INT_MAX || a < INT_MIN){
     OA_(maybe_error)(Err_Overflow, inscon);
   }
   if (isinf(a)){
@@ -134,8 +134,25 @@ static void check_F64toI32S(Double a, OA_InstrumentContext inscon) {
 }
 
 static void check_F64toI64S(Double a, OA_InstrumentContext inscon) {
-  if (a > LONG_MAX){
+  if (a > LONG_MAX || a < LONG_MIN){
     OA_(maybe_error)(Err_Overflow, inscon);
+  }
+  if (isinf(a)){
+    OA_(maybe_error)(Err_Infinity, inscon); return;
+  }
+  if (isnan(a)){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+}
+
+static void check_F64toF32(Double a, OA_InstrumentContext inscon) {
+  if (a > FLT_MAX || a < -FLT_MAX){
+    OA_(maybe_error)(Err_Overflow, inscon);
+  }
+  if(a < FLT_MIN){
+    Float fa = a;
+    if(fa == 0.0f && a != 0.0)
+      OA_(maybe_error)(Err_Underflow, inscon);
   }
   if (isinf(a)){
     OA_(maybe_error)(Err_Infinity, inscon); return;
@@ -152,6 +169,7 @@ VG_REGPARM(3) void oa_callbackI64_1xF64(UInt roundingMode, ULong la, OA_Instrume
   switch(ic->op) {
     case Iop_F64toI32S: check_F64toI32S(value, ic); break;
     case Iop_F64toI64S: check_F64toI64S(value, ic); break;
+    case Iop_F64toF32: check_F64toF32(value, ic); break;
 	  default: break;
 	}
 }
