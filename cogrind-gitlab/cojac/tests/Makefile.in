@@ -77,8 +77,9 @@ DIST_COMMON = $(dist_noinst_SCRIPTS) $(srcdir)/Makefile.am \
 @COMPILER_IS_CLANG_TRUE@	-Wno-string-plus-int # \
 @COMPILER_IS_CLANG_TRUE@	drd/tests/annotate_ignore_rw.c
 @COMPILER_IS_CLANG_TRUE@am__append_5 = -Wno-unused-private-field    # drd/tests/tsan_unittest.cpp
-check_PROGRAMS = Add32Overflow$(EXEEXT) F64toI32S$(EXEEXT) \
-	F64toI32SInf$(EXEEXT) F64toI32SNaN$(EXEEXT) \
+check_PROGRAMS = Add32Overflow$(EXEEXT) Div32Under$(EXEEXT) \
+	Div64Under$(EXEEXT) Mul32Under$(EXEEXT) Mul64Under$(EXEEXT) \
+	F64toI32S$(EXEEXT) F64toI32SInf$(EXEEXT) F64toI32SNaN$(EXEEXT) \
 	F64toI32SOverflow$(EXEEXT) F64toI32SOverflowNeg$(EXEEXT) \
 	F64toI64S$(EXEEXT) F64toI64SInf$(EXEEXT) F64toI64SNaN$(EXEEXT) \
 	F64toI64SOverflow$(EXEEXT) F64toI64SOverflowNeg$(EXEEXT)
@@ -94,6 +95,12 @@ CONFIG_CLEAN_VPATH_FILES =
 Add32Overflow_SOURCES = Add32Overflow.c
 Add32Overflow_OBJECTS = Add32Overflow.$(OBJEXT)
 Add32Overflow_LDADD = $(LDADD)
+Div32Under_SOURCES = Div32Under.c
+Div32Under_OBJECTS = Div32Under.$(OBJEXT)
+Div32Under_LDADD = $(LDADD)
+Div64Under_SOURCES = Div64Under.c
+Div64Under_OBJECTS = Div64Under.$(OBJEXT)
+Div64Under_LDADD = $(LDADD)
 F64toI32S_SOURCES = F64toI32S.c
 F64toI32S_OBJECTS = F64toI32S.$(OBJEXT)
 F64toI32S_LDADD = $(LDADD)
@@ -124,6 +131,12 @@ F64toI64SOverflow_LDADD = $(LDADD)
 F64toI64SOverflowNeg_SOURCES = F64toI64SOverflowNeg.c
 F64toI64SOverflowNeg_OBJECTS = F64toI64SOverflowNeg.$(OBJEXT)
 F64toI64SOverflowNeg_LDADD = $(LDADD)
+Mul32Under_SOURCES = Mul32Under.c
+Mul32Under_OBJECTS = Mul32Under.$(OBJEXT)
+Mul32Under_LDADD = $(LDADD)
+Mul64Under_SOURCES = Mul64Under.c
+Mul64Under_OBJECTS = Mul64Under.$(OBJEXT)
+Mul64Under_LDADD = $(LDADD)
 SCRIPTS = $(dist_noinst_SCRIPTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -133,14 +146,16 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = Add32Overflow.c F64toI32S.c F64toI32SInf.c F64toI32SNaN.c \
-	F64toI32SOverflow.c F64toI32SOverflowNeg.c F64toI64S.c \
-	F64toI64SInf.c F64toI64SNaN.c F64toI64SOverflow.c \
-	F64toI64SOverflowNeg.c
-DIST_SOURCES = Add32Overflow.c F64toI32S.c F64toI32SInf.c \
-	F64toI32SNaN.c F64toI32SOverflow.c F64toI32SOverflowNeg.c \
-	F64toI64S.c F64toI64SInf.c F64toI64SNaN.c F64toI64SOverflow.c \
-	F64toI64SOverflowNeg.c
+SOURCES = Add32Overflow.c Div32Under.c Div64Under.c F64toI32S.c \
+	F64toI32SInf.c F64toI32SNaN.c F64toI32SOverflow.c \
+	F64toI32SOverflowNeg.c F64toI64S.c F64toI64SInf.c \
+	F64toI64SNaN.c F64toI64SOverflow.c F64toI64SOverflowNeg.c \
+	Mul32Under.c Mul64Under.c
+DIST_SOURCES = Add32Overflow.c Div32Under.c Div64Under.c F64toI32S.c \
+	F64toI32SInf.c F64toI32SNaN.c F64toI32SOverflow.c \
+	F64toI32SOverflowNeg.c F64toI64S.c F64toI64SInf.c \
+	F64toI64SNaN.c F64toI64SOverflow.c F64toI64SOverflowNeg.c \
+	Mul32Under.c Mul64Under.c
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -472,6 +487,10 @@ AM_CCASFLAGS = $(AM_CPPFLAGS)
 dist_noinst_SCRIPTS = filter_stderr
 SUBDIRS = .
 EXTRA_DIST = Add32Overflow.stderr.exp Add32Overflow.vgtest true.stderr.exp true.vgtest \
+              Div32Under.stderr.exp Div32Under.vgtest \
+              Div64Under.stderr.exp Div64Under.vgtest \
+              Mul32Under.stderr.exp Mul32Under.vgtest \
+              Mul64Under.stderr.exp Mul64Under.vgtest \
 			        F64toI32S.stderr.exp F64toI32S.vgtest \
               F64toI32SInf.stderr.exp F64toI32SInf.vgtest \
               F64toI32SNaN.stderr.exp F64toI32SNaN.vgtest \
@@ -524,6 +543,12 @@ clean-checkPROGRAMS:
 Add32Overflow$(EXEEXT): $(Add32Overflow_OBJECTS) $(Add32Overflow_DEPENDENCIES) $(EXTRA_Add32Overflow_DEPENDENCIES) 
 	@rm -f Add32Overflow$(EXEEXT)
 	$(LINK) $(Add32Overflow_OBJECTS) $(Add32Overflow_LDADD) $(LIBS)
+Div32Under$(EXEEXT): $(Div32Under_OBJECTS) $(Div32Under_DEPENDENCIES) $(EXTRA_Div32Under_DEPENDENCIES) 
+	@rm -f Div32Under$(EXEEXT)
+	$(LINK) $(Div32Under_OBJECTS) $(Div32Under_LDADD) $(LIBS)
+Div64Under$(EXEEXT): $(Div64Under_OBJECTS) $(Div64Under_DEPENDENCIES) $(EXTRA_Div64Under_DEPENDENCIES) 
+	@rm -f Div64Under$(EXEEXT)
+	$(LINK) $(Div64Under_OBJECTS) $(Div64Under_LDADD) $(LIBS)
 F64toI32S$(EXEEXT): $(F64toI32S_OBJECTS) $(F64toI32S_DEPENDENCIES) $(EXTRA_F64toI32S_DEPENDENCIES) 
 	@rm -f F64toI32S$(EXEEXT)
 	$(LINK) $(F64toI32S_OBJECTS) $(F64toI32S_LDADD) $(LIBS)
@@ -554,6 +579,12 @@ F64toI64SOverflow$(EXEEXT): $(F64toI64SOverflow_OBJECTS) $(F64toI64SOverflow_DEP
 F64toI64SOverflowNeg$(EXEEXT): $(F64toI64SOverflowNeg_OBJECTS) $(F64toI64SOverflowNeg_DEPENDENCIES) $(EXTRA_F64toI64SOverflowNeg_DEPENDENCIES) 
 	@rm -f F64toI64SOverflowNeg$(EXEEXT)
 	$(LINK) $(F64toI64SOverflowNeg_OBJECTS) $(F64toI64SOverflowNeg_LDADD) $(LIBS)
+Mul32Under$(EXEEXT): $(Mul32Under_OBJECTS) $(Mul32Under_DEPENDENCIES) $(EXTRA_Mul32Under_DEPENDENCIES) 
+	@rm -f Mul32Under$(EXEEXT)
+	$(LINK) $(Mul32Under_OBJECTS) $(Mul32Under_LDADD) $(LIBS)
+Mul64Under$(EXEEXT): $(Mul64Under_OBJECTS) $(Mul64Under_DEPENDENCIES) $(EXTRA_Mul64Under_DEPENDENCIES) 
+	@rm -f Mul64Under$(EXEEXT)
+	$(LINK) $(Mul64Under_OBJECTS) $(Mul64Under_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -562,6 +593,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Add32Overflow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Div32Under.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Div64Under.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI32S.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI32SInf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI32SNaN.Po@am__quote@
@@ -572,6 +605,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64SNaN.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64SOverflow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64SOverflowNeg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mul32Under.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mul64Under.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\

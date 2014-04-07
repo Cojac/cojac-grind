@@ -5,6 +5,10 @@ dist_noinst_SCRIPTS = filter_stderr
 SUBDIRS = .
 
 EXTRA_DIST = Add32Overflow.stderr.exp Add32Overflow.vgtest true.stderr.exp true.vgtest \
+              Div32Under.stderr.exp Div32Under.vgtest \
+              Div64Under.stderr.exp Div64Under.vgtest \
+              Mul32Under.stderr.exp Mul32Under.vgtest \
+              Mul64Under.stderr.exp Mul64Under.vgtest \
 			        F64toI32S.stderr.exp F64toI32S.vgtest \
               F64toI32SInf.stderr.exp F64toI32SInf.vgtest \
               F64toI32SNaN.stderr.exp F64toI32SNaN.vgtest \
@@ -17,6 +21,10 @@ EXTRA_DIST = Add32Overflow.stderr.exp Add32Overflow.vgtest true.stderr.exp true.
               F64toI64SOverflowNeg.stderr.exp F64toI64SOverflowNeg.vgtest
 
 check_PROGRAMS = Add32Overflow \
+                  Div32Under \
+                  Div64Under \
+                  Mul32Under \
+                  Mul64Under \
                   F64toI32S \
                   F64toI32SInf \
                   F64toI32SNaN \
