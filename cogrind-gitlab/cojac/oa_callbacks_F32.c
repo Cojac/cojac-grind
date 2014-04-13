@@ -125,7 +125,7 @@ static void check_DivF32(Float a, Float b, OA_InstrumentContext inscon) {
 
 
 /*--------------------------------------------------------------------*/
-VG_REGPARM(3) void oa_callbackI32_2xF32(Int a, Int b, OA_InstrumentContext ic) {
+VG_REGPARM(3) void oa_callbackI32_3xF32(UInt roundingMode, Int a, Int b, OA_InstrumentContext ic) {
   Float fa = OA_(floatFromInt)(a);
   Float fb = OA_(floatFromInt)(b);
   switch(ic->op) {
@@ -141,11 +141,11 @@ VG_REGPARM(3) void oa_callbackI32_2xF32(Int a, Int b, OA_InstrumentContext ic) {
   }
 }
 
-VG_REGPARM(3) void oa_callbackI64_2xF32(ULong la, ULong lb, OA_InstrumentContext ic) {
+VG_REGPARM(3) void oa_callbackI64_3xF32(UInt roundingMode, ULong la, ULong lb, OA_InstrumentContext ic) {
   Int a, a1, b, b1;
   OA_(longToTwoInts)(la, &a, &a1);
   OA_(longToTwoInts)(lb, &b, &b1);
-  oa_callbackI32_2xF32(a1, b1,ic);
+  oa_callbackI32_3xF32(roundingMode,  a1, b1,ic);
 }
 
 

@@ -71,6 +71,7 @@ typedef struct {
   Bool f64;
   Bool i16;
   Bool i64;
+  Bool mathOp;
   Bool castToI16;
   Bool castFromF64;
 } cojacOptions;
@@ -114,18 +115,20 @@ VG_REGPARM(2) void oa_callbackI32_1x32 ( Int a,         OA_InstrumentContext c);
 VG_REGPARM(3) void oa_callbackI32_2x16 ( Int a,  Int b, OA_InstrumentContext c);
 VG_REGPARM(3) void oa_callbackI32_2x64 (UInt a, UInt b, OA_InstrumentContext c);
 VG_REGPARM(2) void oa_callbackI32_1x64 (UInt a,         OA_InstrumentContext c);
-VG_REGPARM(3) void oa_callbackI32_2xF32( Int a,  Int b, OA_InstrumentContext c);
-VG_REGPARM(3) void oa_callbackI32_2xF64(UInt a, UInt b, OA_InstrumentContext c);
-VG_REGPARM(2) void oa_callbackI32_1xF64(UInt a,         OA_InstrumentContext ic);
+VG_REGPARM(3) void oa_callbackI32_3xF32(UInt roundingMode, Int a, Int b, OA_InstrumentContext ic);
+VG_REGPARM(3) void oa_callbackI32_3xF64(UInt roundingMode, UInt a, UInt b, OA_InstrumentContext ic);
+VG_REGPARM(2) void oa_callbackI32_2xF64(UInt roundingMode, UInt la, OA_InstrumentContext ic);
+VG_REGPARM(1) void oa_callbackI32_1xF64(UInt la, OA_InstrumentContext ic);
 
 VG_REGPARM(3) void oa_callbackI64_2x32 (ULong a, ULong b, OA_InstrumentContext c);
 VG_REGPARM(2) void oa_callbackI64_1x32 (ULong a,          OA_InstrumentContext c);
 VG_REGPARM(3) void oa_callbackI64_2x64 ( Long a,  Long b, OA_InstrumentContext c);
 VG_REGPARM(2) void oa_callbackI64_1x64 ( Long a,          OA_InstrumentContext c);
 VG_REGPARM(3) void oa_callbackI64_2x16 (ULong a, ULong b, OA_InstrumentContext c);
-VG_REGPARM(3) void oa_callbackI64_2xF32(ULong a, ULong b, OA_InstrumentContext c);
-VG_REGPARM(3) void oa_callbackI64_2xF64(ULong a, ULong b, OA_InstrumentContext c);
-VG_REGPARM(3) void oa_callbackI64_1xF64(UInt a, ULong b, OA_InstrumentContext c);
+VG_REGPARM(3) void oa_callbackI64_3xF32(UInt roundingMode, ULong la, ULong lb, OA_InstrumentContext ic);
+VG_REGPARM(3) void oa_callbackI64_3xF64(UInt roundingMode, ULong la, ULong lb, OA_InstrumentContext ic);
+VG_REGPARM(2) void oa_callbackI64_2xF64(UInt roundingMode, ULong la, OA_InstrumentContext ic);
+VG_REGPARM(1) void oa_callbackI64_1xF64(ULong la, OA_InstrumentContext ic);
 
 /*------------------------------------------------------------*/
 /*--- Errors and suppressions                              ---*/

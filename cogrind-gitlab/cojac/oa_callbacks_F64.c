@@ -162,19 +162,33 @@ static void check_F64toF32(Double a, OA_InstrumentContext inscon) {
   }
 }
 
+static void check_F64_Sqrt(Double a, OA_InstrumentContext inscon) {
+  OA_(maybe_error)(Err_NaN, inscon);
+}
+
 /*--------------------------------------------------------------------*/
 
-VG_REGPARM(3) void oa_callbackI64_1xF64(UInt roundingMode, ULong la, OA_InstrumentContext ic) {
+VG_REGPARM(1) void oa_callbackI64_1xF64(ULong la, OA_InstrumentContext ic) {
+  Double value = OA_(doubleFromULong)(la);
+  switch(ic->op) {
+    case Iop_Sqrt64Fx2: check_F64_Sqrt(value, ic); break;
+	  default: break;
+	}
+}
+
+
+VG_REGPARM(2) void oa_callbackI64_2xF64(UInt roundingMode, ULong la, OA_InstrumentContext ic) {
   Double value = OA_(doubleFromULong)(la);
   switch(ic->op) {
     case Iop_F64toI32S: check_F64toI32S(value, ic); break;
     case Iop_F64toI64S: check_F64toI64S(value, ic); break;
     case Iop_F64toF32: check_F64toF32(value, ic); break;
+    case Iop_Sqrt64Fx2: check_F64_Sqrt(value, ic); break;
 	  default: break;
 	}
 }
 
-VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext ic) {
+VG_REGPARM(3) void oa_callbackI64_3xF64(UInt roundingMode, ULong la, ULong lb, OA_InstrumentContext ic) {
   Double a=OA_(doubleFromULong)(la);
   Double b=OA_(doubleFromULong)(lb);
   /*
@@ -217,11 +231,15 @@ VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext
 static partOfF64op opF64_buf;
 static char        isOpF64Part=False;
 
-VG_REGPARM(2) void oa_callbackI32_1xF64(UInt la, OA_InstrumentContext ic){
+VG_REGPARM(1) void oa_callbackI32_1xF64(UInt la, OA_InstrumentContext ic){
   //TODO 32 Bits arch
 }
 
-VG_REGPARM(3) void oa_callbackI32_2xF64(UInt a, UInt b, OA_InstrumentContext ic) {
+VG_REGPARM(2) void oa_callbackI32_2xF64(UInt roundingMode, UInt la, OA_InstrumentContext ic){
+  //TODO 32 Bits arch
+}
+
+VG_REGPARM(3) void oa_callbackI32_3xF64(UInt roundingMode, UInt a, UInt b, OA_InstrumentContext ic) {
   if (isOpF64Part) { // second half of the callback
   	isOpF64Part=False;
     ULong la=OA_(ulongFromTwoInts)(a, opF64_buf.a);

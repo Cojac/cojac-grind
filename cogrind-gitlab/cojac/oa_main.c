@@ -92,35 +92,39 @@ static void populate_iop_struct(void) {
   }
   
   if (OA_(options).castFromF64) {
-    init_iop(Iop_F64toI32S, "F64toI32S",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
-    init_iop(Iop_F64toI64S, "F64toI64S",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
-    init_iop(Iop_F64toF32, "F64toF32",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
+    init_iop(Iop_F64toI32S, "F64toI32S",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
+    init_iop(Iop_F64toI64S, "F64toI64S",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
+    init_iop(Iop_F64toF32, "F64toF32",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
   }
 
   if (OA_(options).f32) {
-    init_iop(Iop_AddF32,  "AddF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_SubF32,  "SubF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_MulF32,  "MulF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_DivF32,  "DivF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_Add32F0x4,  "Add32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_Sub32F0x4,  "Sub32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_Mul32F0x4,  "Mul32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
-    init_iop(Iop_Div32F0x4,  "Div32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    init_iop(Iop_AddF32,  "AddF32", oa_callbackI32_3xF32, oa_callbackI64_3xF32);
+    init_iop(Iop_SubF32,  "SubF32", oa_callbackI32_3xF32, oa_callbackI64_3xF32);
+    init_iop(Iop_MulF32,  "MulF32", oa_callbackI32_3xF32, oa_callbackI64_3xF32);
+    init_iop(Iop_DivF32,  "DivF32", oa_callbackI32_3xF32, oa_callbackI64_3xF32);
+    init_iop(Iop_Add32F0x4,  "Add32F0x4", oa_callbackI32_3xF32, oa_callbackI64_3xF32);
+    init_iop(Iop_Sub32F0x4,  "Sub32F0x4", oa_callbackI32_3xF32, oa_callbackI64_3xF32);
+    init_iop(Iop_Mul32F0x4,  "Mul32F0x4", oa_callbackI32_3xF32, oa_callbackI64_3xF32);
+    init_iop(Iop_Div32F0x4,  "Div32F0x4", oa_callbackI32_3xF32, oa_callbackI64_3xF32);
   }
 
   if (OA_(options).f64) {
-    init_iop(Iop_AddF64,  "AddF64",     oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_SubF64,  "SubF64",     oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_MulF64,  "MulF64",     oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_DivF64,  "DivF64",     oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_Add64F0x2,"Add64F0x2", oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_Add64Fx2, "Add64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_Sub64F0x2,"Sub64F0x2", oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_Sub64Fx2, "Sub64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_Mul64F0x2,"Mul64F0x2", oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_Mul64Fx2, "Mul64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_Div64F0x2,"Div64F0x2", oa_callbackI32_2xF64, oa_callbackI64_2xF64);
-    init_iop(Iop_Div64Fx2, "Div64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
+    init_iop(Iop_AddF64,  "AddF64",     oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_SubF64,  "SubF64",     oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_MulF64,  "MulF64",     oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_DivF64,  "DivF64",     oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_Add64F0x2,"Add64F0x2", oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_Add64Fx2, "Add64Fx2",  oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_Sub64F0x2,"Sub64F0x2", oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_Sub64Fx2, "Sub64Fx2",  oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_Mul64F0x2,"Mul64F0x2", oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_Mul64Fx2, "Mul64Fx2",  oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_Div64F0x2,"Div64F0x2", oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+    init_iop(Iop_Div64Fx2, "Div64Fx2",  oa_callbackI32_3xF64, oa_callbackI64_3xF64);
+  }
+  
+  if (OA_(options).mathOp) {
+    init_iop(Iop_Sqrt64Fx2, "Sqrt64Fx2",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
   }
 }
 
@@ -382,12 +386,12 @@ static void instrument_Triop(IRSB* sb, IRStmt* st, Addr64 cia) {
   IRExpr * args3[2];
   packToI32orI64(sb, op->Iex.Triop.details->arg3, args3, irop);
   argv = mkIRExprVec_4(args1[0], args2[0], args3[0], oa_event_expr);
-  di = unsafeIRDirty_0_N( 3, thisFct, VG_(fnptr_to_fnentry)( f ), argv);
+  di = unsafeIRDirty_0_N( 4, thisFct, VG_(fnptr_to_fnentry)( f ), argv);
   addStmtToIRSB( sb, IRStmt_Dirty(di) );
   if (args1[1] != NULL) {
     // we need a second callback for 64bit types
-    argv = mkIRExprVec_3(args1[1], args2[1], oa_event_expr);
-    di = unsafeIRDirty_0_N( 3, thisFct, VG_(fnptr_to_fnentry)( f ), argv);
+    argv = mkIRExprVec_4(args1[1], args2[1], args3[0], oa_event_expr);
+    di = unsafeIRDirty_0_N( 4, thisFct, VG_(fnptr_to_fnentry)( f ), argv);
     addStmtToIRSB( sb, IRStmt_Dirty(di) );
   }
 
@@ -410,6 +414,7 @@ static void oa_print_usage(void) {
   VG_(printf)("    --castToI16=yes|no    Watch int to short typecasting [yes]\n");
   VG_(printf)("    --castFromF64=yes|no    Watch float or double to int or long typecasting [yes]\n");
   VG_(printf)("    --stacktrace=<number> Depth of the stacktrace [1] \n");
+  VG_(printf)("    --mathOp=yes|no   Watch for mathematical calls [yes]\n");
 }
 static void oa_print_debug_usage(void) {
 }
@@ -433,6 +438,8 @@ static Bool oa_process_cmd_line_option(const HChar* argv) {
     return True;
   } else if (VG_BOOL_CLO(argv, "--castToI16", OA_(options).castToI16)) {
     return True;
+  }  else if (VG_BOOL_CLO(argv, "--mathOp", OA_(options).mathOp)) {
+    return True;
   }
   return False;
 }
@@ -446,6 +453,7 @@ static void oa_set_default_options(void) {
   OA_(options).i16          = True;
   OA_(options).i32          = True;
   OA_(options).i64          = True;
+  OA_(options).mathOp       = True;
   OA_(options).isAggr       = False;
   OA_(options).stacktraceDepth = 1;
 }
