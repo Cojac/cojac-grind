@@ -163,7 +163,20 @@ static void check_F64toF32(Double a, OA_InstrumentContext inscon) {
 }
 
 static void check_F64_Sqrt(Double a, OA_InstrumentContext inscon) {
-  OA_(maybe_error)(Err_NaN, inscon);
+  if (isinf(a)){
+    OA_(maybe_error)(Err_Infinity, inscon); return;
+  }
+  if (isnan(a)){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+  Double b;
+  __asm__ ("sqrtsd %1, %0" : "=x" (b) : "x" (a));
+  if (isinf(b)){
+    OA_(maybe_error)(Err_Infinity, inscon); return;
+  }
+  if (isnan(b)){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
 }
 
 /*--------------------------------------------------------------------*/
