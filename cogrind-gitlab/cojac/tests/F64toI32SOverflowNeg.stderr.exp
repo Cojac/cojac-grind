@@ -1,1 +1,1 @@
-Cojac: Overflow... F...toI...S   at ...x...BE: main (F...toI...SOverflowNeg.c:...)
+Cojac: Overflow, F64toI32S   at 0x...: main (F64toI32SOverflowNeg.c:9)

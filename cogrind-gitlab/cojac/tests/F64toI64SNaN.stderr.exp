@@ -1,2 +1,2 @@
-Cojac: DivByZero... Div...F...x...   at ...x...AC: main (F...toI...SNaN.c:...)
-Cojac: NaN... F...toI...S   at ...x...C...: main (F...toI...SNaN.c:...)
+Cojac: DivByZero, Div64F0x2   at 0x...: main (F64toI64SNaN.c:6)
+Cojac: NaN, F64toI64S   at 0x...: main (F64toI64SNaN.c:9)
