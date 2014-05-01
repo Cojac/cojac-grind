@@ -463,7 +463,7 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
                             IRSB*              sbIn,
                             VexGuestLayout*    layout,
                             VexGuestExtents*   vge,
-                            VexArchInfo *      varch,	//Added for Valgrinf 3.9
+                            VexArchInfo *      varch,
                             IRType             gWordTy,
                             IRType             hWordTy ) {
   Int        i;
@@ -488,7 +488,7 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
   }
   st = sbIn->stmts[i];
   cia   = st->Ist.IMark.addr;
-
+  int ii = 0;
   for (/*use current i*/; i < sbIn->stmts_used; i++) {
     st = sbIn->stmts[i];
     if (!st || st->tag == Ist_NoOp) continue;
@@ -496,7 +496,19 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
 
     switch (st->tag) {
       case Ist_IMark:
-        cia   = st->Ist.IMark.addr;  break;
+        cia   = st->Ist.IMark.addr;  
+        {
+          HChar fnname[20];
+          HChar* sqrt = "sqrt"; 
+          if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
+            //VG_(printf)("%s\n", fnname);
+            if(0 == VG_(strcmp)(fnname, sqrt)){
+              VG_(printf)("Square Root function called\n");
+              ii = 1;
+            }
+          }
+        }
+        break;
       case Ist_WrTmp:
         // Add a call to trace_load() if --trace-mem=yes.
         expr = st->Ist.WrTmp.data;
@@ -511,10 +523,18 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
               instrument_Triop( sbOut, st, cia );        break;
           case Iex_Qop:
             //instrument_Qop( sbOut, expr, type );     break;
-          //case Iex_Mux0X:  TODO watch for replacement in Valgrind 3.9
+        //case Iex_Mux0X:  TODO watch for replacement in Valgrind 3.9
             //instrument_Muxop( sbOut, expr, type );   break;
           default: break;
         } // switch
+        break;
+      case Ist_AbiHint:
+        if(ii){
+          ii = 0;
+          IRExpr *exp = st->Ist.AbiHint.base;
+          IRTemp tmp = exp->Iex.RdTmp.tmp;
+          VG_(printf)("Value is : %d\n",tmp);
+        }
         break;
       default: break;
     } // switch
