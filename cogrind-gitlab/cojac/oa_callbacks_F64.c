@@ -46,7 +46,9 @@
 
 //TODO: study deeper "man math_error"...
 
-static const double CANCELLATION_ULP_FACTOR_DOUBLE=4.0;
+//static const double CANCELLATION_ULP_FACTOR_DOUBLE=4.0;
+
+extern cojacOptions OA_(options);
 
 static double ulp(double a) { //PRE: a is neither INF nor NaN
   return fabs(nextafter(a,INFINITY)-a);
@@ -68,7 +70,7 @@ static void check_AddF64(Double a, Double b, OA_InstrumentContext inscon) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
   if (isnan(res) || isinf(res) || res==0.0) return;
-  if(fabs(res) <= CANCELLATION_ULP_FACTOR_DOUBLE * ulp(a)) {
+  if(fabs(res) <= OA_(options).Ulp_factor_double * ulp(a)) {
     OA_(maybe_error)(Err_Cancellation, inscon); return;
   }
 }
@@ -86,7 +88,7 @@ static void check_SubF64(Double a, Double b, OA_InstrumentContext inscon) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
   if (isnan(res) || isinf(res) || res==0.0) return;
-  if(fabs(res) <= CANCELLATION_ULP_FACTOR_DOUBLE * ulp(a)) {
+  if(fabs(res) <= OA_(options).Ulp_factor_double * ulp(a)) {
     OA_(maybe_error)(Err_Cancellation, inscon); return;
   }
 }
@@ -162,6 +164,22 @@ static void check_F64toF32(Double a, OA_InstrumentContext inscon) {
   }
 }
 
+static void check_CmpF64(Double a, Double b, OA_InstrumentContext inscon){
+  if(isinf(a) || isinf(b) || isnan(a) || isnan(b)){
+    return;
+  }
+  Double res = a - b;
+  if(res == 0){
+    return;
+  }
+  if(fabs(res) <= OA_(options).Ulp_factor_double * ulp(a)) {
+    OA_(maybe_error)(Err_Precision, inscon); return;
+  }
+  if(fabs(res) <= OA_(options).Ulp_factor_double * ulp(b)) {
+    OA_(maybe_error)(Err_Precision, inscon); return;
+  }
+}
+
 static void check_F64_Sqrt(Double a, OA_InstrumentContext inscon) {
   Double b;
   __asm__ ("sqrtsd %1, %0" : "=x" (b) : "x" (a));
@@ -221,6 +239,7 @@ VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext
     case Iop_Div64F0x2:
     case Iop_Div64Fx2:
     case Iop_DivF64: check_DivF64(a,b,ic); break;
+    case Iop_CmpF64: check_CmpF64(a,b,ic); break;
     default: break;
   }
 }

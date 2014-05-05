@@ -38,6 +38,7 @@
 #include "pub_tool_options.h"
 #include "pub_tool_mallocfree.h"
 #include "pub_tool_machine.h"     // VG_(fnptr_to_fnentry)
+#include "pub_tool_threadstate.h"
 #include "oa_include.h"
 #include "limits.h"
 /*--------------------------------------------------------------------*/
@@ -121,6 +122,7 @@ static void populate_iop_struct(void) {
     init_iop(Iop_Mul64Fx2, "Mul64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
     init_iop(Iop_Div64F0x2,"Div64F0x2", oa_callbackI32_2xF64, oa_callbackI64_2xF64);
     init_iop(Iop_Div64Fx2, "Div64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
+    init_iop(Iop_CmpF64, "CmpF64",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
   }
   
   if (OA_(options).mathOp) {
@@ -411,6 +413,7 @@ static void oa_print_usage(void) {
   VG_(printf)("    --i32=yes|no   Watch 32bits int operations [yes]\n");
   VG_(printf)("    --f32=yes|no   Watch 32bits float operations [yes]\n");
   VG_(printf)("    --f64=yes|no   Watch 64bits double operations [yes]\n");
+  VG_(printf)("    --f64_Ulp_Factor=<number>  Ulp factor for wathing cancellation and comparaisons [4.0]\n");
   VG_(printf)("    --castToI16=yes|no    Watch int to short typecasting [yes]\n");
   VG_(printf)("    --castFromF64=yes|no    Watch float or double to int or long typecasting [yes]\n");
   VG_(printf)("    --stacktrace=<number> Depth of the stacktrace [1] \n");
@@ -430,6 +433,8 @@ static Bool oa_process_cmd_line_option(const HChar* argv) {
     return True;
   } else if (VG_BOOL_CLO(argv, "--f64", OA_(options).f64)) {
     return True;
+  } else if (VG_DBL_CLO(argv, "--f64_Ulp_Factor", OA_(options).Ulp_factor_double)) {
+    return True;
   } else if (VG_BOOL_CLO(argv, "--i16", OA_(options).i16)) {
     return True;
   } else if (VG_BOOL_CLO(argv, "--i64", OA_(options).i64)) {
@@ -448,6 +453,7 @@ static Bool oa_process_cmd_line_option(const HChar* argv) {
 static void oa_set_default_options(void) {
   OA_(options).castToI16    = True;
   OA_(options).castFromF64  = True;
+  OA_(options).Ulp_factor_double = 4.0;
   OA_(options).f32          = True;
   OA_(options).f64          = True;
   OA_(options).i16          = True;
@@ -499,10 +505,13 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
         cia   = st->Ist.IMark.addr;  
         {
           HChar fnname[20];
-          HChar* sqrt = "sqrt"; 
+          HChar* sqrt = "getSqrt"; 
           if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
             //VG_(printf)("%s\n", fnname);
             if(0 == VG_(strcmp)(fnname, sqrt)){
+              /*ThreadId tid = VG_(get_running_tid)();
+              UChar area[64];
+              VG_(get_shadow_regs_area)( tid, area, 0/*shadowNo,0,64);*/
               VG_(printf)("Square Root function called\n");
               ii = 1;
             }
@@ -531,9 +540,6 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
       case Ist_AbiHint:
         if(ii){
           ii = 0;
-          IRExpr *exp = st->Ist.AbiHint.base;
-          IRTemp tmp = exp->Iex.RdTmp.tmp;
-          VG_(printf)("Value is : %d\n",tmp);
         }
         break;
       default: break;

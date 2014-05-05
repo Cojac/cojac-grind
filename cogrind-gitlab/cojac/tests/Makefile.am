@@ -7,6 +7,8 @@ SUBDIRS = .
 EXTRA_DIST = Add32Overflow.stderr.exp Add32Overflow.vgtest true.stderr.exp true.vgtest \
               Div32Under.stderr.exp Div32Under.vgtest \
               Div64Under.stderr.exp Div64Under.vgtest \
+              CmpF64.stderr.exp CmpF64.vgest \
+              CmpF64Pre.stderr.exp CmpF64Pre.vgest \
               Mul32Under.stderr.exp Mul32Under.vgtest \
               Mul64Under.stderr.exp Mul64Under.vgtest \
 			        F64toI32S.stderr.exp F64toI32S.vgtest \
@@ -23,6 +25,8 @@ EXTRA_DIST = Add32Overflow.stderr.exp Add32Overflow.vgtest true.stderr.exp true.
 check_PROGRAMS = Add32Overflow \
                   Div32Under \
                   Div64Under \
+                  CmpF64 \
+                  CmpF64Pre \
                   Mul32Under \
                   Mul64Under \
                   F64toI32S \

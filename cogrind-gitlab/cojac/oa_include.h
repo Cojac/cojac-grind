@@ -74,6 +74,7 @@ typedef struct {
   Bool mathOp;
   Bool castToI16;
   Bool castFromF64;
+  Double Ulp_factor_double;
 } cojacOptions;
 
 typedef struct {

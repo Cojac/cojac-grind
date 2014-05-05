@@ -319,7 +319,7 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign 1.10 dist-bzip2
 inplacedir = $(top_builddir)/.in_place
 
-#----------------------------------------------------------------------------
+#--------------------------------------------------make --------------------------
 # Flags
 #----------------------------------------------------------------------------
 
@@ -328,7 +328,7 @@ inplacedir = $(top_builddir)/.in_place
 # -fno-builtin is important for defeating LLVM's idiom recognition
 # that somehow causes VG_(memset) to get into infinite recursion.
 AM_CFLAGS_BASE = \
-	-O2 -g \
+	-O0 -g \
 	-Wall \
 	-Wmissing-prototypes \
 	-Wshadow \
