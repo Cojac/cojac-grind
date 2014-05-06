@@ -39,6 +39,7 @@
 #include "pub_tool_mallocfree.h"
 #include "pub_tool_machine.h"     // VG_(fnptr_to_fnentry)
 #include "pub_tool_threadstate.h"
+#include "libvex_guest_amd64.h"
 #include "oa_include.h"
 #include "limits.h"
 /*--------------------------------------------------------------------*/
@@ -509,10 +510,12 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
           if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
             //VG_(printf)("%s\n", fnname);
             if(0 == VG_(strcmp)(fnname, sqrt)){
-              /*ThreadId tid = VG_(get_running_tid)();
-              UChar area[64];
-              VG_(get_shadow_regs_area)( tid, area, 0/*shadowNo,0,64);*/
-              VG_(printf)("Square Root function called\n");
+              //TODO Configure the callback here!
+              ThreadId tid = VG_(get_running_tid)();
+              Double area; 
+              //Get the XMM0 value as a double. Offser is 224 (respresente first double on xmm0)
+              //and get 64 bits. See libvex_guest_<arch>.h and pub_tool_machine.h for more informations.
+              VG_(get_shadow_regs_area)( tid, (UChar *)&area, 0/*shadowNo*/,224,64);
               ii = 1;
             }
           }
@@ -530,17 +533,21 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
               instrument_Binop( sbOut, st, type, cia );  break;
           case Iex_Triop:
               instrument_Triop( sbOut, st, cia );        break;
-          case Iex_Qop:
+          case Iex_Get:
+              if(ii){
+                if(expr->Iex.Get.offset == 224){
+                    IRRegArray *array;
+                    array = mkIRRegArray(224, Ity_F64, 64);
+                    ii = 0;
+                  }
+              }
+              break;
+          case Iex_Qop: break;
             //instrument_Qop( sbOut, expr, type );     break;
         //case Iex_Mux0X:  TODO watch for replacement in Valgrind 3.9
             //instrument_Muxop( sbOut, expr, type );   break;
           default: break;
         } // switch
-        break;
-      case Ist_AbiHint:
-        if(ii){
-          ii = 0;
-        }
         break;
       default: break;
     } // switch
