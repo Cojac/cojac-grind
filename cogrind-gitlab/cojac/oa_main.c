@@ -128,6 +128,7 @@ static void populate_iop_struct(void) {
   
   if (OA_(options).mathOp) {
     init_iop(Iop_Sqrt64Fx2, "Sqrt64Fx2",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
+    init_iop(Iop_Sqrt64Fx2, "SqrtF64",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
   }
 }
 
@@ -495,7 +496,6 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
   }
   st = sbIn->stmts[i];
   cia   = st->Ist.IMark.addr;
-  int ii = 0;
   for (/*use current i*/; i < sbIn->stmts_used; i++) {
     st = sbIn->stmts[i];
     if (!st || st->tag == Ist_NoOp) continue;
@@ -506,17 +506,36 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
         cia   = st->Ist.IMark.addr;  
         {
           HChar fnname[20];
-          HChar* sqrt = "getSqrt"; 
+          HChar* sqrt = "sqrt"; 
           if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
             //VG_(printf)("%s\n", fnname);
             if(0 == VG_(strcmp)(fnname, sqrt)){
-              //TODO Configure the callback here!
+              //******
+              //TODO Configure the callback here! Test to inject Vex here.
               ThreadId tid = VG_(get_running_tid)();
               Double area; 
               //Get the XMM0 value as a double. Offser is 224 (respresente first double on xmm0)
               //and get 64 bits. See libvex_guest_<arch>.h and pub_tool_machine.h for more informations.
               VG_(get_shadow_regs_area)( tid, (UChar *)&area, 0/*shadowNo*/,224,64);
-              ii = 1;
+              //******
+              //Iop_SqrtF64 - IRExpr_RdTmp
+              IRTemp sqrt_Temp = newIRTemp(sbOut->tyenv, Ity_F64);
+              IRExpr *get_expr = IRExpr_Get(224, Ity_F64);
+              IRStmt *get_stmt = IRStmt_WrTmp(sqrt_Temp, get_expr);
+              addStmtToIRSB(sbOut, get_stmt);
+              //*****
+              IRTemp round_Temp = newIRTemp(sbOut->tyenv, Ity_I32);
+              IRConst *con = IRConst_U32(0x3);
+              IRExpr *con_expr = IRExpr_Const(con);
+              IRStmt *con_stmt = IRStmt_WrTmp(round_Temp, con_expr);
+              addStmtToIRSB(sbOut, con_stmt);
+              //*****
+              IRTemp res_Temp = newIRTemp(sbOut->tyenv, Ity_F64);
+              IRExpr *read_temp = IRExpr_RdTmp(sqrt_Temp);
+              IRExpr *read_Round = IRExpr_RdTmp(round_Temp);
+              IRExpr *sqrt_expr = IRExpr_Binop(Iop_SqrtF64, read_Round, read_temp);
+              IRStmt *sqrt_stmt = IRStmt_WrTmp(res_Temp, sqrt_expr);
+              addStmtToIRSB(sbOut, sqrt_stmt);
             }
           }
         }
@@ -533,15 +552,6 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
               instrument_Binop( sbOut, st, type, cia );  break;
           case Iex_Triop:
               instrument_Triop( sbOut, st, cia );        break;
-          case Iex_Get:
-              if(ii){
-                if(expr->Iex.Get.offset == 224){
-                    IRRegArray *array;
-                    array = mkIRRegArray(224, Ity_F64, 64);
-                    ii = 0;
-                  }
-              }
-              break;
           case Iex_Qop: break;
             //instrument_Qop( sbOut, expr, type );     break;
         //case Iex_Mux0X:  TODO watch for replacement in Valgrind 3.9
