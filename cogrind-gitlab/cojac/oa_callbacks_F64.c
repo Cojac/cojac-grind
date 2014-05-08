@@ -239,6 +239,7 @@ VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext
     case Iop_Div64F0x2:
     case Iop_Div64Fx2:
     case Iop_DivF64: check_DivF64(a,b,ic); break;
+    case Iop_SqrtF64: check_F64_Sqrt(b, ic); break;
     case Iop_CmpF64: check_CmpF64(a,b,ic); break;
     default: break;
   }
