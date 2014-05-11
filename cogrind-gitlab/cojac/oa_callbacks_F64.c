@@ -156,12 +156,6 @@ static void check_F64toF32(Double a, OA_InstrumentContext inscon) {
     if(fa == 0.0f && a != 0.0)
       OA_(maybe_error)(Err_Underflow, inscon);
   }
-  if (isinf(a)){
-    OA_(maybe_error)(Err_Infinity, inscon); return;
-  }
-  if (isnan(a)){
-    OA_(maybe_error)(Err_NaN, inscon); return;
-  }
 }
 
 static void check_CmpF64(Double a, Double b, OA_InstrumentContext inscon){
@@ -181,6 +175,9 @@ static void check_CmpF64(Double a, Double b, OA_InstrumentContext inscon){
 }
 
 static void check_F64_Sqrt(Double a, OA_InstrumentContext inscon) {
+  if(isnan(a) || isinf(a)){
+    return;
+  }
   Double b;
   __asm__ ("sqrtsd %1, %0" : "=x" (b) : "x" (a));
   if (isinf(b)){

@@ -1,0 +1,2 @@
+Cojac: Infinity, Div64F0x2   at 0x...: main (DivF64Nan.c:6)
+Cojac: NaN, Div64F0x2   at 0x...: main (DivF64Nan.c:7)
