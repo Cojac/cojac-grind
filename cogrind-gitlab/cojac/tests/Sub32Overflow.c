@@ -4,8 +4,8 @@ int main (void){
 	int a;
 	int b;
 	int c;
-	a = INT_MAX;
+	a = INT_MIN;
 	b = 1;
-	c = a + b;
+	c = a - b;
 	return 0;
 }

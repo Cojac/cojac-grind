@@ -56,6 +56,7 @@ static const char * strFromErrorKind(ErrorKind errKind) {
     case Err_Math:            return "Math";
     case Err_DivByZero:       return "DivByZero";
     case Err_Underflow:       return "Underflow";
+    case Err_CloseComparison: return "CloseComparison";
     default:                  return "Unknown error kind...";
     //VG_(message)(Vg_UserMsg, "strFromErrorKind %d ", errKind);
   }

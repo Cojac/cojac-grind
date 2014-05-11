@@ -1,10 +1,10 @@
 #include <limits.h>
 
 int main (void){
-	int a;
-	int b;
-	int c;
-	a = INT_MAX;
+	long a;
+	long b;
+	long c;
+	a = LONG_MAX;
 	b = 1;
 	c = a + b;
 	return 0;

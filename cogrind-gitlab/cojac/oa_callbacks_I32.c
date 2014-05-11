@@ -101,6 +101,7 @@ static void check_DivS32(Int a, Int b, OA_InstrumentContext inscon) {
   }
 }
 
+//check_32to16 is never watched by Valgrind. The compalitor use the registers to do the cast.
 static void check_32to16(Int a, OA_InstrumentContext inscon) {
   if(a>SHRT_MAX || a<SHRT_MIN)
     OA_(maybe_error)(Err_Cast, inscon);

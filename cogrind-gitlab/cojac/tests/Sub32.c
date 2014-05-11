@@ -6,6 +6,6 @@ int main (void){
 	int c;
 	a = INT_MAX;
 	b = 1;
-	c = a + b;
+	c = a - b;
 	return 0;
 }

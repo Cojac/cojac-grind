@@ -4,13 +4,26 @@ dist_noinst_SCRIPTS = filter_stderr
 
 SUBDIRS = .
 
-EXTRA_DIST = Add32Overflow.stderr.exp Add32Overflow.vgtest true.stderr.exp true.vgtest \
-              Div32Under.stderr.exp Div32Under.vgtest \
-              Div64Under.stderr.exp Div64Under.vgtest \
+EXTRA_DIST =  Add32.stderr.exp Add32.vgtest \
+              Add32Overflow.stderr.exp Add32Overflow.vgtest \
+              Add32OverflowNeg.stderr.exp Add32OverflowNeg.vgtest \
+              Add64.stderr.exp Add64.vgtest \
+              Add64Overflow.stderr.exp Add64Overflow.vgtest \
+              Add64OverflowNeg.stderr.exp Add64OverflowNeg.vgtest \
+              AddF32.stderr.exp AddF32.vgtest \
+              AddF32Cancel.stderr.exp AddF32Cancel.vgtest \
+              AddF32Infinity.stderr.exp AddF32Infinity.vgtest \
+              AddF32Nan.stderr.exp AddF32Nan.vgtest \
+              AddF32Pre.stderr.exp AddF32Pre.vgtest \
               CmpF64.stderr.exp CmpF64.vgest \
-              CmpF64Pre.stderr.exp CmpF64Pre.vgest \
-              Mul32Under.stderr.exp Mul32Under.vgtest \
-              Mul64Under.stderr.exp Mul64Under.vgtest \
+              CmpF64Close.stderr.exp CmpF64Close.vgest \
+              Div32.stderr.exp Div32.vgtest \
+              Div64.stderr.exp Div64.vgtest \
+              DivF32.stderr.exp DivF32.vgtest \
+              DivF32Infinity.stderr.exp DivF32Infinity.vgtest \
+              DivF32Nan.stderr.exp DivF32Nan.vgtest \
+              DivF32Under.stderr.exp DivF32Under.vgtest \
+              DivF64Under.stderr.exp DivF64Under.vgtest \
 			        F64toI32S.stderr.exp F64toI32S.vgtest \
               F64toI32SInf.stderr.exp F64toI32SInf.vgtest \
               F64toI32SNaN.stderr.exp F64toI32SNaN.vgtest \
@@ -20,15 +33,47 @@ EXTRA_DIST = Add32Overflow.stderr.exp Add32Overflow.vgtest true.stderr.exp true.
               F64toI64SInf.stderr.exp F64toI64SInf.vgtest \
               F64toI64SNaN.stderr.exp F64toI64SNaN.vgtest \
               F64toI64SOverflow.stderr.exp F64toI64SOverflow.vgtest \
-              F64toI64SOverflowNeg.stderr.exp F64toI64SOverflowNeg.vgtest
+              F64toI64SOverflowNeg.stderr.exp F64toI64SOverflowNeg.vgtest \
+              Mul32.stderr.exp Mul32.vgtest \
+              Mul32Overflow.stderr.exp Mul32Overflow.vgtest \
+              Mul64.stderr.exp Mul64.vgtest \
+              Mul64Overflow.stderr.exp Mul64Overflow.vgtest \
+              MulF32.stderr.exp MulF32.vgtest \
+              MulF32Infinity.stderr.exp MulF32Intinity.vgtest \
+              MulF32Under.stderr.exp MulF32Under.vgtest \
+              MulF64Under.stderr.exp MulF64Under.vgtest \
+              Sub32.stderr.exp Sub32.vgtest \
+              Sub32Overflow.stderr.exp Sub32Overflow.vgtest \
+              Sub32OverflowNeg.stderr.exp Sub32OverflowNeg.vgtest \
+              Sub64.stderr.exp Sub64.vgtest \
+              Sub64Overflow.stderr.exp Sub64Overflow.vgtest \
+              Sub64OverflowNeg.stderr.exp Sub64OverflowNeg.vgtest \
+              SubF32.stderr.exp SubF32.vgtest \
+              SubF32Cancel.stderr.exp SubF32Cancel.vgtest \
+              SubF32Infinity.stderr.exp SubF32Infinity.vgtest \
+              SubF32Nan.stderr.exp SubF32Nan.vgtest \
+              SubF32Pre.stderr.exp SubF32Pre.vgtest
 
-check_PROGRAMS = Add32Overflow \
-                  Div32Under \
-                  Div64Under \
+check_PROGRAMS =  Add32 \
+                  Add32Overflow \
+                  Add32OverflowNeg \
+                  Add64 \
+                  Add64Overflow \
+                  Add64OverflowNeg \
+                  AddF32 \
+                  AddF32Cancel \
+                  AddF32Infinity \
+                  AddF32Nan \
+                  AddF32Pre \
                   CmpF64 \
-                  CmpF64Pre \
-                  Mul32Under \
-                  Mul64Under \
+                  CmpF64Close \
+                  Div32 \
+                  Div64 \
+                  DivF32 \
+                  DivF32Infinity \
+                  DivF32Nan \
+                  DivF32Under \
+                  DivF64Under \
                   F64toI32S \
                   F64toI32SInf \
                   F64toI32SNaN \
@@ -38,4 +83,23 @@ check_PROGRAMS = Add32Overflow \
                   F64toI64SInf \
                   F64toI64SNaN \
                   F64toI64SOverflow \
-                  F64toI64SOverflowNeg
+                  F64toI64SOverflowNeg \
+                  Mul32 \
+                  Mul32Overflow \
+                  Mul64 \
+                  Mul64Overflow \
+                  MulF32 \
+                  MulF32Infinity \
+                  MulF32Under \
+                  MulF64Under \
+                  Sub32 \
+                  Sub32Overflow \
+                  Sub32OverflowNeg \
+                  Sub64 \
+                  Sub64Overflow \
+                  Sub64OverflowNeg \
+                  SubF32 \
+                  SubF32Cancel \
+                  SubF32Infinity \
+                  SubF32Nan \
+                  SubF32Pre

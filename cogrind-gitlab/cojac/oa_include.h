@@ -47,7 +47,8 @@ typedef enum {
 	Err_Precision,
 	Err_Math,
 	Err_DivByZero,
-	Err_Underflow
+	Err_Underflow,
+	Err_CloseComparison
 } OA_ErrorTag;
 
 

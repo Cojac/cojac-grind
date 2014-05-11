@@ -5,7 +5,7 @@ int main (void){
 	int b;
 	int c;
 	a = INT_MAX;
-	b = 1;
-	c = a + b;
+	b = 2;
+	c = a * b;
 	return 0;
 }

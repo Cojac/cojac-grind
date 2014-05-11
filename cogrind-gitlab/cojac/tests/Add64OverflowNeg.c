@@ -1,11 +1,11 @@
 #include <limits.h>
 
 int main (void){
-	int a;
-	int b;
-	int c;
-	a = INT_MAX;
-	b = 1;
+	long a;
+	long b;
+	long c;
+	a = LONG_MIN;
+	b = -1;
 	c = a + b;
 	return 0;
 }

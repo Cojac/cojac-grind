@@ -173,10 +173,10 @@ static void check_CmpF64(Double a, Double b, OA_InstrumentContext inscon){
     return;
   }
   if(fabs(res) <= OA_(options).Ulp_factor_double * ulp(a)) {
-    OA_(maybe_error)(Err_Precision, inscon); return;
+    OA_(maybe_error)(Err_CloseComparison, inscon); return;
   }
   if(fabs(res) <= OA_(options).Ulp_factor_double * ulp(b)) {
-    OA_(maybe_error)(Err_Precision, inscon); return;
+    OA_(maybe_error)(Err_CloseComparison, inscon); return;
   }
 }
 
