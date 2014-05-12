@@ -535,6 +535,16 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
               instrument_Call_1x_F64(sbOut, cia);
             }
           }
+          HChar* myloop = "myLoop"; 
+          if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
+            //VG_(printf)("%s\n", fnname);
+            if(0 == VG_(strcmp)(fnname, myloop)){
+              ThreadId tid = VG_(get_running_tid)();
+              Double area;
+              VG_(get_shadow_regs_area)( tid, (UChar *)&area, 0/*shadowNo*/,224,64);
+              VG_(printf)("Valgrind: Value of register is: %ld\n", (Long) area);
+            }
+          }
         }
         break;
       case Ist_WrTmp:

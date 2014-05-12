@@ -1,0 +1,2 @@
+Cojac: DivByZero, Div32F0x4   at 0x...: main (MulF32Nan.c:3)
+Cojac: NaN, Mul32F0x4   at 0x...: main (MulF32Nan.c:5)

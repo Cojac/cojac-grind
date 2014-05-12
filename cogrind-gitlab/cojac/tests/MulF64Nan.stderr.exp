@@ -1,0 +1,2 @@
+Cojac: DivByZero, Div64F0x2   at 0x...: main (MulF64Nan.c:3)
+Cojac: NaN, Mul64F0x2   at 0x...: main (MulF64Nan.c:5)

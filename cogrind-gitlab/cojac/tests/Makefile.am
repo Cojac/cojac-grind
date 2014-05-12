@@ -52,9 +52,11 @@ EXTRA_DIST =  Add32.stderr.exp Add32.vgtest \
               Mul64Overflow.stderr.exp Mul64Overflow.vgtest \
               MulF32.stderr.exp MulF32.vgtest \
               MulF32Infinity.stderr.exp MulF32Intinity.vgtest \
+              MulF32Nan.stderr.exp MulF32Nan.vgtest \
               MulF32Under.stderr.exp MulF32Under.vgtest \
               MulF64.stderr.exp MulF64.vgtest \
               MulF64Infinity.stderr.exp MulF64Intinity.vgtest \
+              MulF64Nan.stderr.exp MulF64Nan.vgtest \
               MulF64Under.stderr.exp MulF64Under.vgtest \
               SqrtF64.stderr.exp SqrtF64.vgtest \
               SqrtF64Nan.stderr.exp SqrtF64Nan.vgtest \
@@ -126,9 +128,11 @@ check_PROGRAMS =  Add32 \
                   Mul64Overflow \
                   MulF32 \
                   MulF32Infinity \
+                  MulF32Nan \
                   MulF32Under \
                   MulF64 \
                   MulF64Infinity \
+                  MulF64Nan \
                   MulF64Under \
                   SqrtF64 \
                   SqrtF64Nan \

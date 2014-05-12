@@ -94,7 +94,6 @@ static void check_SubF64(Double a, Double b, OA_InstrumentContext inscon) {
 }
 
 static void check_MulF64(Double a, Double b, OA_InstrumentContext inscon) {
-  if (a==0.0 || b==0.0) return;
   Double res=a*b;
   if (isinf(res) && !isinf(a) && !isinf(b)) {
     OA_(maybe_error)(Err_Infinity, inscon); return;
@@ -180,9 +179,6 @@ static void check_F64_Sqrt(Double a, OA_InstrumentContext inscon) {
   }
   Double b;
   __asm__ ("sqrtsd %1, %0" : "=x" (b) : "x" (a));
-  if (isinf(b)){
-    OA_(maybe_error)(Err_Infinity, inscon); return;
-  }
   if (isnan(b)){
     OA_(maybe_error)(Err_NaN, inscon); return;
   }

@@ -93,7 +93,6 @@ static void check_SubF32(Float a, Float b, OA_InstrumentContext inscon) {
 
 
 static void check_MulF32(Float a, Float b, OA_InstrumentContext inscon) {
-  if (a==0.0f || b==0.0f) return;
   Float res=a*b;
   if (isinf(res) && !isinf(a) && !isinf(b)) {
     OA_(maybe_error)(Err_Infinity, inscon); return;
