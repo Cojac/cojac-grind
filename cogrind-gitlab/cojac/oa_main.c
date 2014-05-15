@@ -437,7 +437,8 @@ static void oa_print_usage(void) {
   VG_(printf)("    --i32=yes|no   Watch 32bits int operations [yes]\n");
   VG_(printf)("    --f32=yes|no   Watch 32bits float operations [yes]\n");
   VG_(printf)("    --f64=yes|no   Watch 64bits double operations [yes]\n");
-  VG_(printf)("    --f64_Ulp_Factor=<number>  Ulp factor for wathing cancellation and comparaisons [4.0]\n");
+  VG_(printf)("    --f64_Ulp_Factor=<number>  Ulp factor for cancellation and comparaisons on doubles [4.0]\n");
+  VG_(printf)("    --f32_Ulp_Factor=<number>  Ulp factor for cancellation and comparaisons on floats [4.0]\n");
   VG_(printf)("    --castToI16=yes|no    Watch int to short typecasting [yes]\n");
   VG_(printf)("    --castFromF64=yes|no    Watch float or double to int or long typecasting [yes]\n");
   VG_(printf)("    --stacktrace=<number> Depth of the stacktrace [1] \n");
@@ -457,7 +458,9 @@ static Bool oa_process_cmd_line_option(const HChar* argv) {
     return True;
   } else if (VG_BOOL_CLO(argv, "--f64", OA_(options).f64)) {
     return True;
-  } else if (VG_DBL_CLO(argv, "--f64_Ulp_Factor", OA_(options).Ulp_factor_double)) {
+  } else if (VG_DBL_CLO(argv, "--f64_Ulp_Factor", OA_(options).Ulp_factor_f64)) {
+    return True;
+  } else if (VG_DBL_CLO(argv, "--f32_Ulp_Factor", OA_(options).Ulp_factor_f32)) {
     return True;
   } else if (VG_BOOL_CLO(argv, "--i16", OA_(options).i16)) {
     return True;
@@ -477,7 +480,8 @@ static Bool oa_process_cmd_line_option(const HChar* argv) {
 static void oa_set_default_options(void) {
   OA_(options).castToI16    = True;
   OA_(options).castFromF64  = True;
-  OA_(options).Ulp_factor_double = 4.0;
+  OA_(options).Ulp_factor_f64 = 4.0;
+  OA_(options).Ulp_factor_f32 = 4.0;
   OA_(options).f32          = True;
   OA_(options).f64          = True;
   OA_(options).i16          = True;

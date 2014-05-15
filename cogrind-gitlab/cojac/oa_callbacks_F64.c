@@ -70,7 +70,7 @@ static void check_AddF64(Double a, Double b, OA_InstrumentContext inscon) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
   if (isnan(res) || isinf(res) || res==0.0) return;
-  if(fabs(res) <= OA_(options).Ulp_factor_double * ulp(a)) {
+  if(fabs(res) <= OA_(options).Ulp_factor_f64 * ulp(a)) {
     OA_(maybe_error)(Err_Cancellation, inscon); return;
   }
 }
@@ -88,7 +88,7 @@ static void check_SubF64(Double a, Double b, OA_InstrumentContext inscon) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
   if (isnan(res) || isinf(res) || res==0.0) return;
-  if(fabs(res) <= OA_(options).Ulp_factor_double * ulp(a)) {
+  if(fabs(res) <= OA_(options).Ulp_factor_f64 * ulp(a)) {
     OA_(maybe_error)(Err_Cancellation, inscon); return;
   }
 }
@@ -165,11 +165,19 @@ static void check_CmpF64(Double a, Double b, OA_InstrumentContext inscon){
   if(res == 0){
     return;
   }
-  if(fabs(res) <= OA_(options).Ulp_factor_double * ulp(a)) {
+  if(fabs(res) <= OA_(options).Ulp_factor_f64 * ulp(a)) {
     OA_(maybe_error)(Err_CloseComparison, inscon); return;
   }
-  if(fabs(res) <= OA_(options).Ulp_factor_double * ulp(b)) {
+  if(fabs(res) <= OA_(options).Ulp_factor_f64 * ulp(b)) {
     OA_(maybe_error)(Err_CloseComparison, inscon); return;
+  }
+}
+
+//Include a math library? Done by the glbic. See asin manpage.
+static void check_F64_Asin(Double a, OA_InstrumentContext inscon) {
+  //Double b = asin(a);  //Line to uncomment to see the link error.
+  if (a < -1 || a > 1 || isinf(a)){
+    OA_(maybe_error)(Err_NaN, inscon); return;
   }
 }
 

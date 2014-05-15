@@ -47,7 +47,9 @@
 
 //TODO: study "man math_error"...
 
-static const float CANCELLATION_ULP_FACTOR_FLOAT=4.0f;
+//static const float CANCELLATION_ULP_FACTOR_FLOAT=4.0f;
+
+extern cojacOptions OA_(options);
 
 static float ulpf(float a) { //PRE: a is neither INF nor NaN
   return fabsf(nextafterf(a,INFINITY)-a);
@@ -68,7 +70,7 @@ static void check_AddF32(Float a, Float b, OA_InstrumentContext inscon) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
   if (isnan(res) || isinf(res) || res==0.0f) return;
-  if(fabsf(res) <= CANCELLATION_ULP_FACTOR_FLOAT * ulpf(a)) {
+  if(fabsf(res) <= OA_(options).Ulp_factor_f32 * ulpf(a)) {
     OA_(maybe_error)(Err_Cancellation, inscon); return;
   }
 }
@@ -86,7 +88,7 @@ static void check_SubF32(Float a, Float b, OA_InstrumentContext inscon) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
   if (isnan(res) || isinf(res) || res==0.0f) return;
-  if(fabsf(res) <= CANCELLATION_ULP_FACTOR_FLOAT * ulpf(a)) {
+  if(fabsf(res) <= OA_(options).Ulp_factor_f32 * ulpf(a)) {
     OA_(maybe_error)(Err_Cancellation, inscon); return;
   }
 }
