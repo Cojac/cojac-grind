@@ -44,8 +44,11 @@
 #include "limits.h"
 /*--------------------------------------------------------------------*/
 #define OA_IOP_MAX 1000    //Iop_Rsqrte32x4-Iop_INVALID = ~752
+#define OA_CALL_MAX 10
+#define F64_XMM0_REG 224
 
 static Iop_Cojac_attributes oa_all_iop_attr[OA_IOP_MAX];
+static Call_Cojac_attributes oa_all_call_attr[OA_IOP_MAX];
 static IRType thisWordWidth;
 cojacOptions OA_(options);
 /*--------------------------------------------------------------------*/
@@ -400,15 +403,38 @@ static void instrument_Triop(IRSB* sb, IRStmt* st, Addr64 cia) {
   }
 }
 
+/* Instrument a function call with one F64 as parameter.*/
+static void instrument_Call_1x_F64_B(IRSB* sb, Addr64 cia){
+  HChar thisFct[]="instrument_function_call";
+  IROp op = Iop_LAST;
+  IRExpr* oa_event_expr;
+  OA_InstrumentContext inscon=contextFor(cia, op);
+  oa_event_expr = mkIRExpr_HWord( (HWord)inscon );
+  //****
+  IRTemp irTemp = newIRTemp(sb->tyenv, Ity_F64);
+  IRExpr *get_expr = IRExpr_Get(F64_XMM0_REG, Ity_F64);
+  IRStmt *get_stmt = IRStmt_WrTmp(irTemp, get_expr);
+  addStmtToIRSB(sb, get_stmt);
+  //****
+  IRExpr *tmp_expr = IRExpr_RdTmp(irTemp);
+  IRExpr* args1[2];
+  IRExpr** argv;
+  IRDirty* di;
+  packToI32orI64(sb, tmp_expr, args1, op);
+  argv = mkIRExprVec_2(args1[0], oa_event_expr);
+  di = unsafeIRDirty_0_N( 2, thisFct, VG_(fnptr_to_fnentry)((void *)oa_callbackI64_call_1xF64), argv);
+  addStmtToIRSB(sb, IRStmt_Dirty(di));
+}
+
 /* instruments a Binary Operation Expression in a Ist_WrTmp statement */
 static void instrument_Call_1x_F64(IRSB* sb, Addr64 cia){
   IRTemp sqrt_Temp = newIRTemp(sb->tyenv, Ity_F64);
-  IRExpr *get_expr = IRExpr_Get(224, Ity_F64);  //224 is the offset for 1xF64 on XMM0 register.
+  IRExpr *get_expr = IRExpr_Get(F64_XMM0_REG, Ity_F64);
   IRStmt *get_stmt = IRStmt_WrTmp(sqrt_Temp, get_expr);
   addStmtToIRSB(sb, get_stmt);
   //*****
   IRTemp round_Temp = newIRTemp(sb->tyenv, Ity_I32);
-  IRConst *con = IRConst_U32(0x3);  //Rounding mode. Inspired by watching valgrind working.
+  IRConst *con = IRConst_U32(Irrm_NEAREST);
   IRExpr *con_expr = IRExpr_Const(con);
   IRStmt *con_stmt = IRStmt_WrTmp(round_Temp, con_expr);
   addStmtToIRSB(sb, con_stmt);
@@ -532,21 +558,13 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
         cia   = st->Ist.IMark.addr;  
         {
           HChar fnname[20];
-          HChar* sqrt = "sqrt"; 
+          HChar* sqrt = "sqrt";
+          HChar* asin = "asin"; 
           if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
-            //VG_(printf)("%s\n", fnname);
             if(0 == VG_(strcmp)(fnname, sqrt)){
               instrument_Call_1x_F64(sbOut, cia);
-            }
-          }
-          HChar* myloop = "myLoop"; 
-          if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
-            //VG_(printf)("%s\n", fnname);
-            if(0 == VG_(strcmp)(fnname, myloop)){
-              ThreadId tid = VG_(get_running_tid)();
-              Double area;
-              VG_(get_shadow_regs_area)( tid, (UChar *)&area, 0/*shadowNo*/,224,64);
-              VG_(printf)("Valgrind: Value of register is: %ld\n", (Long) area);
+            } else if(0 == VG_(strcmp)(fnname, asin)){
+              instrument_Call_1x_F64_B(sbOut, cia);
             }
           }
         }

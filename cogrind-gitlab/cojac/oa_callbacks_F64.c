@@ -194,6 +194,11 @@ static void check_F64_Sqrt(Double a, OA_InstrumentContext inscon) {
 
 /*--------------------------------------------------------------------*/
 
+VG_REGPARM(2) void oa_callbackI64_call_1xF64(ULong la, OA_InstrumentContext ic) {
+  Double value = OA_(doubleFromULong)(la);
+  check_F64_Asin(value, ic);
+}
+
 VG_REGPARM(2) void oa_callbackI64_1xF64(ULong la, OA_InstrumentContext ic) {
   Double value = OA_(doubleFromULong)(la);
   switch(ic->op) {

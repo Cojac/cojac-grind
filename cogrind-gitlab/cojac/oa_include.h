@@ -51,6 +51,11 @@ typedef enum {
 	Err_CloseComparison
 } OA_ErrorTag;
 
+typedef enum {
+  Call_Sqrt,
+  Call_Asin
+} OA_Calls;
+
 
 #define COJAC_FILE_LEN  4096
 #define COJAC_FCT_LEN   256
@@ -91,6 +96,13 @@ typedef struct {
   void*       callbackI64;  // for amd64 arch
   Long        occurrences;
 } Iop_Cojac_attributes;
+
+typedef struct {
+  const char* name;
+  void*       callbackI32;  // for x86   arch
+  void*       callbackI64;  // for amd64 arch
+  Long        occurrences;
+} Call_Cojac_attributes;
 
 
 typedef struct {
@@ -137,6 +149,7 @@ VG_REGPARM(4) void oa_callbackI64_3xF64(UInt roundingMode, ULong la, ULong lb, O
 VG_REGPARM(3) void oa_callbackI64_1xI32_1xF64(UInt roundingMode, ULong la, OA_InstrumentContext ic);
 VG_REGPARM(3) void oa_callbackI64_2xF64( ULong la, ULong lb, OA_InstrumentContext ic);
 VG_REGPARM(2) void oa_callbackI64_1xF64(ULong la, OA_InstrumentContext ic);
+VG_REGPARM(2) void oa_callbackI64_call_1xF64(ULong la, OA_InstrumentContext ic);
 
 /*------------------------------------------------------------*/
 /*--- Errors and suppressions                              ---*/
