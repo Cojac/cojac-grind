@@ -51,10 +51,25 @@ typedef enum {
 	Err_CloseComparison
 } OA_ErrorTag;
 
+/* Function calls to be instrumented.
+The instrumentation is done by watching for "bad" inputs.
+See man page of each function to understand how it works.*/
 typedef enum {
+  IsCall,
+  IsIROp
+} OA_ICType;
+
+/* Function calls to be instrumented.
+The instrumentation is done by watching for "bad" inputs.
+See man page of each function to understand how it works.*/
+typedef enum {
+  Call_INVALID,
   Call_Sqrt,
-  Call_Asin
-} OA_Calls;
+  Call_Sqrtf,
+  Call_Asin,
+  Call_Asinf,
+  Call_Last // Must remain the last.
+} OA_Call;
 
 
 #define COJAC_FILE_LEN  4096
@@ -62,7 +77,9 @@ typedef enum {
 
 typedef struct {
 	Addr  addr;
+	OA_ICType type;
 	IROp  op;
+	OA_Call call;
 	Bool  isLocated;
 	HChar* string;
 } OA_InstrumentContext_;
@@ -136,6 +153,8 @@ VG_REGPARM(3) void oa_callbackI32_2xF32(UInt a, UInt b, OA_InstrumentContext ic)
 VG_REGPARM(4) void oa_callbackI32_2xF64(UInt a, UInt b, OA_InstrumentContext ic);
 VG_REGPARM(3) void oa_callbackI32_1xI32_1xF64(UInt roundingMode, UInt la, OA_InstrumentContext ic);
 VG_REGPARM(2) void oa_callbackI32_1xF64(UInt a, OA_InstrumentContext ic);
+VG_REGPARM(2) void oa_callbackI32_call_1xF64(UInt a, OA_InstrumentContext ic);
+VG_REGPARM(2) void oa_callbackI32_call_1xF32(UInt a, OA_InstrumentContext ic);
 
 //amd64
 VG_REGPARM(3) void oa_callbackI64_2x32 (ULong a, ULong b, OA_InstrumentContext c);
@@ -150,6 +169,7 @@ VG_REGPARM(3) void oa_callbackI64_1xI32_1xF64(UInt roundingMode, ULong la, OA_In
 VG_REGPARM(3) void oa_callbackI64_2xF64( ULong la, ULong lb, OA_InstrumentContext ic);
 VG_REGPARM(2) void oa_callbackI64_1xF64(ULong la, OA_InstrumentContext ic);
 VG_REGPARM(2) void oa_callbackI64_call_1xF64(ULong la, OA_InstrumentContext ic);
+VG_REGPARM(2) void oa_callbackI64_call_1xF32(ULong la, OA_InstrumentContext ic);
 
 /*------------------------------------------------------------*/
 /*--- Errors and suppressions                              ---*/

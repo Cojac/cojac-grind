@@ -173,7 +173,7 @@ static void check_CmpF64(Double a, Double b, OA_InstrumentContext inscon){
   }
 }
 
-//Include a math library? Done by the glbic. See asin manpage.
+//See asin manpage.
 static void check_F64_Asin(Double a, OA_InstrumentContext inscon) {
   //Double b = asin(a);  //Line to uncomment to see the link error.
   if (a < -1 || a > 1 || isinf(a)){
@@ -196,7 +196,12 @@ static void check_F64_Sqrt(Double a, OA_InstrumentContext inscon) {
 
 VG_REGPARM(2) void oa_callbackI64_call_1xF64(ULong la, OA_InstrumentContext ic) {
   Double value = OA_(doubleFromULong)(la);
-  check_F64_Asin(value, ic);
+    switch(ic->call) {
+      case Call_Asin: check_F64_Asin(value, ic); break;
+      case Call_Sqrt: check_F64_Sqrt(value, ic); break;
+      default: break;
+  }
+  
 }
 
 VG_REGPARM(2) void oa_callbackI64_1xF64(ULong la, OA_InstrumentContext ic) {
@@ -245,7 +250,7 @@ VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext
     case Iop_Div64F0x2:
     case Iop_Div64Fx2:
     case Iop_DivF64: check_DivF64(a,b,ic); break;
-    case Iop_SqrtF64: check_F64_Sqrt(b, ic); break;
+    case Iop_SqrtF64: VG_(printf)("Nop nop nop\n"); break;
     case Iop_CmpF64: check_CmpF64(a,b,ic); break;
     default: break;
   }
@@ -263,12 +268,16 @@ VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext
 static partOfF64op opF64_buf;
 static char        isOpF64Part=False;
 
-VG_REGPARM(1) void oa_callbackI32_1xF64(UInt la, OA_InstrumentContext ic){
-  //TODO 32 Bits arch
+VG_REGPARM(2) void oa_callbackI32_call_1xF64(UInt a, OA_InstrumentContext ic){
+  VG_(printf)("X86 platform not fully implemented yet\n");
+}
+
+VG_REGPARM(1) void oa_callbackI32_1xF64(UInt a, OA_InstrumentContext ic){
+  VG_(printf)("X86 platform not fully implemented yet\n");
 }
 
 VG_REGPARM(2) void oa_callbackI32_1xI32_1xF64(UInt roundingMode, UInt la, OA_InstrumentContext ic){
-  //TODO 32 Bits arch
+  VG_(printf)("X86 platform not fully implemented yet\n");
 }
 
 VG_REGPARM(3) void oa_callbackI32_2xF64(UInt a, UInt b, OA_InstrumentContext ic) {

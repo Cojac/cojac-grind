@@ -45,10 +45,10 @@
 /*--------------------------------------------------------------------*/
 #define OA_IOP_MAX 1000    //Iop_Rsqrte32x4-Iop_INVALID = ~752
 #define OA_CALL_MAX 10
-#define F64_XMM0_REG 224
+#define FP_XMM0_REG 224   //Is the same for F64 or F32
 
 static Iop_Cojac_attributes oa_all_iop_attr[OA_IOP_MAX];
-static Call_Cojac_attributes oa_all_call_attr[OA_IOP_MAX];
+static Call_Cojac_attributes oa_all_call_attr[OA_CALL_MAX];
 static IRType thisWordWidth;
 cojacOptions OA_(options);
 /*--------------------------------------------------------------------*/
@@ -58,11 +58,24 @@ Iop_Cojac_attributes* OA_(get_Iop_struct)(IROp op) {
   return &(oa_all_iop_attr[op-Iop_INVALID]);
 }
 
+Call_Cojac_attributes* OA_(get_Call_struct)(OA_Call call) {
+  if (call-Call_INVALID >= OA_CALL_MAX)
+    VG_(tool_panic)("Too many Calls...");
+  return &(oa_all_call_attr[call-Call_INVALID]);
+}
+
 static void init_iop(IROp op, const char* name, void* callI32, void* callI64) {
   oa_all_iop_attr[op-Iop_INVALID].name=name;
   oa_all_iop_attr[op-Iop_INVALID].callbackI32=callI32;
   oa_all_iop_attr[op-Iop_INVALID].callbackI64=callI64;
 }
+
+static void init_call(OA_Call call, const char* name, void* callI32, void* callI64) {
+  oa_all_call_attr[call-Call_INVALID].name=name;
+  oa_all_call_attr[call-Call_INVALID].callbackI32=callI32;
+  oa_all_call_attr[call-Call_INVALID].callbackI64=callI64;
+}
+
 
 static void populate_iop_struct(void) {
   Iop_Cojac_attributes a;
@@ -131,7 +144,21 @@ static void populate_iop_struct(void) {
   
   if (OA_(options).mathOp) {
     init_iop(Iop_Sqrt64Fx2, "Sqrt64Fx2",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
-    init_iop(Iop_SqrtF64, "SqrtF64",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
+  }
+}
+
+static void populate_call_struct(void) {
+  Call_Cojac_attributes a;
+  a.callbackI32=NULL; a.callbackI64=NULL; a.name=""; a.occurrences=0;
+  int i=0;
+  for(i=0; i<OA_CALL_MAX; i++)
+    oa_all_call_attr[i]=a;
+  
+  if (OA_(options).mathOp) {
+    init_call(Call_Asin, "asin",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64);
+    init_call(Call_Sqrt, "sqrt",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64);
+    init_call(Call_Asinf, "asinf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32);
+    init_call(Call_Sqrtf, "sqrtf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32);
   }
 }
 
@@ -188,6 +215,18 @@ static void* callbackFromIROp(IROp op) {
     return OA_(get_Iop_struct)(op)->callbackI32;
   }
 }
+
+//-----------------------------------------------------------------
+static void* callbackFromOACall(OA_Call call){
+  if (thisWordWidth==Ity_I32) {
+    return OA_(get_Call_struct)(call)->callbackI32;
+  } else if (thisWordWidth==Ity_I64) {
+    return OA_(get_Call_struct)(call)->callbackI64;
+  } else {
+    VG_(tool_panic)("unsupported architecture...");
+    return OA_(get_Call_struct)(call)->callbackI32;
+  }
+}
 //-----------------------------------------------------------------
 static const char * strFromIROp(IROp op) {
   return OA_(get_Iop_struct)(op)->name;
@@ -197,12 +236,27 @@ static const char * strFromIROp(IROp op) {
 static void updateStats(IROp op) {
   OA_(get_Iop_struct)(op)->occurrences++;
 }
+
+//-----------------------------------------------------------------
+static const char * strFromOACall(OA_Call call) {
+  return OA_(get_Call_struct)(call)->name;
+}
+
+//-----------------------------------------------------------------
+static void updateStatsCall(OA_Call call) {
+  OA_(get_Call_struct)(call)->occurrences++;
+}
 //-----------------------------------------------------------------
 static void print_instrumentation_stats(void) {
   VG_(message)(Vg_UserMsg, "Cojac instrumentation statistics:\n");
   Int i=0;
   for(i=0; i<OA_IOP_MAX; i++) {
     Iop_Cojac_attributes a=oa_all_iop_attr[i];
+    if (a.occurrences >0)
+      VG_(message)(Vg_UserMsg, "%s \t %lld \n", a.name, a.occurrences);
+  }
+  for(i=0; i<OA_CALL_MAX; i++){
+    Call_Cojac_attributes a=oa_all_call_attr[i];
     if (a.occurrences >0)
       VG_(message)(Vg_UserMsg, "%s \t %lld \n", a.name, a.occurrences);
   }
@@ -305,8 +359,8 @@ static Bool not_worth_watching(OA_InstrumentContext ic) {
   return !ic->isLocated;
 }
 //-----------------------------------------------------------------
-static OA_InstrumentContext contextFor(Addr64 cia, IROp op) {
-  HChar thisFct[]="contextFor";
+static OA_InstrumentContext contextForIop(Addr64 cia, IROp op) {
+  HChar thisFct[]="contextForIop";
   OA_InstrumentContext ic=VG_(malloc)(thisFct, sizeof(OA_InstrumentContext_));
   UInt     line;
   HChar    filename[COJAC_FILE_LEN];
@@ -316,8 +370,26 @@ static OA_InstrumentContext contextFor(Addr64 cia, IROp op) {
   ic->string = VG_(malloc)(thisFct, totalLen);
   ic->addr = (Addr)cia;
   ic->op=op;
+  ic->type = IsIROp;
   //VG_(sprintf)(ic->string, "%s %s(), %s:%d", strFromIROp(op), fctname, filename, line);
   VG_(sprintf)(ic->string, "%s", strFromIROp(op));
+  return ic;
+}
+//-----------------------------------------------------------------
+static OA_InstrumentContext contextForCall(Addr64 cia, OA_Call call) {
+  HChar thisFct[]="contextForCall";
+  OA_InstrumentContext ic=VG_(malloc)(thisFct, sizeof(OA_InstrumentContext_));
+  UInt     line;
+  HChar    filename[COJAC_FILE_LEN];
+  HChar    fctname[COJAC_FCT_LEN];
+  Int     totalLen=COJAC_FILE_LEN+COJAC_FCT_LEN+10;
+  get_debug_info((Addr)cia, filename, fctname, &line, &(ic->isLocated));
+  ic->string = VG_(malloc)(thisFct, totalLen);
+  ic->addr = (Addr)cia;
+  ic->call=call;
+  ic->type = IsCall;
+  //VG_(sprintf)(ic->string, "%s %s(), %s:%d", strFromIROp(op), fctname, filename, line);
+  VG_(sprintf)(ic->string, "%s", strFromOACall(call));
   return ic;
 }
 
@@ -328,7 +400,7 @@ static void instrument_Unop(IRSB* sb, IRStmt* st, Addr64 cia) {
   IROp irop=op->Iex.Unop.op;
   void* f=callbackFromIROp(irop);
   if (f == NULL) return;
-  OA_InstrumentContext inscon=contextFor(cia, irop);
+  OA_InstrumentContext inscon=contextForIop(cia, irop);
   if (not_worth_watching(inscon))
     return;  // filter events that can't be attached to source-code location
   updateStats(inscon->op);
@@ -350,7 +422,7 @@ static void instrument_Binop(IRSB* sb, IRStmt* st, IRType type, Addr64 cia) {
   IROp irop=op->Iex.Binop.op;
   void* f=callbackFromIROp(irop);
   if (f == NULL) return;
-  OA_InstrumentContext inscon=contextFor(cia, irop);
+  OA_InstrumentContext inscon=contextForIop(cia, irop);
   if (not_worth_watching(inscon))
     return;  // filter events that can't be attached to source-code location
   updateStats(inscon->op);
@@ -381,7 +453,7 @@ static void instrument_Triop(IRSB* sb, IRStmt* st, Addr64 cia) {
   IROp irop=op->Iex.Triop.details->op;
   void* f=callbackFromIROp(irop);
   if (f == NULL) return;
-  OA_InstrumentContext inscon=contextFor(cia, irop);
+  OA_InstrumentContext inscon=contextForIop(cia, irop);
   if (not_worth_watching(inscon))
     return;  // filter events that can't be attached to source-code location
   updateStats(inscon->op);
@@ -404,49 +476,51 @@ static void instrument_Triop(IRSB* sb, IRStmt* st, Addr64 cia) {
 }
 
 /* Instrument a function call with one F64 as parameter.*/
-static void instrument_Call_1x_F64_B(IRSB* sb, Addr64 cia){
+static void instrument_Call_1x_F64(IRSB* sb, Addr64 cia, OA_Call call){
   HChar thisFct[]="instrument_function_call";
   IROp op = Iop_LAST;
   IRExpr* oa_event_expr;
-  OA_InstrumentContext inscon=contextFor(cia, op);
+  OA_InstrumentContext inscon=contextForCall(cia, call);
   oa_event_expr = mkIRExpr_HWord( (HWord)inscon );
-  //****
+  void *f=callbackFromOACall(call);
+  if (f == NULL) return;
+  updateStatsCall(call);
   IRTemp irTemp = newIRTemp(sb->tyenv, Ity_F64);
-  IRExpr *get_expr = IRExpr_Get(F64_XMM0_REG, Ity_F64);
+  IRExpr *get_expr = IRExpr_Get(FP_XMM0_REG, Ity_F64);
   IRStmt *get_stmt = IRStmt_WrTmp(irTemp, get_expr);
   addStmtToIRSB(sb, get_stmt);
-  //****
   IRExpr *tmp_expr = IRExpr_RdTmp(irTemp);
   IRExpr* args1[2];
   IRExpr** argv;
   IRDirty* di;
   packToI32orI64(sb, tmp_expr, args1, op);
   argv = mkIRExprVec_2(args1[0], oa_event_expr);
-  di = unsafeIRDirty_0_N( 2, thisFct, VG_(fnptr_to_fnentry)((void *)oa_callbackI64_call_1xF64), argv);
+  di = unsafeIRDirty_0_N( 2, thisFct, VG_(fnptr_to_fnentry)(f), argv);
   addStmtToIRSB(sb, IRStmt_Dirty(di));
 }
 
-/* instruments a Binary Operation Expression in a Ist_WrTmp statement */
-static void instrument_Call_1x_F64(IRSB* sb, Addr64 cia){
-  IRTemp sqrt_Temp = newIRTemp(sb->tyenv, Ity_F64);
-  IRExpr *get_expr = IRExpr_Get(F64_XMM0_REG, Ity_F64);
-  IRStmt *get_stmt = IRStmt_WrTmp(sqrt_Temp, get_expr);
+/* Instrument a function call with one F32 as parameter.*/
+static void instrument_Call_1x_F32(IRSB* sb, Addr64 cia, OA_Call call){
+  HChar thisFct[]="instrument_function_call";
+  IROp op = Iop_LAST;
+  IRExpr* oa_event_expr;
+  OA_InstrumentContext inscon=contextForCall(cia, call);
+  oa_event_expr = mkIRExpr_HWord( (HWord)inscon );
+  void *f=callbackFromOACall(call);
+  if (f == NULL) return;
+  updateStatsCall(call);
+  IRTemp irTemp = newIRTemp(sb->tyenv, Ity_F32);
+  IRExpr *get_expr = IRExpr_Get(FP_XMM0_REG, Ity_F32);
+  IRStmt *get_stmt = IRStmt_WrTmp(irTemp, get_expr);
   addStmtToIRSB(sb, get_stmt);
-  //*****
-  IRTemp round_Temp = newIRTemp(sb->tyenv, Ity_I32);
-  IRConst *con = IRConst_U32(Irrm_NEAREST);
-  IRExpr *con_expr = IRExpr_Const(con);
-  IRStmt *con_stmt = IRStmt_WrTmp(round_Temp, con_expr);
-  addStmtToIRSB(sb, con_stmt);
-  //*****
-  IRTemp res_Temp = newIRTemp(sb->tyenv, Ity_F64);
-  IRExpr *read_temp = IRExpr_RdTmp(sqrt_Temp);
-  IRExpr *read_Round = IRExpr_RdTmp(round_Temp);
-  IRExpr *sqrt_expr = IRExpr_Binop(Iop_SqrtF64, read_Round, read_temp);
-  IRStmt *sqrt_stmt = IRStmt_WrTmp(res_Temp, sqrt_expr);
-  addStmtToIRSB(sb, sqrt_stmt);
-  IRType type = typeOfIRExpr(sb->tyenv, sqrt_expr);
-  instrument_Binop(sb, sqrt_stmt, type, cia );
+  IRExpr *tmp_expr = IRExpr_RdTmp(irTemp);
+  IRExpr* args1[2];
+  IRExpr** argv;
+  IRDirty* di;
+  packToI32orI64(sb, tmp_expr, args1, op);
+  argv = mkIRExprVec_2(args1[0], oa_event_expr);
+  di = unsafeIRDirty_0_N( 2, thisFct, VG_(fnptr_to_fnentry)(f), argv);
+  addStmtToIRSB(sb, IRStmt_Dirty(di));
 }
 
 //-----------------------------------------------------------------
@@ -454,6 +528,7 @@ static void instrument_Call_1x_F64(IRSB* sb, Addr64 cia){
 //-----------------------------------------------------------------
 static void oa_post_clo_init(void) {
   populate_iop_struct();
+  populate_call_struct();
   //VG_(message)(Vg_UserMsg, "Nb of ops %d \n", (Iop_Rsqrte32x4-Iop_INVALID));
 }
 
@@ -559,12 +634,18 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
         {
           HChar fnname[20];
           HChar* sqrt = "sqrt";
-          HChar* asin = "asin"; 
+          HChar* asin = "asin";
+          HChar* sqrtf = "sqrtf"; 
+          HChar* asinf = "asinf"; 
           if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
             if(0 == VG_(strcmp)(fnname, sqrt)){
-              instrument_Call_1x_F64(sbOut, cia);
+              instrument_Call_1x_F64(sbOut, cia, Call_Sqrt);
             } else if(0 == VG_(strcmp)(fnname, asin)){
-              instrument_Call_1x_F64_B(sbOut, cia);
+              instrument_Call_1x_F64(sbOut, cia, Call_Asin);
+            } else if(0 == VG_(strcmp)(fnname, asinf)){
+              instrument_Call_1x_F32(sbOut, cia, Call_Asinf);
+            } else if(0 == VG_(strcmp)(fnname, sqrtf)){
+              instrument_Call_1x_F32(sbOut, cia, Call_Sqrtf);
             }
           }
         }
