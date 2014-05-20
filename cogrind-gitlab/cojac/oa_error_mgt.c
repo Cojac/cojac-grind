@@ -76,6 +76,7 @@ void OA_(maybe_error)(ErrorKind ekind, OA_InstrumentContext inscon)  {
 	if (nErrors<nErrorsMax) {
     extra=VG_(malloc)(thisFct, sizeof(cojacErrorExtra_));
     extra->tid=VG_(get_running_tid)();
+    extra->type = inscon->type;
   } else if (nErrors%(10L*nErrorsMax)==0) {
   	VG_(message)(Vg_UserMsg, "A lot of errors: %" PRIu64 "...\n", nErrors);
   }
@@ -107,7 +108,12 @@ void OA_(pp_Error) ( Error* err ) {
   ErrorKind errKind = VG_(get_error_kind)(err);
   VG_(message)(Vg_UserMsg, "Cojac: %s, %s", strFromErrorKind(errKind), detail);
   cojacErrorExtra extra = (cojacErrorExtra)( VG_(get_error_extra)(err) );
-  Int depth=OA_(options).stacktraceDepth;
+  Int depth;
+  switch(extra->type){
+    case IsCall: depth=OA_(options).stacktraceCallDepth; break;
+    case IsIROp: depth=OA_(options).stacktraceDepth; break;
+    default: depth=1; break;
+  }
   if (depth==0 || extra==NULL) return;
   VG_(get_and_pp_StackTrace)(extra->tid, depth);  // This stupidly adds an extra newline...
 }

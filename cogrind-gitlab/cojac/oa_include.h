@@ -71,6 +71,12 @@ typedef enum {
   Call_Last // Must remain the last.
 } OA_Call;
 
+/* Type of parameters for the instrumented functions. Need to know to call the good instrumentation function.*/
+typedef enum {
+  Call_1xF32,
+  Call_1xF64
+} OA_Param_Type;
+
 
 #define COJAC_FILE_LEN  4096
 #define COJAC_FCT_LEN   256
@@ -88,6 +94,7 @@ typedef OA_InstrumentContext_*  OA_InstrumentContext;
 
 typedef struct {
   Int  stacktraceDepth;
+  Int  stacktraceCallDepth;
   Bool isAggr;
   Bool i32;
   Bool f32;
@@ -103,22 +110,26 @@ typedef struct {
 
 typedef struct {
   Int tid;
+  OA_ICType type;
 } cojacErrorExtra_;
 
 typedef cojacErrorExtra_* cojacErrorExtra;
 
 typedef struct {
-  const char* name;
+  IROp op;
+  const HChar* name;
   void*       callbackI32;  // for x86   arch
   void*       callbackI64;  // for amd64 arch
   Long        occurrences;
 } Iop_Cojac_attributes;
 
 typedef struct {
-  const char* name;
+  OA_Call call;
+  const HChar* name;
   void*       callbackI32;  // for x86   arch
   void*       callbackI64;  // for amd64 arch
   Long        occurrences;
+  OA_Param_Type paramType;
 } Call_Cojac_attributes;
 
 

@@ -20,6 +20,10 @@ EXTRA_DIST =  Add32.stderr.exp Add32.vgtest \
               AddF64Infinity.stderr.exp AddF64Infinity.vgtest \
               AddF64Nan.stderr.exp AddF64Nan.vgtest \
               AddF64Pre.stderr.exp AddF64Pre.vgtest \
+              AsinLibcF32.stderr.exp AsinLibcF32.vgtest \
+              AsinLibcF32Nan.stderr.exp AsinLibcF32Nan.vgtest \
+              AsinLibcF64.stderr.exp AsinLibcF64.vgtest \
+              AsinLibcF64Nan.stderr.exp AsinLibcF64Nan.vgtest \
               CmpF64.stderr.exp CmpF64.vgest \
               CmpF64Close.stderr.exp CmpF64Close.vgest \
               Div32.stderr.exp Div32.vgtest \
@@ -60,6 +64,8 @@ EXTRA_DIST =  Add32.stderr.exp Add32.vgtest \
               MulF64Under.stderr.exp MulF64Under.vgtest \
               SqrtF64.stderr.exp SqrtF64.vgtest \
               SqrtF64Nan.stderr.exp SqrtF64Nan.vgtest \
+              SqrtLibcF32.stderr.exp SqrtLibcF32.vgtest \
+              SqrtLibcF32Nan.stderr.exp SqrtLibcF32Nan.vgtest \
               SqrtLibcF64.stderr.exp SqrtLibcF64.vgtest \
               SqrtLibcF64Nan.stderr.exp SqrtLibcF64Nan.vgtest \
               Sub32.stderr.exp Sub32.vgtest \
@@ -96,6 +102,10 @@ check_PROGRAMS =  Add32 \
                   AddF64Infinity \
                   AddF64Nan \
                   AddF64Pre \
+                  AsinLibcF32 \
+                  AsinLibcF32Nan \
+                  AsinLibcF64 \
+                  AsinLibcF64Nan \
                   CmpF64 \
                   CmpF64Close \
                   Div32 \
@@ -136,6 +146,8 @@ check_PROGRAMS =  Add32 \
                   MulF64Under \
                   SqrtF64 \
                   SqrtF64Nan \
+                  SqrtLibcF32 \
+                  SqrtLibcF32Nan \
                   SqrtLibcF64 \
                   SqrtLibcF64Nan \
                   Sub32 \

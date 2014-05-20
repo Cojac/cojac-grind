@@ -176,7 +176,7 @@ static void check_CmpF64(Double a, Double b, OA_InstrumentContext inscon){
 //See asin manpage.
 static void check_F64_Asin(Double a, OA_InstrumentContext inscon) {
   //Double b = asin(a);  //Line to uncomment to see the link error.
-  if (a < -1 || a > 1 || isinf(a)){
+  if (a < -1 || a > 1){
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
 }

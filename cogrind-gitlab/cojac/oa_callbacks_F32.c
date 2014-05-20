@@ -126,8 +126,7 @@ static void check_DivF32(Float a, Float b, OA_InstrumentContext inscon) {
 
 //See asin manpage.
 static void check_F32_Asin(Float a, OA_InstrumentContext inscon) {
-  //Double b = asin(a);  //Line to uncomment to see the link error.
-  if (a < -1 || a > 1 || isinf(a)){
+  if (a < -1 || a > 1){
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
 }
@@ -136,7 +135,7 @@ static void check_F32_Sqrt(Float a, OA_InstrumentContext inscon) {
   if(isnan(a) || isinf(a)){
     return;
   }
-  Double b;
+  Float b;
   __asm__ ("sqrtss %1, %0" : "=x" (b) : "x" (a));
   if (isnan(b)){
     OA_(maybe_error)(Err_NaN, inscon); return;
@@ -147,8 +146,8 @@ static void check_F32_Sqrt(Float a, OA_InstrumentContext inscon) {
 VG_REGPARM(2) void oa_callbackI32_call_1xF32(UInt a, OA_InstrumentContext ic){
   Float fa = OA_(floatFromInt)(a);
   switch(ic->call) {
-      case Call_Asin: check_F32_Asin(fa, ic); break;
-      case Call_Sqrt: check_F32_Sqrt(fa, ic); break;
+      case Call_Asinf: check_F32_Asin(fa, ic); break;
+      case Call_Sqrtf: check_F32_Sqrt(fa, ic); break;
       default: break;
   }
 }

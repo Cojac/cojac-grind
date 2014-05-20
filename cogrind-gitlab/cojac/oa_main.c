@@ -46,6 +46,7 @@
 #define OA_IOP_MAX 1000    //Iop_Rsqrte32x4-Iop_INVALID = ~752
 #define OA_CALL_MAX 10
 #define FP_XMM0_REG 224   //Is the same for F64 or F32
+#define MAX_NAME_LENGTH 50
 
 static Iop_Cojac_attributes oa_all_iop_attr[OA_IOP_MAX];
 static Call_Cojac_attributes oa_all_call_attr[OA_CALL_MAX];
@@ -65,15 +66,18 @@ Call_Cojac_attributes* OA_(get_Call_struct)(OA_Call call) {
 }
 
 static void init_iop(IROp op, const char* name, void* callI32, void* callI64) {
+  oa_all_iop_attr[op-Iop_INVALID].op=op;
   oa_all_iop_attr[op-Iop_INVALID].name=name;
   oa_all_iop_attr[op-Iop_INVALID].callbackI32=callI32;
   oa_all_iop_attr[op-Iop_INVALID].callbackI64=callI64;
 }
 
-static void init_call(OA_Call call, const char* name, void* callI32, void* callI64) {
+static void init_call(OA_Call call, const char* name, void* callI32, void* callI64, OA_Param_Type pType) {
+  oa_all_call_attr[call-Call_INVALID].call=call;
   oa_all_call_attr[call-Call_INVALID].name=name;
   oa_all_call_attr[call-Call_INVALID].callbackI32=callI32;
   oa_all_call_attr[call-Call_INVALID].callbackI64=callI64;
+  oa_all_call_attr[call-Call_INVALID].paramType=pType;
 }
 
 
@@ -147,6 +151,8 @@ static void populate_iop_struct(void) {
   }
 }
 
+/*On init call, the name og the function need to be the same as the real function name.
+The matching is done on it. See MAX_NAME_LENGTH define for max length function name*/
 static void populate_call_struct(void) {
   Call_Cojac_attributes a;
   a.callbackI32=NULL; a.callbackI64=NULL; a.name=""; a.occurrences=0;
@@ -155,10 +161,10 @@ static void populate_call_struct(void) {
     oa_all_call_attr[i]=a;
   
   if (OA_(options).mathOp) {
-    init_call(Call_Asin, "asin",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64);
-    init_call(Call_Sqrt, "sqrt",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64);
-    init_call(Call_Asinf, "asinf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32);
-    init_call(Call_Sqrtf, "sqrtf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32);
+    init_call(Call_Asin, "asin",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64, Call_1xF64);
+    init_call(Call_Sqrt, "sqrt",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64, Call_1xF64);
+    init_call(Call_Asinf, "asinf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32, Call_1xF32);
+    init_call(Call_Sqrtf, "sqrtf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32, Call_1xF32);
   }
 }
 
@@ -311,6 +317,9 @@ static void packToI64 ( IRSB* sb, IRExpr* e, IRExpr* res[2], IROp irop) {
     case Ity_I16:  res[0]= IRExpr_Unop(Iop_16Uto64,e); break;
     case Ity_I32:  res[0]= IRExpr_Unop(Iop_32Uto64,e); break;
     case Ity_F32:  e = IRExpr_Unop(Iop_ReinterpF32asI32,e);
+                   IRTemp aux= newIRTemp(sb->tyenv, Ity_I32);
+                   addStmtToIRSB(sb, IRStmt_WrTmp(aux, e));
+                   e=IRExpr_RdTmp(aux);
                    res[0]= IRExpr_Unop(Iop_32Uto64,e);  break;
     case Ity_I64:  res[0]= e; return;
     case Ity_F64:  res[0]= IRExpr_Unop(Iop_ReinterpF64asI64,e); break;
@@ -523,6 +532,30 @@ static void instrument_Call_1x_F32(IRSB* sb, Addr64 cia, OA_Call call){
   addStmtToIRSB(sb, IRStmt_Dirty(di));
 }
 
+static void check_need_call_intrumentation(IRSB* sb, Addr64 cia){
+  HChar fnname[MAX_NAME_LENGTH];
+  HChar ifname[MAX_NAME_LENGTH];
+  if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
+    int i;
+    for(i = 0; i < OA_CALL_MAX; i++){
+      Call_Cojac_attributes cca = oa_all_call_attr[i];
+      if(cca.callbackI64 == NULL) continue;
+      VG_(strcpy)(ifname, cca.name);
+      if(0 == VG_(strcmp)(fnname, ifname)){
+        switch(cca.paramType){
+          case Call_1xF32: 
+            instrument_Call_1x_F32(sb, cia, cca.call);
+            break;
+          case Call_1xF64: 
+            instrument_Call_1x_F64(sb, cia, cca.call);
+            break;
+          default: break;
+        }
+      }
+    }
+  }
+}
+
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
 //-----------------------------------------------------------------
@@ -591,6 +624,7 @@ static void oa_set_default_options(void) {
   OA_(options).mathOp       = True;
   OA_(options).isAggr       = False;
   OA_(options).stacktraceDepth = 1;
+  OA_(options).stacktraceCallDepth = 2;
 }
 
 //-----------------------------------------------------------------
@@ -631,24 +665,7 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
     switch (st->tag) {
       case Ist_IMark:
         cia   = st->Ist.IMark.addr;  
-        {
-          HChar fnname[20];
-          HChar* sqrt = "sqrt";
-          HChar* asin = "asin";
-          HChar* sqrtf = "sqrtf"; 
-          HChar* asinf = "asinf"; 
-          if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
-            if(0 == VG_(strcmp)(fnname, sqrt)){
-              instrument_Call_1x_F64(sbOut, cia, Call_Sqrt);
-            } else if(0 == VG_(strcmp)(fnname, asin)){
-              instrument_Call_1x_F64(sbOut, cia, Call_Asin);
-            } else if(0 == VG_(strcmp)(fnname, asinf)){
-              instrument_Call_1x_F32(sbOut, cia, Call_Asinf);
-            } else if(0 == VG_(strcmp)(fnname, sqrtf)){
-              instrument_Call_1x_F32(sbOut, cia, Call_Sqrtf);
-            }
-          }
-        }
+        check_need_call_intrumentation(sbOut, cia);
         break;
       case Ist_WrTmp:
         // Add a call to trace_load() if --trace-mem=yes.
