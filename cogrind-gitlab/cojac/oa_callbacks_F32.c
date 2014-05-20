@@ -131,6 +131,16 @@ static void check_F32_Asin(Float a, OA_InstrumentContext inscon) {
   }
 }
 
+//See log manpage. HUGE_VAL has the same effect than infinite.
+static void check_F32_Log(Float a, OA_InstrumentContext inscon) {
+  if (a == 0){
+    OA_(maybe_error)(Err_Infinity, inscon); return;
+  }
+  if(a < 0){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+}
+
 static void check_F32_Sqrt(Float a, OA_InstrumentContext inscon) {
   if(isnan(a) || isinf(a)){
     return;
@@ -148,6 +158,7 @@ VG_REGPARM(2) void oa_callbackI32_call_1xF32(UInt a, OA_InstrumentContext ic){
   switch(ic->call) {
       case Call_Asinf: check_F32_Asin(fa, ic); break;
       case Call_Sqrtf: check_F32_Sqrt(fa, ic); break;
+      case Call_Logf: check_F32_Log(fa, ic); break;
       default: break;
   }
 }

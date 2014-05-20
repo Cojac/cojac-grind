@@ -181,6 +181,16 @@ static void check_F64_Asin(Double a, OA_InstrumentContext inscon) {
   }
 }
 
+//See log manpage. HUGE_VAL has the same effect than infinite.
+static void check_F64_Log(Double a, OA_InstrumentContext inscon) {
+  if (a == 0){
+    OA_(maybe_error)(Err_Infinity, inscon); return;
+  }
+  if(a < 0){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+}
+
 static void check_F64_Sqrt(Double a, OA_InstrumentContext inscon) {
   if(isnan(a) || isinf(a)){
     return;
@@ -199,6 +209,7 @@ VG_REGPARM(2) void oa_callbackI64_call_1xF64(ULong la, OA_InstrumentContext ic) 
     switch(ic->call) {
       case Call_Asin: check_F64_Asin(value, ic); break;
       case Call_Sqrt: check_F64_Sqrt(value, ic); break;
+      case Call_Log: check_F64_Log(value, ic); break;
       default: break;
   }
   

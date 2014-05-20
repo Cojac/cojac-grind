@@ -68,6 +68,8 @@ typedef enum {
   Call_Sqrtf,
   Call_Asin,
   Call_Asinf,
+  Call_Log,
+  Call_Logf,
   Call_Last // Must remain the last.
 } OA_Call;
 

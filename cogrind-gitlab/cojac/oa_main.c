@@ -161,10 +161,15 @@ static void populate_call_struct(void) {
     oa_all_call_attr[i]=a;
   
   if (OA_(options).mathOp) {
+    //1xF64 param
     init_call(Call_Asin, "asin",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64, Call_1xF64);
     init_call(Call_Sqrt, "sqrt",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64, Call_1xF64);
+    init_call(Call_Log, "log",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64, Call_1xF64);
+    
+    //1xF32 param
     init_call(Call_Asinf, "asinf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32, Call_1xF32);
     init_call(Call_Sqrtf, "sqrtf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32, Call_1xF32);
+    init_call(Call_Logf, "logf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32, Call_1xF32);
   }
 }
 
