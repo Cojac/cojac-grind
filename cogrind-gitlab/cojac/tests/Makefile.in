@@ -96,6 +96,9 @@ check_PROGRAMS = Add32$(EXEEXT) Add32Overflow$(EXEEXT) \
 	F64toI32SOverflow$(EXEEXT) F64toI32SOverflowNeg$(EXEEXT) \
 	F64toI64S$(EXEEXT) F64toI64SInf$(EXEEXT) F64toI64SNaN$(EXEEXT) \
 	F64toI64SOverflow$(EXEEXT) F64toI64SOverflowNeg$(EXEEXT) \
+	LogLibcF64$(EXEEXT) LogLibcF64Infinity$(EXEEXT) \
+	LogLibcF64Nan$(EXEEXT) LogLibcF32$(EXEEXT) \
+	LogLibcF32Infinity$(EXEEXT) LogLibcF32Nan$(EXEEXT) \
 	Mul32$(EXEEXT) Mul32Overflow$(EXEEXT) Mul64$(EXEEXT) \
 	Mul64Overflow$(EXEEXT) MulF32$(EXEEXT) MulF32Infinity$(EXEEXT) \
 	MulF32Nan$(EXEEXT) MulF32Under$(EXEEXT) MulF64$(EXEEXT) \
@@ -257,6 +260,24 @@ F64toI64SOverflow_LDADD = $(LDADD)
 F64toI64SOverflowNeg_SOURCES = F64toI64SOverflowNeg.c
 F64toI64SOverflowNeg_OBJECTS = F64toI64SOverflowNeg.$(OBJEXT)
 F64toI64SOverflowNeg_LDADD = $(LDADD)
+LogLibcF32_SOURCES = LogLibcF32.c
+LogLibcF32_OBJECTS = LogLibcF32.$(OBJEXT)
+LogLibcF32_LDADD = $(LDADD)
+LogLibcF32Infinity_SOURCES = LogLibcF32Infinity.c
+LogLibcF32Infinity_OBJECTS = LogLibcF32Infinity.$(OBJEXT)
+LogLibcF32Infinity_LDADD = $(LDADD)
+LogLibcF32Nan_SOURCES = LogLibcF32Nan.c
+LogLibcF32Nan_OBJECTS = LogLibcF32Nan.$(OBJEXT)
+LogLibcF32Nan_LDADD = $(LDADD)
+LogLibcF64_SOURCES = LogLibcF64.c
+LogLibcF64_OBJECTS = LogLibcF64.$(OBJEXT)
+LogLibcF64_LDADD = $(LDADD)
+LogLibcF64Infinity_SOURCES = LogLibcF64Infinity.c
+LogLibcF64Infinity_OBJECTS = LogLibcF64Infinity.$(OBJEXT)
+LogLibcF64Infinity_LDADD = $(LDADD)
+LogLibcF64Nan_SOURCES = LogLibcF64Nan.c
+LogLibcF64Nan_OBJECTS = LogLibcF64Nan.$(OBJEXT)
+LogLibcF64Nan_LDADD = $(LDADD)
 Mul32_SOURCES = Mul32.c
 Mul32_OBJECTS = Mul32.$(OBJEXT)
 Mul32_LDADD = $(LDADD)
@@ -380,15 +401,16 @@ SOURCES = Add32.c Add32Overflow.c Add32OverflowNeg.c Add64.c \
 	F64toI32S.c F64toI32SInf.c F64toI32SNaN.c F64toI32SOverflow.c \
 	F64toI32SOverflowNeg.c F64toI64S.c F64toI64SInf.c \
 	F64toI64SNaN.c F64toI64SOverflow.c F64toI64SOverflowNeg.c \
-	Mul32.c Mul32Overflow.c Mul64.c Mul64Overflow.c MulF32.c \
-	MulF32Infinity.c MulF32Nan.c MulF32Under.c MulF64.c \
-	MulF64Infinity.c MulF64Nan.c MulF64Under.c SqrtF64.c \
-	SqrtF64Nan.c SqrtLibcF32.c SqrtLibcF32Nan.c SqrtLibcF64.c \
-	SqrtLibcF64Nan.c Sub32.c Sub32Overflow.c Sub32OverflowNeg.c \
-	Sub64.c Sub64Overflow.c Sub64OverflowNeg.c SubF32.c \
-	SubF32Cancel.c SubF32Infinity.c SubF32Nan.c SubF32Pre.c \
-	SubF64.c SubF64Cancel.c SubF64Infinity.c SubF64Nan.c \
-	SubF64Pre.c
+	LogLibcF32.c LogLibcF32Infinity.c LogLibcF32Nan.c LogLibcF64.c \
+	LogLibcF64Infinity.c LogLibcF64Nan.c Mul32.c Mul32Overflow.c \
+	Mul64.c Mul64Overflow.c MulF32.c MulF32Infinity.c MulF32Nan.c \
+	MulF32Under.c MulF64.c MulF64Infinity.c MulF64Nan.c \
+	MulF64Under.c SqrtF64.c SqrtF64Nan.c SqrtLibcF32.c \
+	SqrtLibcF32Nan.c SqrtLibcF64.c SqrtLibcF64Nan.c Sub32.c \
+	Sub32Overflow.c Sub32OverflowNeg.c Sub64.c Sub64Overflow.c \
+	Sub64OverflowNeg.c SubF32.c SubF32Cancel.c SubF32Infinity.c \
+	SubF32Nan.c SubF32Pre.c SubF64.c SubF64Cancel.c \
+	SubF64Infinity.c SubF64Nan.c SubF64Pre.c
 DIST_SOURCES = Add32.c Add32Overflow.c Add32OverflowNeg.c Add64.c \
 	Add64Overflow.c Add64OverflowNeg.c AddF32.c AddF32Cancel.c \
 	AddF32Infinity.c AddF32Nan.c AddF32Pre.c AddF64.c \
@@ -401,15 +423,16 @@ DIST_SOURCES = Add32.c Add32Overflow.c Add32OverflowNeg.c Add64.c \
 	F64toI32S.c F64toI32SInf.c F64toI32SNaN.c F64toI32SOverflow.c \
 	F64toI32SOverflowNeg.c F64toI64S.c F64toI64SInf.c \
 	F64toI64SNaN.c F64toI64SOverflow.c F64toI64SOverflowNeg.c \
-	Mul32.c Mul32Overflow.c Mul64.c Mul64Overflow.c MulF32.c \
-	MulF32Infinity.c MulF32Nan.c MulF32Under.c MulF64.c \
-	MulF64Infinity.c MulF64Nan.c MulF64Under.c SqrtF64.c \
-	SqrtF64Nan.c SqrtLibcF32.c SqrtLibcF32Nan.c SqrtLibcF64.c \
-	SqrtLibcF64Nan.c Sub32.c Sub32Overflow.c Sub32OverflowNeg.c \
-	Sub64.c Sub64Overflow.c Sub64OverflowNeg.c SubF32.c \
-	SubF32Cancel.c SubF32Infinity.c SubF32Nan.c SubF32Pre.c \
-	SubF64.c SubF64Cancel.c SubF64Infinity.c SubF64Nan.c \
-	SubF64Pre.c
+	LogLibcF32.c LogLibcF32Infinity.c LogLibcF32Nan.c LogLibcF64.c \
+	LogLibcF64Infinity.c LogLibcF64Nan.c Mul32.c Mul32Overflow.c \
+	Mul64.c Mul64Overflow.c MulF32.c MulF32Infinity.c MulF32Nan.c \
+	MulF32Under.c MulF64.c MulF64Infinity.c MulF64Nan.c \
+	MulF64Under.c SqrtF64.c SqrtF64Nan.c SqrtLibcF32.c \
+	SqrtLibcF32Nan.c SqrtLibcF64.c SqrtLibcF64Nan.c Sub32.c \
+	Sub32Overflow.c Sub32OverflowNeg.c Sub64.c Sub64Overflow.c \
+	Sub64OverflowNeg.c SubF32.c SubF32Cancel.c SubF32Infinity.c \
+	SubF32Nan.c SubF32Pre.c SubF64.c SubF64Cancel.c \
+	SubF64Infinity.c SubF64Nan.c SubF64Pre.c
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -786,6 +809,12 @@ EXTRA_DIST = Add32.stderr.exp Add32.vgtest \
               F64toI64SNaN.stderr.exp F64toI64SNaN.vgtest \
               F64toI64SOverflow.stderr.exp F64toI64SOverflow.vgtest \
               F64toI64SOverflowNeg.stderr.exp F64toI64SOverflowNeg.vgtest \
+              LogLibcF64.stderr.exp LogLibcF64.vgtest \
+              LogLibcF64Infinity.stderr.exp LogLibcF64Infinity.vgtest \
+              LogLibcF64Nan.stderr.exp LogLibcF64Nan.vgtest \
+              LogLibcF32.stderr.exp LogLibcF32.vgtest \
+              LogLibcF32Infinity.stderr.exp LogLibcF32Infinity.vgtest \
+              LogLibcF32Nan.stderr.exp LogLibcF32Nan.vgtest \
               Mul32.stderr.exp Mul32.vgtest \
               Mul32Overflow.stderr.exp Mul32Overflow.vgtest \
               Mul64.stderr.exp Mul64.vgtest \
@@ -998,6 +1027,24 @@ F64toI64SOverflow$(EXEEXT): $(F64toI64SOverflow_OBJECTS) $(F64toI64SOverflow_DEP
 F64toI64SOverflowNeg$(EXEEXT): $(F64toI64SOverflowNeg_OBJECTS) $(F64toI64SOverflowNeg_DEPENDENCIES) $(EXTRA_F64toI64SOverflowNeg_DEPENDENCIES) 
 	@rm -f F64toI64SOverflowNeg$(EXEEXT)
 	$(LINK) $(F64toI64SOverflowNeg_OBJECTS) $(F64toI64SOverflowNeg_LDADD) $(LIBS)
+LogLibcF32$(EXEEXT): $(LogLibcF32_OBJECTS) $(LogLibcF32_DEPENDENCIES) $(EXTRA_LogLibcF32_DEPENDENCIES) 
+	@rm -f LogLibcF32$(EXEEXT)
+	$(LINK) $(LogLibcF32_OBJECTS) $(LogLibcF32_LDADD) $(LIBS)
+LogLibcF32Infinity$(EXEEXT): $(LogLibcF32Infinity_OBJECTS) $(LogLibcF32Infinity_DEPENDENCIES) $(EXTRA_LogLibcF32Infinity_DEPENDENCIES) 
+	@rm -f LogLibcF32Infinity$(EXEEXT)
+	$(LINK) $(LogLibcF32Infinity_OBJECTS) $(LogLibcF32Infinity_LDADD) $(LIBS)
+LogLibcF32Nan$(EXEEXT): $(LogLibcF32Nan_OBJECTS) $(LogLibcF32Nan_DEPENDENCIES) $(EXTRA_LogLibcF32Nan_DEPENDENCIES) 
+	@rm -f LogLibcF32Nan$(EXEEXT)
+	$(LINK) $(LogLibcF32Nan_OBJECTS) $(LogLibcF32Nan_LDADD) $(LIBS)
+LogLibcF64$(EXEEXT): $(LogLibcF64_OBJECTS) $(LogLibcF64_DEPENDENCIES) $(EXTRA_LogLibcF64_DEPENDENCIES) 
+	@rm -f LogLibcF64$(EXEEXT)
+	$(LINK) $(LogLibcF64_OBJECTS) $(LogLibcF64_LDADD) $(LIBS)
+LogLibcF64Infinity$(EXEEXT): $(LogLibcF64Infinity_OBJECTS) $(LogLibcF64Infinity_DEPENDENCIES) $(EXTRA_LogLibcF64Infinity_DEPENDENCIES) 
+	@rm -f LogLibcF64Infinity$(EXEEXT)
+	$(LINK) $(LogLibcF64Infinity_OBJECTS) $(LogLibcF64Infinity_LDADD) $(LIBS)
+LogLibcF64Nan$(EXEEXT): $(LogLibcF64Nan_OBJECTS) $(LogLibcF64Nan_DEPENDENCIES) $(EXTRA_LogLibcF64Nan_DEPENDENCIES) 
+	@rm -f LogLibcF64Nan$(EXEEXT)
+	$(LINK) $(LogLibcF64Nan_OBJECTS) $(LogLibcF64Nan_LDADD) $(LIBS)
 Mul32$(EXEEXT): $(Mul32_OBJECTS) $(Mul32_DEPENDENCIES) $(EXTRA_Mul32_DEPENDENCIES) 
 	@rm -f Mul32$(EXEEXT)
 	$(LINK) $(Mul32_OBJECTS) $(Mul32_LDADD) $(LIBS)
@@ -1153,6 +1200,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64SNaN.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64SOverflow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/F64toI64SOverflowNeg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogLibcF32.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogLibcF32Infinity.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogLibcF32Nan.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogLibcF64.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogLibcF64Infinity.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LogLibcF64Nan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mul32.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mul32Overflow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Mul64.Po@am__quote@

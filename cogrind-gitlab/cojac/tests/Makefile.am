@@ -50,6 +50,12 @@ EXTRA_DIST =  Add32.stderr.exp Add32.vgtest \
               F64toI64SNaN.stderr.exp F64toI64SNaN.vgtest \
               F64toI64SOverflow.stderr.exp F64toI64SOverflow.vgtest \
               F64toI64SOverflowNeg.stderr.exp F64toI64SOverflowNeg.vgtest \
+              LogLibcF64.stderr.exp LogLibcF64.vgtest \
+              LogLibcF64Infinity.stderr.exp LogLibcF64Infinity.vgtest \
+              LogLibcF64Nan.stderr.exp LogLibcF64Nan.vgtest \
+              LogLibcF32.stderr.exp LogLibcF32.vgtest \
+              LogLibcF32Infinity.stderr.exp LogLibcF32Infinity.vgtest \
+              LogLibcF32Nan.stderr.exp LogLibcF32Nan.vgtest \
               Mul32.stderr.exp Mul32.vgtest \
               Mul32Overflow.stderr.exp Mul32Overflow.vgtest \
               Mul64.stderr.exp Mul64.vgtest \
@@ -132,6 +138,12 @@ check_PROGRAMS =  Add32 \
                   F64toI64SNaN \
                   F64toI64SOverflow \
                   F64toI64SOverflowNeg \
+                  LogLibcF64 \
+                  LogLibcF64Infinity \
+                  LogLibcF64Nan \
+                  LogLibcF32 \
+                  LogLibcF32Infinity \
+                  LogLibcF32Nan \
                   Mul32 \
                   Mul32Overflow \
                   Mul64 \
