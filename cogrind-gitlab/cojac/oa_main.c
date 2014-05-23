@@ -7,8 +7,8 @@
    This file is part of Cojac-grind, which watches arithmetic operations to
    detect overflows, cancellation, smearing, and other suspicious phenomena.
 
-   Copyright (C) 2011-2011 Frederic Bapst
-      frederic.bapst@gmail.com
+   Copyright (C) 2011-2014 Frederic Bapst & Luis Domingues
+      frederic.bapst@gmail.com, domigues.luis@gmail.com
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -379,7 +379,8 @@ static OA_InstrumentContext contextForIop(Addr64 cia, IROp op) {
   UInt     line;
   HChar    filename[COJAC_FILE_LEN];
   HChar    fctname[COJAC_FCT_LEN];
-  Int     totalLen=COJAC_FILE_LEN+COJAC_FCT_LEN+10;
+  //Int     totalLen=COJAC_FILE_LEN+COJAC_FCT_LEN+10;  //Memory overflow
+  Int totalLen = COJAC_FCT_LEN;
   get_debug_info((Addr)cia, filename, fctname, &line, &(ic->isLocated));
   ic->string = VG_(malloc)(thisFct, totalLen);
   ic->addr = (Addr)cia;
@@ -396,7 +397,8 @@ static OA_InstrumentContext contextForCall(Addr64 cia, OA_Call call) {
   UInt     line;
   HChar    filename[COJAC_FILE_LEN];
   HChar    fctname[COJAC_FCT_LEN];
-  Int     totalLen=COJAC_FILE_LEN+COJAC_FCT_LEN+10;
+  //Int     totalLen=COJAC_FILE_LEN+COJAC_FCT_LEN+10;  //Memory overflow
+  Int totalLen = COJAC_FCT_LEN;
   get_debug_info((Addr)cia, filename, fctname, &line, &(ic->isLocated));
   ic->string = VG_(malloc)(thisFct, totalLen);
   ic->addr = (Addr)cia;
@@ -489,7 +491,7 @@ static void instrument_Triop(IRSB* sb, IRStmt* st, Addr64 cia) {
   }
 }
 
-/* Instrument a function call with one F64 as parameter.*/
+/* Instrument a function call with one F64 as parameter. amd64 only*/
 static void instrument_Call_1x_F64(IRSB* sb, Addr64 cia, OA_Call call){
   HChar thisFct[]="instrument_function_call";
   IROp op = Iop_LAST;
@@ -513,7 +515,7 @@ static void instrument_Call_1x_F64(IRSB* sb, Addr64 cia, OA_Call call){
   addStmtToIRSB(sb, IRStmt_Dirty(di));
 }
 
-/* Instrument a function call with one F32 as parameter.*/
+/* Instrument a function call with one F32 as parameter. amd64 only*/
 static void instrument_Call_1x_F32(IRSB* sb, Addr64 cia, OA_Call call){
   HChar thisFct[]="instrument_function_call";
   IROp op = Iop_LAST;
@@ -709,7 +711,7 @@ static void oa_pre_clo_init(void) {
   VG_(details_version)         ("0.0.1");
   VG_(details_description)     ("the Cojac-grind numerical problem sniffer");
   VG_(details_copyright_author)(
-      "Copyright (C) 2011-2011, and GNU GPL'd, by Fred Bapst.");
+      "Copyright (C) 2011-2014, and GNU GPL'd, by Fred Bapst et al.");
   VG_(details_bug_reports_to)  (VG_BUGS_TO);
 
   VG_(basic_tool_funcs)        (

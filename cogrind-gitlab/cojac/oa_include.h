@@ -8,8 +8,8 @@
    This file is part of Cojac-grind, which watches arithmetic operations to
    detect overflows, cancellation, smearing, and other suspicious phenomena.
 
-   Copyright (C) 2011-2011 Frederic Bapst
-      frederic.bapst@gmail.com
+   Copyright (C) 2011-2014 Frederic Bapst & Luis Domingues
+      frederic.bapst@gmail.com, domigues.luis@gmail.com
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -81,7 +81,7 @@ typedef enum {
 
 
 #define COJAC_FILE_LEN  4096
-#define COJAC_FCT_LEN   256
+#define COJAC_FCT_LEN   25
 
 typedef struct {
 	Addr  addr;
