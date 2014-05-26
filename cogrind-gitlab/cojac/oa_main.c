@@ -579,7 +579,8 @@ static void oa_print_usage(void) {
   VG_(printf)("    --castToI16=yes|no    Watch int to short typecasting [yes]\n");
   VG_(printf)("    --castFromF64=yes|no    Watch float or double to int or long typecasting [yes]\n");
   VG_(printf)("    --stacktrace=<number> Depth of the stacktrace [1] \n");
-  VG_(printf)("    --mathOp=yes|no   Watch for mathematical calls [yes]\n");
+  VG_(printf)("    --mathStacktrace=<number> Depth of the stacktrace for errors from calls to mathematical functions [2] \n");
+  VG_(printf)("    --mathOp=yes|no   Watch for mathematical operations and calls [yes]\n");
 }
 static void oa_print_debug_usage(void) {
 }
@@ -588,6 +589,8 @@ static Bool oa_process_cmd_line_option(const HChar* argv) {
   if        (VG_BOOL_CLO(argv, "--aggr",       OA_(options).isAggr)) {
     return True;
   } else if (VG_INT_CLO(argv, "--stacktrace", OA_(options).stacktraceDepth)) {
+    return True;
+  } else if (VG_INT_CLO(argv, "--mathStacktrace", OA_(options).stacktraceCallDepth)) {
     return True;
   } else if (VG_BOOL_CLO(argv, "--i32", OA_(options).i32)) {
     return True;

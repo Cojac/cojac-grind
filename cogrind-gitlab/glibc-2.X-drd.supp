@@ -36,6 +36,7 @@
    fun:random
 }
 
+
 #
 # Suppression patterns for libstdc++, the implementation of the standard C++
 # library included with the gcc compiler.
