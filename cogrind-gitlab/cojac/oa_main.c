@@ -46,7 +46,6 @@
 #define OA_IOP_MAX 1000    //Iop_Rsqrte32x4-Iop_INVALID = ~752
 #define OA_CALL_MAX 10
 #define FP_XMM0_REG 224   //Is the same for F64 or F32
-#define MAX_NAME_LENGTH 50
 
 static Iop_Cojac_attributes oa_all_iop_attr[OA_IOP_MAX];
 static Call_Cojac_attributes oa_all_call_attr[OA_CALL_MAX];
@@ -185,7 +184,6 @@ static Bool dropV128HiPart(IROp op) {
 }
 
 /*--------------------------------------------------------------------*/
-//Changes Char to HChar to use with Valgrind 3.9
 static void get_debug_info(Addr instr_addr, HChar file[COJAC_FILE_LEN],
                            HChar fn[COJAC_FCT_LEN], UInt* line, Bool* isLocated) {
   HChar dir[COJAC_FILE_LEN];
@@ -379,15 +377,13 @@ static OA_InstrumentContext contextForIop(Addr64 cia, IROp op) {
   UInt     line;
   HChar    filename[COJAC_FILE_LEN];
   HChar    fctname[COJAC_FCT_LEN];
-  //Int     totalLen=COJAC_FILE_LEN+COJAC_FCT_LEN+10;  //Memory overflow
-  Int totalLen = COJAC_FCT_LEN;
   get_debug_info((Addr)cia, filename, fctname, &line, &(ic->isLocated));
-  ic->string = VG_(malloc)(thisFct, totalLen);
+  ic->string = strFromIROp(op);
   ic->addr = (Addr)cia;
   ic->op=op;
   ic->type = IsIROp;
   //VG_(sprintf)(ic->string, "%s %s(), %s:%d", strFromIROp(op), fctname, filename, line);
-  VG_(sprintf)(ic->string, "%s", strFromIROp(op));
+  //VG_(sprintf)(ic->string, "%s", strFromIROp(op));
   return ic;
 }
 //-----------------------------------------------------------------
@@ -397,15 +393,13 @@ static OA_InstrumentContext contextForCall(Addr64 cia, OA_Call call) {
   UInt     line;
   HChar    filename[COJAC_FILE_LEN];
   HChar    fctname[COJAC_FCT_LEN];
-  //Int     totalLen=COJAC_FILE_LEN+COJAC_FCT_LEN+10;  //Memory overflow
-  Int totalLen = COJAC_FCT_LEN;
   get_debug_info((Addr)cia, filename, fctname, &line, &(ic->isLocated));
-  ic->string = VG_(malloc)(thisFct, totalLen);
+  ic->string = strFromOACall(call);
   ic->addr = (Addr)cia;
   ic->call=call;
   ic->type = IsCall;
   //VG_(sprintf)(ic->string, "%s %s(), %s:%d", strFromIROp(op), fctname, filename, line);
-  VG_(sprintf)(ic->string, "%s", strFromOACall(call));
+  //VG_(sprintf)(ic->string, "%s", strFromOACall(call));
   return ic;
 }
 
@@ -491,7 +485,8 @@ static void instrument_Triop(IRSB* sb, IRStmt* st, Addr64 cia) {
   }
 }
 
-/* Instrument a function call with one F64 as parameter. amd64 only*/
+/* Instrument a function call with one F64 as parameter by adding a tmp var
+with the param value, and passing it to a dirty call. amd64 only*/
 static void instrument_Call_1x_F64(IRSB* sb, Addr64 cia, OA_Call call){
   HChar thisFct[]="instrument_function_call";
   IROp op = Iop_LAST;
@@ -515,7 +510,8 @@ static void instrument_Call_1x_F64(IRSB* sb, Addr64 cia, OA_Call call){
   addStmtToIRSB(sb, IRStmt_Dirty(di));
 }
 
-/* Instrument a function call with one F32 as parameter. amd64 only*/
+/* Instrument a function call with one F32 as parameter by adding a tmp var
+with the param value, and passing it to a dirty call. amd64 only*/
 static void instrument_Call_1x_F32(IRSB* sb, Addr64 cia, OA_Call call){
   HChar thisFct[]="instrument_function_call";
   IROp op = Iop_LAST;
@@ -540,8 +536,8 @@ static void instrument_Call_1x_F32(IRSB* sb, Addr64 cia, OA_Call call){
 }
 
 static void check_need_call_intrumentation(IRSB* sb, Addr64 cia){
-  HChar fnname[MAX_NAME_LENGTH];
-  HChar ifname[MAX_NAME_LENGTH];
+  HChar fnname[COJAC_FCT_LEN];
+  HChar ifname[COJAC_FCT_LEN];
   if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
     int i;
     for(i = 0; i < OA_CALL_MAX; i++){

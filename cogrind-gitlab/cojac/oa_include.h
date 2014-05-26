@@ -80,8 +80,8 @@ typedef enum {
 } OA_Param_Type;
 
 
-#define COJAC_FILE_LEN  4096
-#define COJAC_FCT_LEN   25
+#define COJAC_FILE_LEN  1024
+#define COJAC_FCT_LEN   50
 
 typedef struct {
 	Addr  addr;
