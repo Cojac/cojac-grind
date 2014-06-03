@@ -574,8 +574,8 @@ static void oa_print_usage(void) {
   VG_(printf)("    --i32=yes|no   Watch 32bits int operations [yes]\n");
   VG_(printf)("    --f32=yes|no   Watch 32bits float operations [yes]\n");
   VG_(printf)("    --f64=yes|no   Watch 64bits double operations [yes]\n");
-  VG_(printf)("    --f64_Ulp_Factor=<number>  Ulp factor for cancellation and comparaisons on doubles [4.0]\n");
-  VG_(printf)("    --f32_Ulp_Factor=<number>  Ulp factor for cancellation and comparaisons on floats [4.0]\n");
+  VG_(printf)("    --f64_Ulp_Factor=<number>  Ulp factor for cancellation and comparisons on doubles [4.0]\n");
+  VG_(printf)("    --f32_Ulp_Factor=<number>  Ulp factor for cancellation and comparisons on floats [4.0]\n");
   VG_(printf)("    --castToI16=yes|no    Watch int to short typecasting [yes]\n");
   VG_(printf)("    --castFromF64=yes|no    Watch float or double to int or long typecasting [yes]\n");
   VG_(printf)("    --stacktrace=<number> Depth of the stacktrace [1] \n");
@@ -687,8 +687,6 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
               instrument_Triop( sbOut, st, cia );        break;
           case Iex_Qop: break;
             //instrument_Qop( sbOut, expr, type );     break;
-        //case Iex_Mux0X:  TODO watch for replacement in Valgrind 3.9
-            //instrument_Muxop( sbOut, expr, type );   break;
           default: break;
         } // switch
         break;
@@ -707,7 +705,7 @@ static void oa_fini(Int exitcode) {
 static void oa_pre_clo_init(void) {
   oa_set_default_options();
   VG_(details_name)            ("Cojac");
-  VG_(details_version)         ("0.0.1");
+  VG_(details_version)         ("0.1");
   VG_(details_description)     ("the Cojac-grind numerical problem sniffer");
   VG_(details_copyright_author)(
       "Copyright (C) 2011-2014, and GNU GPL'd, by Fred Bapst et al.");

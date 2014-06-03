@@ -124,7 +124,7 @@ UInt OA_(update_Error_extra) ( Error* err ) {
 }
 
 Bool OA_(is_recognised_suppression) ( const HChar* name, Supp* su ) {
-  return False;
+  return True;
 }
 
 Bool OA_(read_extra_suppression_info) ( Int fd, HChar** buf, SizeT* nBuf, Int* lineno, Supp *su ) {
@@ -132,7 +132,7 @@ Bool OA_(read_extra_suppression_info) ( Int fd, HChar** buf, SizeT* nBuf, Int* l
 }
 
 Bool OA_(error_matches_suppression) ( Error* err, Supp* su ) {
-  return False;
+  return True;
 }
 
 Bool OA_(get_extra_suppression_info) ( Error* err, /*OUT*/HChar* buf, Int nBuf ) {
@@ -146,7 +146,7 @@ Bool OA_(get_extra_suppression_use) ( Error* err, /*OUT*/HChar* buf, Int nBuf ) 
 void OA_(update_extra_suppression_use) (Error* err, Supp* su){}
 
 const HChar* OA_(get_error_name) ( Error* err ) {
-  return NULL;
+  return VG_(get_error_string)(err);
 }
 
 /*--------------------------------------------------------------------*/
