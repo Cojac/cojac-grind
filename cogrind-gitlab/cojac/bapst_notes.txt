@@ -3,4 +3,5 @@ fred@fred-fubunt:~/workspace/cogrind$ valgrind --trace-flags=00100000 --trace-no
 
 ./vg-in-place --tool=cojac ../HelloCojac/Debug/HelloCojac
 
-
+make regtest cojac
+time perl tests/vg_regtest cojac

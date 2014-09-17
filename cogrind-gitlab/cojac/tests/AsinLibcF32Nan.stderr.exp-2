@@ -1,0 +1,2 @@
+Cojac: NaN, asinf   at 0x...: asinf (w_asinf.c:28)
+   by 0x...: main (AsinLibcF32Nan.c:5)

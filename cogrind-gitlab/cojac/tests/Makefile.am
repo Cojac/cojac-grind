@@ -179,5 +179,4 @@ check_PROGRAMS =  Add32 \
                   SubF64Nan \
                   SubF64Pre
 
-
-AM_LDFLAGS = -lm
+LDADD = -lm

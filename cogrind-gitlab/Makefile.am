@@ -40,8 +40,9 @@ SUPP_FILES = \
 	darwin9.supp darwin9-drd.supp \
 	darwin10.supp darwin10-drd.supp \
 	darwin11.supp darwin12.supp \
-	cojac-glibc.supp \
 	bionic.supp
+#	cojac-glibc.supp 
+
 DEFAULT_SUPP_FILES = @DEFAULT_SUPP@
 
 # We include all the base .supp files in the distribution, but not
