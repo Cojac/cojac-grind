@@ -74,7 +74,7 @@ clean-noinst_DSYMS:
 	  rm -rf $$f.dSYM; \
 	done
 
-#----------------------------------------------------------------------------
+#--------------------------------------------------make --------------------------
 # Flags
 #----------------------------------------------------------------------------
 
@@ -83,7 +83,7 @@ clean-noinst_DSYMS:
 # -fno-builtin is important for defeating LLVM's idiom recognition
 # that somehow causes VG_(memset) to get into infinite recursion.
 AM_CFLAGS_BASE = \
-	-O2 -g \
+	-O0 -g \
 	-Wall \
 	-Wmissing-prototypes \
 	-Wshadow \
@@ -92,7 +92,8 @@ AM_CFLAGS_BASE = \
 	-Wmissing-declarations \
 	@FLAG_W_NO_FORMAT_ZERO_LENGTH@ \
 	-fno-strict-aliasing \
-	-fno-builtin
+	-fno-builtin \
+	-frounding-math
 
 # These flags are used for building the preload shared objects.
 # The aim is to give reasonable performance but also to have good
@@ -176,6 +177,9 @@ AM_FLAG_M3264_MIPS32_LINUX = @FLAG_M32@
 AM_CFLAGS_MIPS32_LINUX     = @FLAG_M32@ $(AM_CFLAGS_BASE) -mips32
 AM_CCASFLAGS_MIPS32_LINUX  = @FLAG_M32@ -mips32 -g
 
+AM_FLAG_M3264_MIPS64_LINUX = @FLAG_M64@
+AM_CFLAGS_MIPS64_LINUX     = @FLAG_M64@ $(AM_CFLAGS_BASE) -mips64
+AM_CCASFLAGS_MIPS64_LINUX  = @FLAG_M64@ -mips64 -g
 
 # Flags for the primary target.  These must be used to build the
 # regtests and performance tests.  In fact, these must be used to
@@ -214,4 +218,5 @@ PRELOAD_LDFLAGS_X86_DARWIN   = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch i386
 PRELOAD_LDFLAGS_AMD64_DARWIN = $(PRELOAD_LDFLAGS_COMMON_DARWIN) -arch x86_64
 PRELOAD_LDFLAGS_S390X_LINUX  = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 PRELOAD_LDFLAGS_MIPS32_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M32@
+PRELOAD_LDFLAGS_MIPS64_LINUX = $(PRELOAD_LDFLAGS_COMMON_LINUX) @FLAG_M64@
 

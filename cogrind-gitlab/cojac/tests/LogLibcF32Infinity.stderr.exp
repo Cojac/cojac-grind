@@ -1,0 +1,4 @@
+Cojac: Infinity, logf   at 0x...: logf (w_logf.c:34)
+   by 0x...: main (LogLibcF32Infinity.c:5)
+Cojac: DivByZero, Div32F0x4   at 0x...: __ieee754_logf (e_logf.c:60)
+Cojac: Overflow, F64toF32   at 0x...: logf (w_logf.c:43)

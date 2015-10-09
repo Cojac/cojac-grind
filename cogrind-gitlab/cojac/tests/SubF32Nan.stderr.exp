@@ -1,0 +1,3 @@
+Cojac: DivByZero, Div32F0x4   at 0x...: main (SubF32Nan.c:4)
+Cojac: DivByZero, Div32F0x4   at 0x...: main (SubF32Nan.c:5)
+Cojac: NaN, Sub32F0x4   at 0x...: main (SubF32Nan.c:6)

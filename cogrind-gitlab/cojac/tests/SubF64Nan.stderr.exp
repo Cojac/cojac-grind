@@ -1,0 +1,3 @@
+Cojac: DivByZero, Div64F0x2   at 0x...: main (SubF64Nan.c:4)
+Cojac: DivByZero, Div64F0x2   at 0x...: main (SubF64Nan.c:5)
+Cojac: NaN, Sub64F0x2   at 0x...: main (SubF64Nan.c:6)

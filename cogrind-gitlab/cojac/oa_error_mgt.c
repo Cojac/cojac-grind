@@ -7,8 +7,8 @@
    This file is part of Cojac-grind, which watches arithmetic operations to
    detect overflows, cancellation, smearing, and other suspicious phenomena.
 
-   Copyright (C) 2011-2011 Frederic Bapst
-      frederic.bapst@gmail.com
+   Copyright (C) 2011-2014 Frederic Bapst & Luis Domingues
+      frederic.bapst@gmail.com, domigues.luis@gmail.com
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -56,6 +56,7 @@ static const char * strFromErrorKind(ErrorKind errKind) {
     case Err_Math:            return "Math";
     case Err_DivByZero:       return "DivByZero";
     case Err_Underflow:       return "Underflow";
+    case Err_CloseComparison: return "CloseComparison";
     default:                  return "Unknown error kind...";
     //VG_(message)(Vg_UserMsg, "strFromErrorKind %d ", errKind);
   }
@@ -75,6 +76,7 @@ void OA_(maybe_error)(ErrorKind ekind, OA_InstrumentContext inscon)  {
 	if (nErrors<nErrorsMax) {
     extra=VG_(malloc)(thisFct, sizeof(cojacErrorExtra_));
     extra->tid=VG_(get_running_tid)();
+    extra->type = inscon->type;
   } else if (nErrors%(10L*nErrorsMax)==0) {
   	VG_(message)(Vg_UserMsg, "A lot of errors: %" PRIu64 "...\n", nErrors);
   }
@@ -106,33 +108,45 @@ void OA_(pp_Error) ( Error* err ) {
   ErrorKind errKind = VG_(get_error_kind)(err);
   VG_(message)(Vg_UserMsg, "Cojac: %s, %s", strFromErrorKind(errKind), detail);
   cojacErrorExtra extra = (cojacErrorExtra)( VG_(get_error_extra)(err) );
-  Int depth=OA_(options).stacktraceDepth;
+  Int depth;
+  switch(extra->type){
+    case IsCall: depth=OA_(options).stacktraceCallDepth; break;
+    case IsIROp: depth=OA_(options).stacktraceDepth; break;
+    default: depth=1; break;
+  }
   if (depth==0 || extra==NULL) return;
   VG_(get_and_pp_StackTrace)(extra->tid, depth);  // This stupidly adds an extra newline...
+  VG_(free)(extra);
 }
 
 UInt OA_(update_Error_extra) ( Error* err ) {
   return 0;
 }
 
-Bool OA_(is_recognised_suppression) ( Char* name, Supp* su ) {
-  return False;
+Bool OA_(is_recognised_suppression) ( const HChar* name, Supp* su ) {
+  return True;
 }
 
-Bool OA_(read_extra_suppression_info) ( Int fd, Char** buf, SizeT* nBuf, Supp *su ) {
+Bool OA_(read_extra_suppression_info) ( Int fd, HChar** buf, SizeT* nBuf, Int* lineno, Supp *su ) {
   return True;
 }
 
 Bool OA_(error_matches_suppression) ( Error* err, Supp* su ) {
+  return True;
+}
+
+Bool OA_(get_extra_suppression_info) ( Error* err, /*OUT*/HChar* buf, Int nBuf ) {
   return False;
 }
 
-Bool OA_(get_extra_suppression_info) ( Error* err, /*OUT*/Char* buf, Int nBuf ) {
-  return False;
+Bool OA_(get_extra_suppression_use) ( Error* err, /*OUT*/HChar* buf, Int nBuf ) {
+	return False;
 }
 
-Char* OA_(get_error_name) ( Error* err ) {
-  return NULL;
+void OA_(update_extra_suppression_use) (Error* err, Supp* su){}
+
+const HChar* OA_(get_error_name) ( Error* err ) {
+  return VG_(get_error_string)(err);
 }
 
 /*--------------------------------------------------------------------*/

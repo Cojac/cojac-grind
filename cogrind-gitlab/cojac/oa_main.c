@@ -7,8 +7,8 @@
    This file is part of Cojac-grind, which watches arithmetic operations to
    detect overflows, cancellation, smearing, and other suspicious phenomena.
 
-   Copyright (C) 2011-2011 Frederic Bapst
-      frederic.bapst@gmail.com
+   Copyright (C) 2011-2014 Frederic Bapst & Luis Domingues
+      frederic.bapst@gmail.com, domigues.luis@gmail.com
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -38,12 +38,17 @@
 #include "pub_tool_options.h"
 #include "pub_tool_mallocfree.h"
 #include "pub_tool_machine.h"     // VG_(fnptr_to_fnentry)
+#include "pub_tool_threadstate.h"
+#include "libvex_guest_amd64.h"
 #include "oa_include.h"
 #include "limits.h"
 /*--------------------------------------------------------------------*/
 #define OA_IOP_MAX 1000    //Iop_Rsqrte32x4-Iop_INVALID = ~752
+#define OA_CALL_MAX 10
+#define FP_XMM0_REG 224   //Is the same for F64 or F32
 
 static Iop_Cojac_attributes oa_all_iop_attr[OA_IOP_MAX];
+static Call_Cojac_attributes oa_all_call_attr[OA_CALL_MAX];
 static IRType thisWordWidth;
 cojacOptions OA_(options);
 /*--------------------------------------------------------------------*/
@@ -53,11 +58,27 @@ Iop_Cojac_attributes* OA_(get_Iop_struct)(IROp op) {
   return &(oa_all_iop_attr[op-Iop_INVALID]);
 }
 
+Call_Cojac_attributes* OA_(get_Call_struct)(OA_Call call) {
+  if (call-Call_INVALID >= OA_CALL_MAX)
+    VG_(tool_panic)("Too many Calls...");
+  return &(oa_all_call_attr[call-Call_INVALID]);
+}
+
 static void init_iop(IROp op, const char* name, void* callI32, void* callI64) {
+  oa_all_iop_attr[op-Iop_INVALID].op=op;
   oa_all_iop_attr[op-Iop_INVALID].name=name;
   oa_all_iop_attr[op-Iop_INVALID].callbackI32=callI32;
   oa_all_iop_attr[op-Iop_INVALID].callbackI64=callI64;
 }
+
+static void init_call(OA_Call call, const char* name, void* callI32, void* callI64, OA_Param_Type pType) {
+  oa_all_call_attr[call-Call_INVALID].call=call;
+  oa_all_call_attr[call-Call_INVALID].name=name;
+  oa_all_call_attr[call-Call_INVALID].callbackI32=callI32;
+  oa_all_call_attr[call-Call_INVALID].callbackI64=callI64;
+  oa_all_call_attr[call-Call_INVALID].paramType=pType;
+}
+
 
 static void populate_iop_struct(void) {
   Iop_Cojac_attributes a;
@@ -90,12 +111,22 @@ static void populate_iop_struct(void) {
   if (OA_(options).castToI16) {
     init_iop(Iop_32to16,  "32to16", oa_callbackI32_1x32, oa_callbackI64_1x32);
   }
+  
+  if (OA_(options).castFromF64) {
+    init_iop(Iop_F64toI32S, "F64toI32S",  oa_callbackI64_1xI32_1xF64, oa_callbackI64_1xI32_1xF64);
+    init_iop(Iop_F64toI64S, "F64toI64S",  oa_callbackI64_1xI32_1xF64, oa_callbackI64_1xI32_1xF64);
+    init_iop(Iop_F64toF32, "F64toF32",  oa_callbackI64_1xI32_1xF64, oa_callbackI64_1xI32_1xF64);
+  }
 
   if (OA_(options).f32) {
     init_iop(Iop_AddF32,  "AddF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
     init_iop(Iop_SubF32,  "SubF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
     init_iop(Iop_MulF32,  "MulF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
     init_iop(Iop_DivF32,  "DivF32", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    init_iop(Iop_Add32F0x4,  "Add32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    init_iop(Iop_Sub32F0x4,  "Sub32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    init_iop(Iop_Mul32F0x4,  "Mul32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
+    init_iop(Iop_Div32F0x4,  "Div32F0x4", oa_callbackI32_2xF32, oa_callbackI64_2xF32);
   }
 
   if (OA_(options).f64) {
@@ -111,6 +142,33 @@ static void populate_iop_struct(void) {
     init_iop(Iop_Mul64Fx2, "Mul64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
     init_iop(Iop_Div64F0x2,"Div64F0x2", oa_callbackI32_2xF64, oa_callbackI64_2xF64);
     init_iop(Iop_Div64Fx2, "Div64Fx2",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
+    init_iop(Iop_CmpF64, "CmpF64",  oa_callbackI32_2xF64, oa_callbackI64_2xF64);
+  }
+  
+  if (OA_(options).mathOp) {
+    init_iop(Iop_Sqrt64Fx2, "Sqrt64Fx2",  oa_callbackI32_1xF64, oa_callbackI64_1xF64);
+  }
+}
+
+/*On init call, the name og the function need to be the same as the real function name.
+The matching is done on it. See MAX_NAME_LENGTH define for max length function name*/
+static void populate_call_struct(void) {
+  Call_Cojac_attributes a;
+  a.callbackI32=NULL; a.callbackI64=NULL; a.name=""; a.occurrences=0;
+  int i=0;
+  for(i=0; i<OA_CALL_MAX; i++)
+    oa_all_call_attr[i]=a;
+  
+  if (OA_(options).mathOp) {
+    //1xF64 param
+    init_call(Call_Asin, "asin",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64, Call_1xF64);
+    init_call(Call_Sqrt, "sqrt",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64, Call_1xF64);
+    init_call(Call_Log, "log",  oa_callbackI32_call_1xF64, oa_callbackI64_call_1xF64, Call_1xF64);
+    
+    //1xF32 param
+    init_call(Call_Asinf, "asinf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32, Call_1xF32);
+    init_call(Call_Sqrtf, "sqrtf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32, Call_1xF32);
+    init_call(Call_Logf, "logf",  oa_callbackI32_call_1xF32, oa_callbackI64_call_1xF32, Call_1xF32);
   }
 }
 
@@ -126,9 +184,9 @@ static Bool dropV128HiPart(IROp op) {
 }
 
 /*--------------------------------------------------------------------*/
-static void get_debug_info(Addr instr_addr, Char file[COJAC_FILE_LEN],
-                           Char fn[COJAC_FCT_LEN], Int* line, Bool* isLocated) {
-  Char dir[COJAC_FILE_LEN];
+static void get_debug_info(Addr instr_addr, HChar file[COJAC_FILE_LEN],
+                           HChar fn[COJAC_FCT_LEN], UInt* line, Bool* isLocated) {
+  HChar dir[COJAC_FILE_LEN];
   Bool found_dirname;
   Bool found_file_line = VG_(get_filename_linenum)(
       instr_addr,
@@ -166,6 +224,18 @@ static void* callbackFromIROp(IROp op) {
     return OA_(get_Iop_struct)(op)->callbackI32;
   }
 }
+
+//-----------------------------------------------------------------
+static void* callbackFromOACall(OA_Call call){
+  if (thisWordWidth==Ity_I32) {
+    return OA_(get_Call_struct)(call)->callbackI32;
+  } else if (thisWordWidth==Ity_I64) {
+    return OA_(get_Call_struct)(call)->callbackI64;
+  } else {
+    VG_(tool_panic)("unsupported architecture...");
+    return OA_(get_Call_struct)(call)->callbackI32;
+  }
+}
 //-----------------------------------------------------------------
 static const char * strFromIROp(IROp op) {
   return OA_(get_Iop_struct)(op)->name;
@@ -175,12 +245,27 @@ static const char * strFromIROp(IROp op) {
 static void updateStats(IROp op) {
   OA_(get_Iop_struct)(op)->occurrences++;
 }
+
+//-----------------------------------------------------------------
+static const char * strFromOACall(OA_Call call) {
+  return OA_(get_Call_struct)(call)->name;
+}
+
+//-----------------------------------------------------------------
+static void updateStatsCall(OA_Call call) {
+  OA_(get_Call_struct)(call)->occurrences++;
+}
 //-----------------------------------------------------------------
 static void print_instrumentation_stats(void) {
   VG_(message)(Vg_UserMsg, "Cojac instrumentation statistics:\n");
   Int i=0;
   for(i=0; i<OA_IOP_MAX; i++) {
     Iop_Cojac_attributes a=oa_all_iop_attr[i];
+    if (a.occurrences >0)
+      VG_(message)(Vg_UserMsg, "%s \t %lld \n", a.name, a.occurrences);
+  }
+  for(i=0; i<OA_CALL_MAX; i++){
+    Call_Cojac_attributes a=oa_all_call_attr[i];
     if (a.occurrences >0)
       VG_(message)(Vg_UserMsg, "%s \t %lld \n", a.name, a.occurrences);
   }
@@ -235,6 +320,9 @@ static void packToI64 ( IRSB* sb, IRExpr* e, IRExpr* res[2], IROp irop) {
     case Ity_I16:  res[0]= IRExpr_Unop(Iop_16Uto64,e); break;
     case Ity_I32:  res[0]= IRExpr_Unop(Iop_32Uto64,e); break;
     case Ity_F32:  e = IRExpr_Unop(Iop_ReinterpF32asI32,e);
+                   IRTemp aux= newIRTemp(sb->tyenv, Ity_I32);
+                   addStmtToIRSB(sb, IRStmt_WrTmp(aux, e));
+                   e=IRExpr_RdTmp(aux);
                    res[0]= IRExpr_Unop(Iop_32Uto64,e);  break;
     case Ity_I64:  res[0]= e; return;
     case Ity_F64:  res[0]= IRExpr_Unop(Iop_ReinterpF64asI64,e); break;
@@ -283,30 +371,46 @@ static Bool not_worth_watching(OA_InstrumentContext ic) {
   return !ic->isLocated;
 }
 //-----------------------------------------------------------------
-static OA_InstrumentContext contextFor(Addr64 cia, IROp op) {
-  Char thisFct[]="contextFor";
+static OA_InstrumentContext contextForIop(Addr64 cia, IROp op) {
+  HChar thisFct[]="contextForIop";
   OA_InstrumentContext ic=VG_(malloc)(thisFct, sizeof(OA_InstrumentContext_));
-  Int     line;
-  Char    filename[COJAC_FILE_LEN];
-  Char    fctname[COJAC_FCT_LEN];
-  Int     totalLen=COJAC_FILE_LEN+COJAC_FCT_LEN+10;
+  UInt     line;
+  HChar    filename[COJAC_FILE_LEN];
+  HChar    fctname[COJAC_FCT_LEN];
   get_debug_info((Addr)cia, filename, fctname, &line, &(ic->isLocated));
-  ic->string = VG_(malloc)(thisFct, totalLen);
+  ic->string = strFromIROp(op);
   ic->addr = (Addr)cia;
   ic->op=op;
+  ic->type = IsIROp;
   //VG_(sprintf)(ic->string, "%s %s(), %s:%d", strFromIROp(op), fctname, filename, line);
-  VG_(sprintf)(ic->string, "%s", strFromIROp(op));
+  //VG_(sprintf)(ic->string, "%s", strFromIROp(op));
+  return ic;
+}
+//-----------------------------------------------------------------
+static OA_InstrumentContext contextForCall(Addr64 cia, OA_Call call) {
+  HChar thisFct[]="contextForCall";
+  OA_InstrumentContext ic=VG_(malloc)(thisFct, sizeof(OA_InstrumentContext_));
+  UInt     line;
+  HChar    filename[COJAC_FILE_LEN];
+  HChar    fctname[COJAC_FCT_LEN];
+  get_debug_info((Addr)cia, filename, fctname, &line, &(ic->isLocated));
+  ic->string = strFromOACall(call);
+  ic->addr = (Addr)cia;
+  ic->call=call;
+  ic->type = IsCall;
+  //VG_(sprintf)(ic->string, "%s %s(), %s:%d", strFromIROp(op), fctname, filename, line);
+  //VG_(sprintf)(ic->string, "%s", strFromOACall(call));
   return ic;
 }
 
 //-----------------------------------------------------------------
 static void instrument_Unop(IRSB* sb, IRStmt* st, Addr64 cia) {
-  Char thisFct[]="instrument_Unop";
+  HChar thisFct[]="instrument_Unop";
   IRExpr *op = st->Ist.WrTmp.data;
   IROp irop=op->Iex.Unop.op;
   void* f=callbackFromIROp(irop);
   if (f == NULL) return;
-  OA_InstrumentContext inscon=contextFor(cia, irop);
+  OA_InstrumentContext inscon=contextForIop(cia, irop);
   if (not_worth_watching(inscon))
     return;  // filter events that can't be attached to source-code location
   updateStats(inscon->op);
@@ -320,7 +424,7 @@ static void instrument_Unop(IRSB* sb, IRStmt* st, Addr64 cia) {
 //-----------------------------------------------------------------
 /* instruments a Binary Operation Expression in a Ist_WrTmp statement */
 static void instrument_Binop(IRSB* sb, IRStmt* st, IRType type, Addr64 cia) {
-  Char thisFct[]="instrument_Binop";
+  HChar thisFct[]="instrument_Biop";
   IRDirty* di;
   IRExpr** argv;
   IRExpr *op = st->Ist.WrTmp.data;
@@ -328,7 +432,7 @@ static void instrument_Binop(IRSB* sb, IRStmt* st, IRType type, Addr64 cia) {
   IROp irop=op->Iex.Binop.op;
   void* f=callbackFromIROp(irop);
   if (f == NULL) return;
-  OA_InstrumentContext inscon=contextFor(cia, irop);
+  OA_InstrumentContext inscon=contextForIop(cia, irop);
   if (not_worth_watching(inscon))
     return;  // filter events that can't be attached to source-code location
   updateStats(inscon->op);
@@ -351,7 +455,7 @@ static void instrument_Binop(IRSB* sb, IRStmt* st, IRType type, Addr64 cia) {
 //-----------------------------------------------------------------
 /* instruments a Binary Operation Expression in a Ist_WrTmp statement */
 static void instrument_Triop(IRSB* sb, IRStmt* st, Addr64 cia) {
-  Char thisFct[]="instrument_Triop";
+  HChar thisFct[]="instrument_Triop";
   IRDirty* di;
   IRExpr** argv;
   IRExpr *op = st->Ist.WrTmp.data;
@@ -359,25 +463,100 @@ static void instrument_Triop(IRSB* sb, IRStmt* st, Addr64 cia) {
   IROp irop=op->Iex.Triop.details->op;
   void* f=callbackFromIROp(irop);
   if (f == NULL) return;
-  OA_InstrumentContext inscon=contextFor(cia, irop);
+  OA_InstrumentContext inscon=contextForIop(cia, irop);
   if (not_worth_watching(inscon))
     return;  // filter events that can't be attached to source-code location
   updateStats(inscon->op);
   oa_event_expr = mkIRExpr_HWord( (HWord)inscon );
   IRExpr * args1[2];
-  packToI32orI64(sb, op->Iex.Triop.details->arg2, args1, irop);
+  packToI32orI64(sb, op->Iex.Triop.details->arg1, args1, irop);
   IRExpr * args2[2];
-  packToI32orI64(sb, op->Iex.Triop.details->arg3, args2, irop);
-  argv = mkIRExprVec_3(args1[0], args2[0], oa_event_expr);
-  di = unsafeIRDirty_0_N( 3, thisFct, VG_(fnptr_to_fnentry)( f ), argv);
+  packToI32orI64(sb, op->Iex.Triop.details->arg2, args2, irop);
+  IRExpr * args3[2];
+  packToI32orI64(sb, op->Iex.Triop.details->arg3, args3, irop);
+  argv = mkIRExprVec_4(args1[0], args2[0], args3[0], oa_event_expr);
+  di = unsafeIRDirty_0_N( 4, thisFct, VG_(fnptr_to_fnentry)( f ), argv);
   addStmtToIRSB( sb, IRStmt_Dirty(di) );
-  if (args1[1] != NULL) {
+  if (args2[1] != NULL) {
     // we need a second callback for 64bit types
-    argv = mkIRExprVec_3(args1[1], args2[1], oa_event_expr);
-    di = unsafeIRDirty_0_N( 3, thisFct, VG_(fnptr_to_fnentry)( f ), argv);
+    argv = mkIRExprVec_4(args1[1], args2[1], args3[1], oa_event_expr);
+    di = unsafeIRDirty_0_N( 4, thisFct, VG_(fnptr_to_fnentry)( f ), argv);
     addStmtToIRSB( sb, IRStmt_Dirty(di) );
   }
+}
 
+/* Instrument a function call with one F64 as parameter by adding a tmp var
+with the param value, and passing it to a dirty call. amd64 only*/
+static void instrument_Call_1x_F64(IRSB* sb, Addr64 cia, OA_Call call){
+  HChar thisFct[]="instrument_function_call";
+  IROp op = Iop_LAST;
+  IRExpr* oa_event_expr;
+  OA_InstrumentContext inscon=contextForCall(cia, call);
+  oa_event_expr = mkIRExpr_HWord( (HWord)inscon );
+  void *f=callbackFromOACall(call);
+  if (f == NULL) return;
+  updateStatsCall(call);
+  IRTemp irTemp = newIRTemp(sb->tyenv, Ity_F64);
+  IRExpr *get_expr = IRExpr_Get(FP_XMM0_REG, Ity_F64);
+  IRStmt *get_stmt = IRStmt_WrTmp(irTemp, get_expr);
+  addStmtToIRSB(sb, get_stmt);
+  IRExpr *tmp_expr = IRExpr_RdTmp(irTemp);
+  IRExpr* args1[2];
+  IRExpr** argv;
+  IRDirty* di;
+  packToI32orI64(sb, tmp_expr, args1, op);
+  argv = mkIRExprVec_2(args1[0], oa_event_expr);
+  di = unsafeIRDirty_0_N( 2, thisFct, VG_(fnptr_to_fnentry)(f), argv);
+  addStmtToIRSB(sb, IRStmt_Dirty(di));
+}
+
+/* Instrument a function call with one F32 as parameter by adding a tmp var
+with the param value, and passing it to a dirty call. amd64 only*/
+static void instrument_Call_1x_F32(IRSB* sb, Addr64 cia, OA_Call call){
+  HChar thisFct[]="instrument_function_call";
+  IROp op = Iop_LAST;
+  IRExpr* oa_event_expr;
+  OA_InstrumentContext inscon=contextForCall(cia, call);
+  oa_event_expr = mkIRExpr_HWord( (HWord)inscon );
+  void *f=callbackFromOACall(call);
+  if (f == NULL) return;
+  updateStatsCall(call);
+  IRTemp irTemp = newIRTemp(sb->tyenv, Ity_F32);
+  IRExpr *get_expr = IRExpr_Get(FP_XMM0_REG, Ity_F32);
+  IRStmt *get_stmt = IRStmt_WrTmp(irTemp, get_expr);
+  addStmtToIRSB(sb, get_stmt);
+  IRExpr *tmp_expr = IRExpr_RdTmp(irTemp);
+  IRExpr* args1[2];
+  IRExpr** argv;
+  IRDirty* di;
+  packToI32orI64(sb, tmp_expr, args1, op);
+  argv = mkIRExprVec_2(args1[0], oa_event_expr);
+  di = unsafeIRDirty_0_N( 2, thisFct, VG_(fnptr_to_fnentry)(f), argv);
+  addStmtToIRSB(sb, IRStmt_Dirty(di));
+}
+
+static void check_need_call_intrumentation(IRSB* sb, Addr64 cia){
+  HChar fnname[COJAC_FCT_LEN];
+  HChar ifname[COJAC_FCT_LEN];
+  if (VG_(get_fnname_if_entry)(cia, fnname, sizeof(fnname))){
+    int i;
+    for(i = 0; i < OA_CALL_MAX; i++){
+      Call_Cojac_attributes cca = oa_all_call_attr[i];
+      if(cca.callbackI64 == NULL) continue;
+      VG_(strcpy)(ifname, cca.name);
+      if(0 == VG_(strcmp)(fnname, ifname)){
+        switch(cca.paramType){
+          case Call_1xF32: 
+            instrument_Call_1x_F32(sb, cia, cca.call);
+            break;
+          case Call_1xF64: 
+            instrument_Call_1x_F64(sb, cia, cca.call);
+            break;
+          default: break;
+        }
+      }
+    }
+  }
 }
 
 //-----------------------------------------------------------------
@@ -385,6 +564,7 @@ static void instrument_Triop(IRSB* sb, IRStmt* st, Addr64 cia) {
 //-----------------------------------------------------------------
 static void oa_post_clo_init(void) {
   populate_iop_struct();
+  populate_call_struct();
   //VG_(message)(Vg_UserMsg, "Nb of ops %d \n", (Iop_Rsqrte32x4-Iop_INVALID));
 }
 
@@ -394,16 +574,23 @@ static void oa_print_usage(void) {
   VG_(printf)("    --i32=yes|no   Watch 32bits int operations [yes]\n");
   VG_(printf)("    --f32=yes|no   Watch 32bits float operations [yes]\n");
   VG_(printf)("    --f64=yes|no   Watch 64bits double operations [yes]\n");
+  VG_(printf)("    --f64_Ulp_Factor=<number>  Ulp factor for cancellation and comparisons on doubles [4.0]\n");
+  VG_(printf)("    --f32_Ulp_Factor=<number>  Ulp factor for cancellation and comparisons on floats [4.0]\n");
   VG_(printf)("    --castToI16=yes|no    Watch int to short typecasting [yes]\n");
+  VG_(printf)("    --castFromF64=yes|no    Watch float or double to int or long typecasting [yes]\n");
   VG_(printf)("    --stacktrace=<number> Depth of the stacktrace [1] \n");
+  VG_(printf)("    --mathStacktrace=<number> Depth of the stacktrace for errors from calls to mathematical functions [2] \n");
+  VG_(printf)("    --mathOp=yes|no   Watch for mathematical operations and calls [yes]\n");
 }
 static void oa_print_debug_usage(void) {
 }
 
-static Bool oa_process_cmd_line_option(Char* argv) {
+static Bool oa_process_cmd_line_option(const HChar* argv) {
   if        (VG_BOOL_CLO(argv, "--aggr",       OA_(options).isAggr)) {
     return True;
   } else if (VG_INT_CLO(argv, "--stacktrace", OA_(options).stacktraceDepth)) {
+    return True;
+  } else if (VG_INT_CLO(argv, "--mathStacktrace", OA_(options).stacktraceCallDepth)) {
     return True;
   } else if (VG_BOOL_CLO(argv, "--i32", OA_(options).i32)) {
     return True;
@@ -411,11 +598,19 @@ static Bool oa_process_cmd_line_option(Char* argv) {
     return True;
   } else if (VG_BOOL_CLO(argv, "--f64", OA_(options).f64)) {
     return True;
+  } else if (VG_DBL_CLO(argv, "--f64_Ulp_Factor", OA_(options).Ulp_factor_f64)) {
+    return True;
+  } else if (VG_DBL_CLO(argv, "--f32_Ulp_Factor", OA_(options).Ulp_factor_f32)) {
+    return True;
   } else if (VG_BOOL_CLO(argv, "--i16", OA_(options).i16)) {
     return True;
   } else if (VG_BOOL_CLO(argv, "--i64", OA_(options).i64)) {
     return True;
+  } else if (VG_BOOL_CLO(argv, "--castFromF64", OA_(options).castFromF64)) {
+    return True;
   } else if (VG_BOOL_CLO(argv, "--castToI16", OA_(options).castToI16)) {
+    return True;
+  }  else if (VG_BOOL_CLO(argv, "--mathOp", OA_(options).mathOp)) {
     return True;
   }
   return False;
@@ -424,13 +619,18 @@ static Bool oa_process_cmd_line_option(Char* argv) {
 //-----------------------------------------------------------------
 static void oa_set_default_options(void) {
   OA_(options).castToI16    = True;
+  OA_(options).castFromF64  = True;
+  OA_(options).Ulp_factor_f64 = 4.0;
+  OA_(options).Ulp_factor_f32 = 4.0;
   OA_(options).f32          = True;
   OA_(options).f64          = True;
   OA_(options).i16          = True;
   OA_(options).i32          = True;
   OA_(options).i64          = True;
+  OA_(options).mathOp       = True;
   OA_(options).isAggr       = False;
   OA_(options).stacktraceDepth = 1;
+  OA_(options).stacktraceCallDepth = 2;
 }
 
 //-----------------------------------------------------------------
@@ -438,6 +638,7 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
                             IRSB*              sbIn,
                             VexGuestLayout*    layout,
                             VexGuestExtents*   vge,
+                            VexArchInfo *      varch,
                             IRType             gWordTy,
                             IRType             hWordTy ) {
   Int        i;
@@ -462,7 +663,6 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
   }
   st = sbIn->stmts[i];
   cia   = st->Ist.IMark.addr;
-
   for (/*use current i*/; i < sbIn->stmts_used; i++) {
     st = sbIn->stmts[i];
     if (!st || st->tag == Ist_NoOp) continue;
@@ -470,7 +670,9 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
 
     switch (st->tag) {
       case Ist_IMark:
-        cia   = st->Ist.IMark.addr;  break;
+        cia   = st->Ist.IMark.addr;  
+        check_need_call_intrumentation(sbOut, cia);
+        break;
       case Ist_WrTmp:
         // Add a call to trace_load() if --trace-mem=yes.
         expr = st->Ist.WrTmp.data;
@@ -483,10 +685,8 @@ static IRSB* oa_instrument (VgCallbackClosure* closure,
               instrument_Binop( sbOut, st, type, cia );  break;
           case Iex_Triop:
               instrument_Triop( sbOut, st, cia );        break;
-          case Iex_Qop:
+          case Iex_Qop: break;
             //instrument_Qop( sbOut, expr, type );     break;
-          case Iex_Mux0X:
-            //instrument_Muxop( sbOut, expr, type );   break;
           default: break;
         } // switch
         break;
@@ -505,10 +705,10 @@ static void oa_fini(Int exitcode) {
 static void oa_pre_clo_init(void) {
   oa_set_default_options();
   VG_(details_name)            ("Cojac");
-  VG_(details_version)         ("0.0.1");
+  VG_(details_version)         ("0.1");
   VG_(details_description)     ("the Cojac-grind numerical problem sniffer");
   VG_(details_copyright_author)(
-      "Copyright (C) 2011-2011, and GNU GPL'd, by Fred Bapst.");
+      "Copyright (C) 2011-2014, and GNU GPL'd, by Fred Bapst et al.");
   VG_(details_bug_reports_to)  (VG_BUGS_TO);
 
   VG_(basic_tool_funcs)        (
@@ -528,7 +728,9 @@ static void oa_pre_clo_init(void) {
       OA_(read_extra_suppression_info),
       OA_(error_matches_suppression),
       OA_(get_error_name),
-      OA_(get_extra_suppression_info)
+      OA_(get_extra_suppression_info),
+      OA_(get_extra_suppression_use),
+      OA_(update_extra_suppression_use)
   );
 
   VG_(needs_command_line_options) (

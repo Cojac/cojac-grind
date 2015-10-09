@@ -7,8 +7,8 @@
    This file is part of Cojac-grind, which watches arithmetic operations to
    detect overflows, cancellation, smearing, and other suspicious phenomena.
 
-   Copyright (C) 2011-2011 Frederic Bapst
-      frederic.bapst@gmail.com
+   Copyright (C) 2011-2014 Frederic Bapst & Luis Domingues
+      frederic.bapst@gmail.com, domigues.luis@gmail.com
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -101,18 +101,20 @@ static void check_DivS32(Int a, Int b, OA_InstrumentContext inscon) {
   }
 }
 
+//check_32to16 is never watched by Valgrind. The compalitor use the registers to do the cast.
 static void check_32to16(Int a, OA_InstrumentContext inscon) {
   if(a>SHRT_MAX || a<SHRT_MIN)
     OA_(maybe_error)(Err_Cast, inscon);
 }
 
 //-----------------------------------------------------------------
-/* These are called from the instrumented code, just before the operation. */
+/* These are called from the instrumented code, just before the operation. TODOs*/
 //-----------------------------------------------------------------
 
 VG_REGPARM(2) void oa_callbackI32_1x32(Int a, OA_InstrumentContext ic) {
   switch(ic->op) {
-    case Iop_32to16:  check_32to16(a,ic); break;
+    case Iop_32to16:  check_32to16(a,ic);
+    OA_(maybe_error)(Err_Cast, ic); break;
     default: break;
   }
 }

@@ -1,0 +1,12 @@
+desc: (none)
+cmd: ./t
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=150174
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n0: 0 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.

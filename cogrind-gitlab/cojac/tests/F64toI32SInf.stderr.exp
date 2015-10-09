@@ -1,0 +1,3 @@
+Cojac: DivByZero, Div64F0x2   at 0x...: main (F64toI32SInf.c:7)
+Cojac: Overflow, F64toI32S   at 0x...: main (F64toI32SInf.c:9)
+Cojac: Infinity, F64toI32S   at 0x...: main (F64toI32SInf.c:9)

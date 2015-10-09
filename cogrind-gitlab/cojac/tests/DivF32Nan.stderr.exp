@@ -1,0 +1,4 @@
+Cojac: Infinity, Div32F0x4   at 0x...: main (DivF32Nan.c:6)
+Cojac: DivByZero, Div32F0x4   at 0x...: main (DivF32Nan.c:6)
+Cojac: NaN, Div32F0x4   at 0x...: main (DivF32Nan.c:7)
+Cojac: DivByZero, Div32F0x4   at 0x...: main (DivF32Nan.c:7)

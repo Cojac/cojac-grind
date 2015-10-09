@@ -3,7 +3,9 @@ AUTOMAKE_OPTIONS = foreign 1.10 dist-bzip2
 
 include $(top_srcdir)/Makefile.all.am 
 
-TOOLS =	cojac
+TOOLS =		memcheck \
+		none \
+		cojac
 
 EXP_TOOLS = 	exp-sgcheck \
 		exp-bbv \
@@ -21,6 +23,7 @@ SUBDIRS = \
 	tests \
 	perf \
 	gdbserver_tests \
+	memcheck/tests/vbit-test \
 	auxprogs \
 	mpi \
 	docs
@@ -38,6 +41,8 @@ SUPP_FILES = \
 	darwin10.supp darwin10-drd.supp \
 	darwin11.supp darwin12.supp \
 	bionic.supp
+#	cojac-glibc.supp 
+
 DEFAULT_SUPP_FILES = @DEFAULT_SUPP@
 
 # We include all the base .supp files in the distribution, but not
@@ -59,15 +64,17 @@ default.supp: $(DEFAULT_SUPP_FILES)
 	cat $(DEFAULT_SUPP_FILES) >> default.supp
 
 ## Preprend @PERL@ because tests/vg_regtest isn't executable
-## Ensure make exits with error if PERL fails or check_makefile_consistency fails.
+## Ensure make exits with error if PERL fails or post_regtest_checks fails.
 regtest: check
 	gdbserver_tests/make_local_links $(GDB)
 	if @PERL@ tests/vg_regtest gdbserver_tests $(TOOLS) $(EXP_TOOLS) ; then \
-	   tests/check_makefile_consistency gdbserver_tests $(TOOLS) $(EXP_TOOLS); \
+	   tests/post_regtest_checks $(abs_top_srcdir) gdbserver_tests $(TOOLS) $(EXP_TOOLS); \
 	else \
-	   tests/check_makefile_consistency gdbserver_tests $(TOOLS) $(EXP_TOOLS); \
+	   tests/post_regtest_checks $(abs_top_srcdir) gdbserver_tests $(TOOLS) $(EXP_TOOLS); \
 	   false; \
 	fi
+post-regtest-checks:
+	tests/post_regtest_checks $(abs_top_srcdir) gdbserver_tests $(TOOLS) $(EXP_TOOLS)
 nonexp-regtest: check
 	@PERL@ tests/vg_regtest $(TOOLS)
 exp-regtest: check

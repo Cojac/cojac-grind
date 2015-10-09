@@ -1,0 +1,3 @@
+Cojac: NaN, sqrt   at 0x...: sqrt (w_sqrt.c:30)
+   by 0x...: main (SqrtLibcF64Nan.c:5)
+Cojac: DivByZero, Div64F0x2   at 0x...: __kernel_standard (k_standard.c:604)

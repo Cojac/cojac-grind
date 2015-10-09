@@ -7,8 +7,8 @@
    This file is part of Cojac-grind, which watches arithmetic operations to
    detect overflows, cancellation, smearing, and other suspicious phenomena.
 
-   Copyright (C) 2011-2011 Frederic Bapst
-      frederic.bapst@gmail.com
+   Copyright (C) 2011-2014 Frederic Bapst & Luis Domingues
+      frederic.bapst@gmail.com, domigues.luis@gmail.com
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -46,7 +46,9 @@
 
 //TODO: study deeper "man math_error"...
 
-static const double CANCELLATION_ULP_FACTOR_DOUBLE=4.0;
+//static const double CANCELLATION_ULP_FACTOR_DOUBLE=4.0;
+
+extern cojacOptions OA_(options);
 
 static double ulp(double a) { //PRE: a is neither INF nor NaN
   return fabs(nextafter(a,INFINITY)-a);
@@ -68,7 +70,7 @@ static void check_AddF64(Double a, Double b, OA_InstrumentContext inscon) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
   if (isnan(res) || isinf(res) || res==0.0) return;
-  if(fabs(res) <= CANCELLATION_ULP_FACTOR_DOUBLE * ulp(a)) {
+  if(fabs(res) <= OA_(options).Ulp_factor_f64 * ulp(a)) {
     OA_(maybe_error)(Err_Cancellation, inscon); return;
   }
 }
@@ -86,19 +88,21 @@ static void check_SubF64(Double a, Double b, OA_InstrumentContext inscon) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
   if (isnan(res) || isinf(res) || res==0.0) return;
-  if(fabs(res) <= CANCELLATION_ULP_FACTOR_DOUBLE * ulp(a)) {
+  if(fabs(res) <= OA_(options).Ulp_factor_f64 * ulp(a)) {
     OA_(maybe_error)(Err_Cancellation, inscon); return;
   }
 }
 
 static void check_MulF64(Double a, Double b, OA_InstrumentContext inscon) {
-  if (a==0.0 || b==0.0) return;
   Double res=a*b;
   if (isinf(res) && !isinf(a) && !isinf(b)) {
     OA_(maybe_error)(Err_Infinity, inscon); return;
   }
   if (isnan(res) && !isnan(a) && !isnan(b)) {
     OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+  if(a!=0.0 && b!=0.0 && res == 0.0) {
+    OA_(maybe_error)(Err_Underflow, inscon); return;
   }
 }
 
@@ -113,9 +117,122 @@ static void check_DivF64(Double a, Double b, OA_InstrumentContext inscon) {
   if (isnan(res) && !isnan(a) && !isnan(b)) {
     OA_(maybe_error)(Err_NaN, inscon); return;
   }
+  if(a!=0.0 && b!=0.0 && res == 0.0) {
+    OA_(maybe_error)(Err_Underflow, inscon); return;
+  }
+}
+
+static void check_F64toI32S(Double a, OA_InstrumentContext inscon) {
+  if (a > INT_MAX || a < INT_MIN){
+    OA_(maybe_error)(Err_Overflow, inscon);
+  }
+  if (isinf(a)){
+    OA_(maybe_error)(Err_Infinity, inscon); return;
+  }
+  if (isnan(a)){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+}
+
+static void check_F64toI64S(Double a, OA_InstrumentContext inscon) {
+  if (a > LONG_MAX || a < LONG_MIN){
+    OA_(maybe_error)(Err_Overflow, inscon);
+  }
+  if (isinf(a)){
+    OA_(maybe_error)(Err_Infinity, inscon); return;
+  }
+  if (isnan(a)){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+}
+
+static void check_F64toF32(Double a, OA_InstrumentContext inscon) {
+  if (a > FLT_MAX || a < -FLT_MAX){
+    OA_(maybe_error)(Err_Overflow, inscon);
+  }
+  if(a < FLT_MIN){
+    Float fa = a;
+    if(fa == 0.0f && a != 0.0)
+      OA_(maybe_error)(Err_Underflow, inscon);
+  }
+}
+
+static void check_CmpF64(Double a, Double b, OA_InstrumentContext inscon){
+  if(isinf(a) || isinf(b) || isnan(a) || isnan(b)){
+    return;
+  }
+  Double res = a - b;
+  if(res == 0){
+    return;
+  }
+  if(fabs(res) <= OA_(options).Ulp_factor_f64 * ulp(a)) {
+    OA_(maybe_error)(Err_CloseComparison, inscon); return;
+  }
+  if(fabs(res) <= OA_(options).Ulp_factor_f64 * ulp(b)) {
+    OA_(maybe_error)(Err_CloseComparison, inscon); return;
+  }
+}
+
+//See asin manpage.
+static void check_F64_Asin(Double a, OA_InstrumentContext inscon) {
+  //Double b = asin(a);  //Line to uncomment to see the link error.
+  if (a < -1 || a > 1){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+}
+
+//See log manpage. HUGE_VAL has the same effect than infinite.
+static void check_F64_Log(Double a, OA_InstrumentContext inscon) {
+  if (a == 0){
+    OA_(maybe_error)(Err_Infinity, inscon); return;
+  }
+  if(a < 0){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
+}
+
+static void check_F64_Sqrt(Double a, OA_InstrumentContext inscon) {
+  if(isnan(a) || isinf(a)){
+    return;
+  }
+  Double b;
+  __asm__ ("sqrtsd %1, %0" : "=x" (b) : "x" (a));
+  if (isnan(b)){
+    OA_(maybe_error)(Err_NaN, inscon); return;
+  }
 }
 
 /*--------------------------------------------------------------------*/
+
+VG_REGPARM(2) void oa_callbackI64_call_1xF64(ULong la, OA_InstrumentContext ic) {
+  Double value = OA_(doubleFromULong)(la);
+    switch(ic->call) {
+      case Call_Asin: check_F64_Asin(value, ic); break;
+      case Call_Sqrt: check_F64_Sqrt(value, ic); break;
+      case Call_Log: check_F64_Log(value, ic); break;
+      default: break;
+  }
+  
+}
+
+VG_REGPARM(2) void oa_callbackI64_1xF64(ULong la, OA_InstrumentContext ic) {
+  Double value = OA_(doubleFromULong)(la);
+  switch(ic->op) {
+    case Iop_Sqrt64Fx2: check_F64_Sqrt(value, ic); break;
+	  default: break;
+	}
+}
+
+
+VG_REGPARM(3) void oa_callbackI64_1xI32_1xF64(UInt roundingMode, ULong la, OA_InstrumentContext ic) {
+  Double value = OA_(doubleFromULong)(la);
+  switch(ic->op) {
+    case Iop_F64toI32S: check_F64toI32S(value, ic); break;
+    case Iop_F64toI64S: check_F64toI64S(value, ic); break;
+    case Iop_F64toF32: check_F64toF32(value, ic); break;
+	  default: break;
+	}
+}
 
 VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext ic) {
   Double a=OA_(doubleFromULong)(la);
@@ -143,7 +260,9 @@ VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext
     case Iop_MulF64:  check_MulF64(a,b,ic); break;
     case Iop_Div64F0x2:
     case Iop_Div64Fx2:
-    case Iop_DivF64:  check_DivF64(a,b,ic); break;
+    case Iop_DivF64: check_DivF64(a,b,ic); break;
+    case Iop_SqrtF64: VG_(printf)("Nop nop nop\n"); break;
+    case Iop_CmpF64: check_CmpF64(a,b,ic); break;
     default: break;
   }
 }
@@ -159,6 +278,18 @@ VG_REGPARM(3) void oa_callbackI64_2xF64(ULong la, ULong lb, OA_InstrumentContext
 
 static partOfF64op opF64_buf;
 static char        isOpF64Part=False;
+
+VG_REGPARM(2) void oa_callbackI32_call_1xF64(UInt a, OA_InstrumentContext ic){
+  VG_(printf)("X86 platform not fully implemented yet\n");
+}
+
+VG_REGPARM(1) void oa_callbackI32_1xF64(UInt a, OA_InstrumentContext ic){
+  VG_(printf)("X86 platform not fully implemented yet\n");
+}
+
+VG_REGPARM(2) void oa_callbackI32_1xI32_1xF64(UInt roundingMode, UInt la, OA_InstrumentContext ic){
+  VG_(printf)("X86 platform not fully implemented yet\n");
+}
 
 VG_REGPARM(3) void oa_callbackI32_2xF64(UInt a, UInt b, OA_InstrumentContext ic) {
   if (isOpF64Part) { // second half of the callback

@@ -1,0 +1,121 @@
+--- origin5-bz2.stderr.exp-glibc27-ppc64	2014-03-20 20:46:15.312802515 +0100
++++ origin5-bz2.stderr.out	2014-03-23 21:44:57.465864491 +0100
+@@ -1,7 +1,7 @@
+ Conditional jump or move depends on uninitialised value(s)
+    at 0x........: main (origin5-bz2.c:6481)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Conditional jump or move depends on uninitialised value(s)
+    at 0x........: copy_input_until_stop (origin5-bz2.c:4686)
+@@ -10,7 +10,7 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+    at 0x........: copy_input_until_stop (origin5-bz2.c:4686)
+@@ -19,7 +19,7 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+    at 0x........: copy_input_until_stop (origin5-bz2.c:4686)
+@@ -28,7 +28,7 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+    at 0x........: mainSort (origin5-bz2.c:2820)
+@@ -39,7 +39,7 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+    at 0x........: mainSort (origin5-bz2.c:2823)
+@@ -50,7 +50,7 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+    at 0x........: mainSort (origin5-bz2.c:2854)
+@@ -61,7 +61,7 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+    at 0x........: mainSort (origin5-bz2.c:2858)
+@@ -72,7 +72,7 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+    at 0x........: mainSort (origin5-bz2.c:2963)
+@@ -83,7 +83,7 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+    at 0x........: mainSort (origin5-bz2.c:2964)
+@@ -94,7 +94,7 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+    at 0x........: fallbackSort (origin5-bz2.c:2269)
+@@ -105,7 +105,7 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Use of uninitialised value of size 8
+    at 0x........: fallbackSort (origin5-bz2.c:2275)
+@@ -116,10 +116,16 @@
+    by 0x........: BZ2_bzBuffToBuffCompress (origin5-bz2.c:5630)
+    by 0x........: main (origin5-bz2.c:6484)
+  Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++   at 0x........: main (origin5-bz2.c:6479)
+ 
+ Conditional jump or move depends on uninitialised value(s)
+    at 0x........: main (origin5-bz2.c:6512)
+- Uninitialised value was created by a client request
+-   at 0x........: main (origin5-bz2.c:6481)
++ Uninitialised value was created by a heap allocation
++   at 0x........: malloc (vg_replace_malloc.c:...)
++   by 0x........: g_serviceFn (origin5-bz2.c:6429)
++   by 0x........: default_bzalloc (origin5-bz2.c:4470)
++   by 0x........: BZ2_decompress (origin5-bz2.c:1578)
++   by 0x........: BZ2_bzDecompress (origin5-bz2.c:5192)
++   by 0x........: BZ2_bzBuffToBuffDecompress (origin5-bz2.c:5678)
++   by 0x........: main (origin5-bz2.c:6498)
+ 
