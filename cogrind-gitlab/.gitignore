@@ -1,0 +1,5 @@
+/coregrind
+/perf
+/tests
+/memcheck
+/VEX
