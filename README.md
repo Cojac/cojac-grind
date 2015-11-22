@@ -5,3 +5,6 @@ Look at the [User Guide](https://github.com/Cojac/cojac-grind/wiki/Cojacgrind-Us
 We have also realized a similar tool for Java: [COJAC](https://github.com/Cojac/Cojac).
 
 Our [article](http://drdobbs.com/testing/232601564#) in Dr Dobb's can be considered as the "white paper" of this project.
+
+Developed at the [School of Engineering of Fribourg](https://www.heia-fr.ch), 
+Switzerland.
